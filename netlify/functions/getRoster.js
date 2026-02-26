@@ -12,20 +12,20 @@ exports.handler = async function(event, context) {
     const data = await response.json();
 
     if (!data.response || data.response.length === 0) {
-      return { statusCode: 404, body: JSON.stringify({ error: "No data found" }) };
+      return { statusCode: 200, body: JSON.stringify({ error: "No API data" }) };
     }
 
     let formattedRoster = { "QB": [], "RB": [], "WR": [], "TE": [] };
 
     data.response.forEach(item => {
       const name = item.name;
-      // Convert to lowercase to prevent case-sensitivity bugs
       const pos = (item.position || "").toLowerCase();
       
-      if (pos.includes("quarterback") || pos === "qb") formattedRoster["QB"].push(name);
-      else if (pos.includes("running back") || pos === "rb") formattedRoster["RB"].push(name);
-      else if (pos.includes("wide receiver") || pos === "wr") formattedRoster["WR"].push(name);
-      else if (pos.includes("tight end") || pos === "te") formattedRoster["TE"].push(name);
+      // Fuzzy logic: if the position string contains these letters, grab the player
+      if (pos.includes("quar") || pos === "qb") formattedRoster["QB"].push(name);
+      else if (pos.includes("runn") || pos === "rb") formattedRoster["RB"].push(name);
+      else if (pos.includes("recei") || pos === "wr") formattedRoster["WR"].push(name);
+      else if (pos.includes("tight") || pos === "te") formattedRoster["TE"].push(name);
     });
 
     return {
@@ -33,7 +33,6 @@ exports.handler = async function(event, context) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formattedRoster)
     };
-
   } catch (error) {
     return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
   }
