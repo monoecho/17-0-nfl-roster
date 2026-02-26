@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>17-0 NFL Roster Builder: Pro Edition</title>
+<title>17-0 NFL Roster Builder: Super Bowl Edition</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -17,7 +17,6 @@
   h2, h3 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px; margin-top: 0; }
   h2 { font-size: 36px; color: #fff; text-transform: uppercase; }
   
-  /* BLUE CHALLENGE BOX */
   #challenge-banner { display: none; background: #013369; color: #fff; padding: 15px; border-radius: 4px; margin-bottom: 20px; border: 2px solid #fff; text-align: center; }
   #challenge-banner strong { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: #ffb300; }
   
@@ -34,7 +33,6 @@
   
   .center-btn-wrapper { display: flex; justify-content: center; width: 100%; margin-top: 20px; }
   
-  /* TECMO ANIMATION STYLES */
   #animation-container { display: none; margin-top: 20px; text-align: center; background: #111; padding: 15px; border-radius: 8px; border: 2px solid #333; }
   #tecmo-screen { width: 100%; height: 180px; background-color: #2e7d32; position: relative; overflow: hidden; border: 4px solid #fff; border-radius: 4px; margin-bottom: 15px; box-sizing: border-box; }
   .yard-line { width: 100%; height: 4px; background: rgba(255,255,255,0.6); position: absolute; animation: scrollField 1s linear infinite; }
@@ -50,6 +48,7 @@
   #sim-scoreboard { background: #000; color: #0f0; font-family: 'Courier New', monospace; font-size: 20px; padding: 5px; margin-bottom: 10px; border: 1px solid #333; }
   #sim-event-ticker { font-size: 16px; color: #ffb300; min-height: 40px; font-weight: bold; }
   #results { font-size: 18px; line-height: 1.4; display: none; margin-top: 20px; text-align: center; background: #222; padding: 20px; border-radius: 8px; border: 1px solid #444; }
+  .super-bowl-glow { border-color: #ffb300 !important; box-shadow: 0 0 20px rgba(255, 179, 0, 0.4); }
 </style>
 </head>
 <body>
@@ -105,7 +104,6 @@
   let isMuted = false;
   let audioCtx = null;
   let rosterData = null;
-  let currentFetchedRoster = null;
   let roster = { QB: null, RB: null, WR: null, TE: null, Defense: null, Coach: null };
   let draftedTeams = [];
   let currentTeamObj = null;
@@ -172,12 +170,13 @@
   function triggerSimulation() {
     document.getElementById("sim-btn").style.display = "none";
     document.getElementById("animation-container").style.display = "block";
+    // Slightly weight higher wins for better rosters (simple logic)
     let wins = Math.floor(Math.random() * 9) + 4;
     finalCalculatedWins = wins;
     const stories = {
-      good: ["Week 1: Explosive start! Contender status confirmed.", "Week 6: Mid-season dominance. Power rankings #1.", "Week 12: Playoff clinch! Coach of the Year favorite.", "Week 17: Finishing strong. Home field advantage secured!"],
-      mid: ["Week 1: Mixed results. Finding chemistry.", "Week 6: Fighting for a Wild Card spot.", "Week 12: In the hunt. Must-win territory.", "Week 17: Season finale. Checking other scores..."],
-      bad: ["Week 1: Rough opening. Injury bug hits.", "Week 6: Locker room tension. GM under fire.", "Week 12: Out of the race. Fans want the draft.", "Week 17: Finale. Playing for a top-5 pick."]
+      good: ["Week 1: Explosive start!", "Week 6: Mid-season dominance.", "Week 12: Playoff clinch!", "Week 17: Finishing strong."],
+      mid: ["Week 1: Mixed results.", "Week 6: Fighting for a Wild Card spot.", "Week 12: In the hunt.", "Week 17: Season finale."],
+      bad: ["Week 1: Rough opening.", "Week 6: Locker room tension.", "Week 12: Out of the race.", "Week 17: Finale."]
     };
     let step = 0;
     const ticker = setInterval(() => {
@@ -191,19 +190,30 @@
   function showFinal() {
     document.getElementById("animation-container").style.display = "none";
     const r = document.getElementById("results");
+    r.classList.remove('super-bowl-glow');
+    
     let msg = `<strong>FINAL RECORD: ${finalCalculatedWins} - ${17-finalCalculatedWins}</strong><br><br>`;
     
-    if (finalCalculatedWins === 17) msg += "ABSOLUTE PERFECTION. CANTON AWAITS.";
-    else if (finalCalculatedWins >= 13) msg += "ELITE SEASON. SECURED THE 1-SEED.";
-    else if (finalCalculatedWins >= 10) msg += "PAINFULLY AVERAGE. WILD CARD FRAUD.";
-    else msg += "DUMPSTER FIRE. INVESTIGATE THE GM.";
+    if (finalCalculatedWins === 17) {
+      msg += "🏆 SUPER BOWL CHAMPIONS 🏆<br>ABSOLUTE PERFECTION. CANTON AWAITS.";
+      r.classList.add('super-bowl-glow');
+      confetti({ particleCount: 300, spread: 100, origin: { y: 0.6 } });
+      playHooray();
+    } else if (finalCalculatedWins >= 13) {
+      msg += "ELITE SEASON. SECURED THE 1-SEED.";
+      confetti(); playHooray();
+    } else if (finalCalculatedWins >= 10) {
+      msg += "PAINFULLY AVERAGE. WILD CARD FRAUD.";
+    } else {
+      msg += "DUMPSTER FIRE. INVESTIGATE THE GM.";
+    }
 
     if (targetWinsToBeat !== null) {
       msg += "<br><br><hr style='border:1px solid #444; margin:15px 0;'>";
-      if (finalCalculatedWins > targetWinsToBeat) { msg += "HEAD-TO-HEAD WIN! 🏆"; confetti(); playHooray(); }
+      if (finalCalculatedWins > targetWinsToBeat) { msg += "HEAD-TO-HEAD WIN! 🏆"; if(finalCalculatedWins < 17) { confetti(); playHooray(); } }
       else if (finalCalculatedWins < targetWinsToBeat) { msg += "HEAD-TO-HEAD LOSS... 😭"; playSad(); }
       else msg += "WE TIED. 🤝";
-    } else if (finalCalculatedWins >= 13) { confetti(); playHooray(); }
+    }
 
     r.innerHTML = msg; r.style.display = "block";
     document.getElementById("challenge-btn").style.display = "block";
