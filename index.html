@@ -12,7 +12,7 @@
 <style>
   body { font-family: 'Roboto', sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; background-color: #1e3f20; background-image: repeating-linear-gradient(0deg, transparent, transparent 48px, rgba(255,255,255,0.1) 48px, rgba(255,255,255,0.1) 50px); color: #fff; }
   .card { background: #111; padding: 20px; border-radius: 8px; box-shadow: 0 8px 16px rgba(0,0,0,0.5); margin-bottom: 20px; text-align: center; border-top: 5px solid #d50a0a; border-bottom: 5px solid #013369; position: relative; z-index: 10; }
-  #mute-toggle { position: absolute; top: 15px; right: 15px; background: none; border: 1px solid #444; color: #777; font-size: 12px; padding: 5px 8px; cursor: pointer; border-radius: 4px; width: auto; }
+  #mute-toggle { position: absolute; top: 15px; right: 15px; background: none; border: 1px solid #444; color: #777; font-size: 12px; padding: 5px 8px; cursor: pointer; border-radius: 4px; width: auto; z-index: 20;}
   #mute-toggle.active { color: #d50a0a; border-color: #d50a0a; }
   h2, h3 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px; margin-top: 0; }
   h2 { font-size: 36px; color: #fff; text-transform: uppercase; }
@@ -26,13 +26,22 @@
   .roster-slot strong { width: 80px; color: #aaa; font-family: 'Bebas Neue', sans-serif; font-size: 20px; }
   .player-info { display: flex; align-items: center; font-weight: bold; }
   .player-info img { height: 25px; margin-left: 10px; }
-  .center-btn-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; margin-top: 20px; }
+  
+  /* CENTERED BUTTON CONTAINER */
+  .center-btn-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; margin-top: 20px; }
+  
   #animation-container { display: none; margin-top: 20px; text-align: center; background: #111; padding: 15px; border-radius: 8px; border: 2px solid #333; }
   #tecmo-screen { width: 100%; height: 180px; background-color: #2e7d32; position: relative; overflow: hidden; border: 4px solid #fff; }
   .yard-line { width: 100%; height: 4px; background: rgba(255,255,255,0.6); position: absolute; animation: scrollField 1s linear infinite; }
   @keyframes scrollField { 0% { top: -10%; } 100% { top: 110%; } }
   .tecmo-player { width: 24px; height: 24px; background: #013369; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); animation: runDodging 3s ease-in-out infinite; }
   @keyframes runDodging { 0%, 100% { left: 50%; } 25% { left: 20%; } 75% { left: 80%; } }
+  
+  /* DUMPSTER FIRE ANIMATION */
+  .fire-bg { background-color: #5d1a1a !important; }
+  .dumpster-icon { font-size: 50px; position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); animation: flicker 0.2s infinite; display: none;}
+  @keyframes flicker { 0% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } }
+
   #sim-scoreboard { background: #000; color: #0f0; font-family: 'Courier New', monospace; font-size: 20px; padding: 5px; margin-bottom: 10px; border: 1px solid #333; }
   #sim-event-ticker { font-size: 16px; color: #ffb300; min-height: 40px; font-weight: bold; }
   #results { font-size: 18px; line-height: 1.4; display: none; margin-top: 20px; text-align: center; background: #222; padding: 20px; border-radius: 8px; border: 1px solid #444; }
@@ -74,7 +83,11 @@
   
   <div id="animation-container">
     <div id="sim-scoreboard">RECORD: 0 - 0</div>
-    <div id="tecmo-screen"><div class="yard-line"></div><div class="tecmo-player"></div></div>
+    <div id="tecmo-screen">
+      <div id="dumpster" class="dumpster-icon">🔥🗑️</div>
+      <div class="yard-line"></div>
+      <div class="tecmo-player"></div>
+    </div>
     <div id="sim-event-ticker">Booting up simulation...</div>
   </div>
   
@@ -105,7 +118,41 @@
 
   function toggleMute() { isMuted = !isMuted; document.getElementById("mute-toggle").innerText = isMuted ? "SOUND: OFF" : "SOUND: ON"; }
   function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-  function playRetroBlip() { if (isMuted || !audioCtx) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.type = 'square'; o.frequency.setValueAtTime(600, audioCtx.currentTime); g.gain.setValueAtTime(0.02, audioCtx.currentTime); o.start(); o.stop(audioCtx.currentTime + 0.05); }
+  
+  function playRetroBlip() { 
+    if (isMuted || !audioCtx) return; 
+    const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); 
+    o.connect(g); g.connect(audioCtx.destination); 
+    o.type = 'square'; o.frequency.setValueAtTime(600, audioCtx.currentTime); 
+    g.gain.setValueAtTime(0.02, audioCtx.currentTime); o.start(); o.stop(audioCtx.currentTime + 0.05); 
+  }
+
+  function playSad() {
+    if (isMuted || !audioCtx) return;
+    const notes = [392, 370, 349, 311]; // G, Gb, F, Eb
+    notes.forEach((freq, i) => {
+      const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+      o.connect(g); g.connect(audioCtx.destination);
+      o.type = 'sawtooth'; o.frequency.setValueAtTime(freq, audioCtx.currentTime + (i * 0.3));
+      o.frequency.exponentialRampToValueAtTime(freq - 50, audioCtx.currentTime + (i * 0.3) + 0.25);
+      g.gain.setValueAtTime(0.05, audioCtx.currentTime + (i * 0.3));
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (i * 0.3) + 0.25);
+      o.start(audioCtx.currentTime + (i * 0.3)); o.stop(audioCtx.currentTime + (i * 0.3) + 0.3);
+    });
+  }
+
+  function playHooray() {
+    if (isMuted || !audioCtx) return;
+    const melody = [523, 659, 783, 1046, 783, 1046]; // C5, E5, G5, C6, G5, C6
+    melody.forEach((freq, i) => {
+      const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+      o.connect(g); g.connect(audioCtx.destination);
+      o.type = 'square'; o.frequency.setValueAtTime(freq, audioCtx.currentTime + (i * 0.15));
+      g.gain.setValueAtTime(0.03, audioCtx.currentTime + (i * 0.15));
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (i * 0.15) + 0.1);
+      o.start(audioCtx.currentTime + (i * 0.15)); o.stop(audioCtx.currentTime + (i * 0.15) + 0.15);
+    });
+  }
 
   function startFirstSpin() { initAudio(); document.getElementById("placeholder").style.display = "none"; spinTeam(); }
 
@@ -151,7 +198,7 @@
   function triggerSimulation() {
     document.getElementById("sim-btn").style.display = "none";
     document.getElementById("animation-container").style.display = "block";
-    let wins = Math.floor(Math.random() * 12) + 2;
+    let wins = Math.floor(Math.random() * 14) + 1; // Expanded range for bigger drama
     finalCalculatedWins = wins;
     const stories = {
       good: ["Week 1: Massive win! League on notice.", "Week 6: Mid-season dominance.", "Week 12: Playoff clinch!", "Week 17: Finishing strong."],
@@ -170,12 +217,28 @@
   function showFinal() {
     document.getElementById("animation-container").style.display = "none";
     const r = document.getElementById("results");
+    r.classList.remove('super-bowl-glow');
+    document.getElementById("tecmo-screen").classList.remove('fire-bg');
+    document.getElementById("dumpster").style.display = "none";
+
     let msg = `<strong>FINAL RECORD: ${finalCalculatedWins} - ${17-finalCalculatedWins}</strong><br><br>`;
     
-    if (finalCalculatedWins === 17) { msg += "🏆 PERFECT SEASON! GOAT STATUS."; r.classList.add('super-bowl-glow'); confetti(); }
-    else if (finalCalculatedWins >= 12) msg += "ELITE SQUAD. CONTENDERS.";
-    else if (finalCalculatedWins >= 8) msg += "MEDIOCRE. FIRST ROUND EXIT INCOMING.";
-    else msg += "TRASH. TOTAL DUMPSTER FIRE. FIRE THE GM.";
+    if (finalCalculatedWins === 17) {
+      msg += "🏆 PERFECT SEASON! GOAT STATUS.";
+      r.classList.add('super-bowl-glow');
+      confetti(); playHooray();
+    } else if (finalCalculatedWins >= 12) {
+      msg += "ELITE SQUAD. CONTENDERS.";
+      confetti(); playHooray();
+    } else if (finalCalculatedWins >= 8) {
+      msg += "MEDIOCRE. FIRST ROUND EXIT INCOMING.";
+    } else {
+      msg += "🗑️ TRASH. TOTAL DUMPSTER FIRE. FIRE THE GM.";
+      document.getElementById("animation-container").style.display = "block";
+      document.getElementById("tecmo-screen").classList.add('fire-bg');
+      document.getElementById("dumpster").style.display = "block";
+      playSad();
+    }
 
     if (targetWinsToBeat !== null) {
       msg += `<br><hr><br>${finalCalculatedWins > targetWinsToBeat ? "CHALLENGE WON! 🏆" : "CHALLENGE FAILED. 😭"}`;
