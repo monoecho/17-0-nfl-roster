@@ -97,4 +97,440 @@
   
   <select id="position-select" onchange="updatePlayerDropdown()" disabled>
     <option value="QB">QB (Quarterback)</option>
-    <option value="RB">RB
+    <option value="RB">RB (Running Back)</option>
+    <option value="WR">WR (Wide Receiver)</option>
+    <option value="TE">TE (Tight End)</option>
+    <option value="Defense">Defense</option>
+    <option value="Coach">Coach</option>
+  </select>
+  <br>
+  <select id="player-select" disabled>
+    <option value="">Waiting for spin...</option>
+  </select>
+  <br>
+  <button id="draft-btn" onclick="draftPlayer()" disabled>LOCK IN PICK</button>
+</div>
+
+<div class="card roster">
+  <h3 style="text-align: center; font-size: 28px;">YOUR LIVE SQUAD</h3>
+  <div id="roster-QB" class="roster-slot"><strong>QB</strong> <div class="player-info"><span class="name" style="color:#555;">Empty</span></div></div>
+  <div id="roster-RB" class="roster-slot"><strong>RB</strong> <div class="player-info"><span class="name" style="color:#555;">Empty</span></div></div>
+  <div id="roster-WR" class="roster-slot"><strong>WR</strong> <div class="player-info"><span class="name" style="color:#555;">Empty</span></div></div>
+  <div id="roster-TE" class="roster-slot"><strong>TE</strong> <div class="player-info"><span class="name" style="color:#555;">Empty</span></div></div>
+  <div id="roster-Defense" class="roster-slot"><strong>DEF</strong> <div class="player-info"><span class="name" style="color:#555;">Empty</span></div></div>
+  <div id="roster-Coach" class="roster-slot"><strong>HC</strong> <div class="player-info"><span class="name" style="color:#555;">Empty</span></div></div>
+  
+  <button id="sim-btn" onclick="triggerSimulation()" style="display:none; width: 100%; margin-top: 20px; background: #28a745; font-size: 24px;">SIMULATE SEASON</button>
+  
+  <div id="animation-container">
+    <div id="tecmo-screen">
+      <div class="yard-line" style="animation-delay: 0s;"></div>
+      <div class="yard-line" style="animation-delay: 0.5s; top: -50%;"></div>
+      <div class="tecmo-defender def1"></div>
+      <div class="tecmo-defender def2"></div>
+      <div class="tecmo-defender def3"></div>
+      <div class="tecmo-player">
+        <div class="tecmo-ball"></div>
+      </div>
+    </div>
+    <div class="loading-text" style="animation: blink 1s infinite;">SIMULATING SEASON...</div>
+    <div id="sim-event-ticker">Kicking off Week 1...</div>
+  </div>
+  
+  <div id="results"></div>
+  
+  <div class="action-btn-container">
+    <button id="challenge-btn" onclick="handleChallengeAction()">COPY CHALLENGE LINK</button>
+    <button id="reset-btn" onclick="resetDraft()">START NEW DRAFT</button>
+  </div>
+</div>
+
+<script>
+  const apiTeamIds = {
+    "Las Vegas Raiders": 1,
+    "Jacksonville Jaguars": 2,
+    "New England Patriots": 3,
+    "New York Giants": 4,
+    "Baltimore Ravens": 5,
+    "Tennessee Titans": 6,
+    "Detroit Lions": 7,
+    "Atlanta Falcons": 8,
+    "Cleveland Browns": 9,
+    "Cincinnati Bengals": 10,
+    "Arizona Cardinals": 11,
+    "Philadelphia Eagles": 12,
+    "New York Jets": 13,
+    "San Francisco 49ers": 14,
+    "Green Bay Packers": 15,
+    "Chicago Bears": 16,
+    "Kansas City Chiefs": 17,
+    "Washington Commanders": 18,
+    "Carolina Panthers": 19,
+    "Buffalo Bills": 20,
+    "Indianapolis Colts": 21,
+    "Pittsburgh Steelers": 22,
+    "Seattle Seahawks": 23,
+    "Tampa Bay Buccaneers": 24,
+    "Miami Dolphins": 25,
+    "Houston Texans": 26,
+    "New Orleans Saints": 27,
+    "Denver Broncos": 28,
+    "Dallas Cowboys": 29,
+    "Los Angeles Chargers": 30,
+    "Los Angeles Rams": 31,
+    "Minnesota Vikings": 32
+  };
+
+  const teams = [
+    { name: "Arizona Cardinals", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/ari.png" }, { name: "Atlanta Falcons", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/atl.png" },
+    { name: "Baltimore Ravens", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/bal.png" }, { name: "Buffalo Bills", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/buf.png" },
+    { name: "Carolina Panthers", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/car.png" }, { name: "Chicago Bears", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/chi.png" },
+    { name: "Cincinnati Bengals", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/cin.png" }, { name: "Cleveland Browns", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/cle.png" },
+    { name: "Dallas Cowboys", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/dal.png" }, { name: "Denver Broncos", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/den.png" },
+    { name: "Detroit Lions", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/det.png" }, { name: "Green Bay Packers", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/gb.png" },
+    { name: "Houston Texans", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/hou.png" }, { name: "Indianapolis Colts", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/ind.png" },
+    { name: "Jacksonville Jaguars", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/jax.png" }, { name: "Kansas City Chiefs", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/kc.png" },
+    { name: "Las Vegas Raiders", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/lv.png" }, { name: "Los Angeles Chargers", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/lac.png" },
+    { name: "Los Angeles Rams", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/lar.png" }, { name: "Miami Dolphins", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/mia.png" },
+    { name: "Minnesota Vikings", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/min.png" }, { name: "New England Patriots", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/ne.png" },
+    { name: "New Orleans Saints", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/no.png" }, { name: "New York Giants", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/nyg.png" },
+    { name: "New York Jets", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/nyj.png" }, { name: "Philadelphia Eagles", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/phi.png" },
+    { name: "Pittsburgh Steelers", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/pit.png" }, { name: "San Francisco 49ers", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/sf.png" },
+    { name: "Seattle Seahawks", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/sea.png" }, { name: "Tampa Bay Buccaneers", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/tb.png" },
+    { name: "Tennessee Titans", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/ten.png" }, { name: "Washington Commanders", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png" }
+  ];
+
+  const elitePlayers = ["Patrick Mahomes", "Josh Allen", "Lamar Jackson", "Christian McCaffrey", "Derrick Henry", "Tyreek Hill", "Justin Jefferson", "Saquon Barkley", "Andy Reid", "Ravens D/ST", "Lions D/ST", "Chiefs D/ST"];
+  const proBowlPlayers = ["Joe Burrow", "C.J. Stroud", "Jalen Hurts", "Jahmyr Gibbs", "Amon-Ra St. Brown", "Ja'Marr Chase", "CeeDee Lamb", "Travis Kelce", "George Kittle", "Kyle Shanahan", "Dan Campbell", "Bills D/ST", "Eagles D/ST", "Texans D/ST"];
+
+  const simEvents = [
+    "Week 1: Your QB just threw for 400 yards!", "Week 3: Your RB broke off a 75-yard touchdown run.",
+    "Week 4: Your defense logged 6 sacks this game.", "Week 6: Disaster! Star player injured, out for 2 weeks.",
+    "Week 7: Locker room drama. Your HC is losing the team.", "Week 9: Defense forces 3 turnovers in a crucial divisional game.",
+    "Week 11: Your Kicker just broke the record for most consecutive FG points!", "Week 12: Your HC goes for it on 4th down and gets it!",
+    "Week 14: Your WR caught a one-handed Hail Mary to win at the buzzer!", "Week 15: Your QB just scored the most touchdowns in a game this season.",
+    "Week 16: Weather delay! The team struggles in the snow.", "Week 17: Dominant victory to close out the regular season!"
+  ];
+
+  const perfectTiers = ["Absolute perfection. You didn't just beat the league; you humiliated them. This roster is going straight to Canton.", "17-0. You cracked the code. Your GM is getting a statue built outside the stadium tomorrow. Total domination.", "An undefeated regular season. The '72 Dolphins are sick to their stomachs right now. Don't blow it in the Super Bowl."];
+  const eliteTiers = ["Elite status. You secured the one-seed, but don't choke in January. A great regular season means absolutely nothing if you get bounced in the divisional round.", "Absolute juggernaut. You secured home-field advantage and a first-round bye. Now go finish the job before your fans riot.", "A heavy-hitter season. You're the Super Bowl favorite, which means the media is ready to tear you apart the second you throw an interception."];
+  const midTiers = ["You barely scraped by. You're a wild-card fraud that is going to get completely exposed by a real contender in the first round. Congrats on being painfully average.", "Congratulations on being a first-round exit. Your team has zero real identity and is just here to provide an easy win for the one-seed.", "A completely forgettable playoff appearance. You survived the regular season, but nobody actually thinks you have a chance at a ring."];
+  const purgatoryTiers = ["Football purgatory. You are too bad to make the playoffs, but just good enough to miss out on a top draft pick. Your fanbase absolutely despises this front office.", "The ultimate zone of mediocrity. You get to watch the playoffs from your couch while drafting 15th overall. The definition of a wasted year.", "A perfectly mid-tier trainwreck. Your head coach is definitely getting fired, but your GM will somehow survive for one more painful season."];
+  const trashTiers = ["An absolute dumpster fire. Your GM should be investigated for deliberate sabotage. Pack your bags, sell the team, and never look at a football again.", "Congratulations on securing the #1 overall pick. Your stadium is empty by halftime every week and your star players are demanding trades.", "A historically pathetic season. You are the laughingstock of the league. Your franchise needs a complete teardown and a public apology to the city."];
+
+  let roster = { QB: null, RB: null, WR: null, TE: null, Defense: null, Coach: null };
+  let currentTeamObj = null;
+  let draftedTeams = []; 
+  let currentFetchedRoster = null; // Holds the live data from your server
+  
+  let finalCalculatedWins = 0;
+  let targetWinsToBeat = null;
+
+  window.onload = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if(urlParams.has('w')) {
+      targetWinsToBeat = parseInt(urlParams.get('w'));
+      let bannerHTML = `⚠️ HEAD-TO-HEAD CHALLENGE ⚠️<br>Target to Beat: <span id="target-wins-display" style="font-size: 28px; color: #d50a0a; text-shadow: 1px 1px 0px #000;">???</span> Wins`;
+      
+      if(urlParams.has('t')) {
+        const teamString = decodeURIComponent(urlParams.get('t'));
+        const teamArray = teamString.split(',');
+        if (teamArray.length === 6) {
+          bannerHTML += `<div style="margin-top: 10px; font-size: 16px; font-family: 'Roboto', sans-serif; font-weight: normal; color: #ddd; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 4px; text-align: left;">
+            <strong style="color: #d50a0a;">Challenger's Squad:</strong><br>
+            QB: ${teamArray[0]} | RB: ${teamArray[1]} | WR: ${teamArray[2]} <br>
+            TE: ${teamArray[3]} | DEF: ${teamArray[4]} | HC: ${teamArray[5]}
+          </div>`;
+        }
+      }
+      
+      const banner = document.getElementById('challenge-banner');
+      banner.innerHTML = bannerHTML;
+      banner.style.display = 'block';
+    }
+    spinTeam();
+  };
+
+  function spinTeam() {
+    document.getElementById("draft-btn").disabled = true;
+    document.getElementById("position-select").disabled = true;
+    document.getElementById("player-select").disabled = true;
+    document.getElementById("placeholder").style.display = "none";
+    
+    const imgElement = document.getElementById("team-logo-img");
+    imgElement.style.display = "block";
+    
+    const playerSelect = document.getElementById("player-select");
+    playerSelect.innerHTML = '<option value="">Spinning...</option>';
+    
+    const availableTeams = teams.filter(t => !draftedTeams.includes(t.name));
+    
+    let spins = 0;
+    const maxSpins = 25; 
+    let delay = 40; 
+
+    function doSpin() {
+      currentTeamObj = availableTeams[Math.floor(Math.random() * availableTeams.length)];
+      imgElement.src = currentTeamObj.logo;
+      imgElement.alt = currentTeamObj.name;
+      spins++;
+
+      if (spins < maxSpins) {
+        delay += 12; 
+        setTimeout(doSpin, delay);
+      } else {
+        // Spin finished! Now fetch the live data from Netlify.
+        fetchLiveRoster(currentTeamObj.name);
+      }
+    }
+    
+    doSpin();
+  }
+
+  // The new function that securely talks to your Netlify Server
+  async function fetchLiveRoster(teamName) {
+    const playerSelect = document.getElementById("player-select");
+    playerSelect.innerHTML = '<option value="">Fetching Live Data...</option>';
+    
+    // Look up the ID from your hardcoded dictionary
+    const teamId = apiTeamIds[teamName] || 17; // Default to 17 (Chiefs) if missing
+    
+    try {
+      const response = await fetch(`/.netlify/functions/getRoster?teamId=${teamId}`);
+      const data = await response.json();
+      currentFetchedRoster = data;
+      
+      document.getElementById("position-select").disabled = false;
+      document.getElementById("player-select").disabled = false;
+      document.getElementById("draft-btn").disabled = false;
+      
+      updatePlayerDropdown();
+    } catch (error) {
+      playerSelect.innerHTML = '<option value="">Network error. Try spinning again.</option>';
+      document.getElementById("reset-btn").style.display = "block";
+    }
+  }
+
+  function updatePlayerDropdown() {
+    const posSelect = document.getElementById("position-select");
+    const playerSelect = document.getElementById("player-select");
+    
+    playerSelect.innerHTML = "";
+    
+    if (posSelect.options.length === 0 || !currentFetchedRoster) return;
+    
+    const pos = posSelect.value;
+    
+    // Fallback logic for Defense and Coach since API only returns individual players
+    let players = [];
+    if (pos === "Defense") {
+      players = [`${currentTeamObj.name} D/ST`];
+    } else if (pos === "Coach") {
+      players = ["Head Coach"];
+    } else {
+      players = currentFetchedRoster[pos] || ["No players found"];
+    }
+    
+    players.forEach(p => {
+      let opt = document.createElement("option");
+      opt.value = p;
+      opt.innerText = p;
+      playerSelect.appendChild(opt);
+    });
+  }
+
+  function draftPlayer() {
+    const player = document.getElementById("player-select").value;
+    const posSelect = document.getElementById("position-select");
+    const pos = posSelect.value;
+
+    roster[pos] = { name: player, logo: currentTeamObj.logo };
+    
+    const slotContainer = document.getElementById(`roster-${pos}`).querySelector(".player-info");
+    slotContainer.innerHTML = `<span class="name">${player}</span> <img src="${currentTeamObj.logo}" alt="team logo">`;
+    
+    draftedTeams.push(currentTeamObj.name);
+    posSelect.remove(posSelect.selectedIndex);
+
+    if (Object.values(roster).every(val => val !== null)) {
+      document.getElementById("draft-section").style.display = "none";
+      document.getElementById("sim-btn").style.display = "block";
+    } else {
+      spinTeam();
+    }
+  }
+
+  function triggerSimulation() {
+    document.getElementById("sim-btn").style.display = "none";
+    document.getElementById("animation-container").style.display = "block";
+    
+    const ticker = document.getElementById("sim-event-ticker");
+    let eventCount = 0;
+    
+    const shuffledEvents = simEvents.sort(() => 0.5 - Math.random());
+    
+    const intervalId = setInterval(() => {
+      if (eventCount < shuffledEvents.length) {
+        ticker.innerText = shuffledEvents[eventCount];
+        eventCount++;
+      }
+    }, 5000);
+    
+    setTimeout(() => {
+      clearInterval(intervalId);
+      calculateSeason();
+    }, 20000);
+  }
+
+  function fireConfetti() {
+    var duration = 3 * 1000;
+    var end = Date.now() + duration;
+
+    (function frame() {
+      confetti({
+        particleCount: 5, angle: 60, spread: 55, origin: { x: 0, y: 0.8 }, colors: ['#d50a0a', '#013369', '#ffffff']
+      });
+      confetti({
+        particleCount: 5, angle: 120, spread: 55, origin: { x: 1, y: 0.8 }, colors: ['#d50a0a', '#013369', '#ffffff']
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    }());
+  }
+
+  function calculateSeason() {
+    document.getElementById("animation-container").style.display = "none";
+    
+    let wins = Math.floor(Math.random() * 5) + 2; 
+
+    Object.values(roster).forEach(slot => {
+      const playerName = slot.name;
+      if (elitePlayers.includes(playerName)) wins += 3;
+      else if (proBowlPlayers.includes(playerName)) wins += 1;
+    });
+
+    if (wins > 17) wins = 17;
+    const losses = 17 - wins;
+    finalCalculatedWins = wins;
+    
+    const resultDiv = document.getElementById("results");
+    let message = `<strong style="font-size: 32px; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;">FINAL RECORD: ${wins} - ${losses}</strong><br><br>`;
+    
+    if (wins === 17) {
+      resultDiv.style.color = "#4ade80"; 
+      message += perfectTiers[Math.floor(Math.random() * perfectTiers.length)];
+      fireConfetti();
+    } else if (wins >= 13) {
+      resultDiv.style.color = "#4ade80"; 
+      message += eliteTiers[Math.floor(Math.random() * eliteTiers.length)];
+    } else if (wins >= 10) {
+      resultDiv.style.color = "#fbbf24"; 
+      message += midTiers[Math.floor(Math.random() * midTiers.length)];
+    } else if (wins >= 7) {
+      resultDiv.style.color = "#ef4444"; 
+      message += purgatoryTiers[Math.floor(Math.random() * purgatoryTiers.length)];
+    } else {
+      resultDiv.style.color = "#ef4444"; 
+      message += trashTiers[Math.floor(Math.random() * trashTiers.length)];
+    }
+
+    if (targetWinsToBeat !== null) {
+      document.getElementById("target-wins-display").innerText = targetWinsToBeat;
+      document.getElementById("target-wins-display").style.color = "#111";
+      document.getElementById("target-wins-display").style.textShadow = "none";
+      
+      message += "<br><br><hr style='border:1px solid #444; margin: 15px 0;'>";
+      if (wins > targetWinsToBeat) {
+        message += `<span style="color:#4ade80; font-family: 'Bebas Neue', sans-serif; font-size: 24px;">HEAD-TO-HEAD WIN:<br>You absolutely crushed your friend's pathetic ${targetWinsToBeat}-win season. Make sure you rub it in their face.</span>`;
+      } else if (wins < targetWinsToBeat) {
+        message += `<span style="color:#ef4444; font-family: 'Bebas Neue', sans-serif; font-size: 24px;">HEAD-TO-HEAD LOSS:<br>You choked. Your friend put up ${targetWinsToBeat} wins and you couldn't match it. Pay up.</span>`;
+      } else {
+        message += `<span style="color:#fbbf24; font-family: 'Bebas Neue', sans-serif; font-size: 24px;">HEAD-TO-HEAD TIE:<br>You both rolled exactly ${targetWinsToBeat} wins. Spin again to break the tie.</span>`;
+      }
+      document.getElementById("challenge-btn").innerText = "COPY RESULTS TO TEXT BACK";
+    } else {
+      document.getElementById("challenge-btn").innerText = "COPY CHALLENGE LINK";
+    }
+
+    resultDiv.innerHTML = message;
+    resultDiv.style.display = "block";
+    document.getElementById("challenge-btn").style.display = "block";
+    document.getElementById("reset-btn").style.display = "block";
+  }
+
+  function handleChallengeAction() {
+    if (targetWinsToBeat !== null) {
+      let outcome = "";
+      if (finalCalculatedWins > targetWinsToBeat) outcome = "I WON! 🏆";
+      else if (finalCalculatedWins < targetWinsToBeat) outcome = "I CHOKED! 😭";
+      else outcome = "WE TIED! 🤝";
+
+      const textToShare = `🏈 17-0 NFL Roster Builder 🏈\n\nChallenger rolled: ${targetWinsToBeat} Wins\nI rolled: ${finalCalculatedWins} Wins - ${outcome}\n\nMy Squad:\nQB: ${roster['QB'].name}\nRB: ${roster['RB'].name}\nWR: ${roster['WR'].name}\nTE: ${roster['TE'].name}\nDEF: ${roster['Defense'].name}\nHC: ${roster['Coach'].name}\n\nPlay here: ${window.location.origin + window.location.pathname}`;
+      
+      navigator.clipboard.writeText(textToShare).then(() => {
+        const btn = document.getElementById("challenge-btn");
+        btn.innerText = "COPIED TO CLIPBOARD!";
+        btn.style.background = "#28a745";
+        setTimeout(() => {
+          btn.innerText = "COPY RESULTS TO TEXT BACK";
+          btn.style.background = "#013369";
+        }, 2000);
+      }).catch(err => alert("Failed to copy. Check your browser permissions."));
+      
+    } else {
+      const teamString = Object.values(roster).map(slot => slot.name).join(',');
+      const encodedTeam = encodeURIComponent(teamString);
+      const customLink = window.location.origin + window.location.pathname + "?w=" + finalCalculatedWins + "&t=" + encodedTeam;
+      
+      navigator.clipboard.writeText(customLink).then(() => {
+        const btn = document.getElementById("challenge-btn");
+        btn.innerText = "LINK COPIED!";
+        btn.style.background = "#28a745";
+        setTimeout(() => {
+          btn.innerText = "COPY CHALLENGE LINK";
+          btn.style.background = "#013369";
+        }, 2000);
+      }).catch(err => alert("Failed to copy link. Check your browser permissions."));
+    }
+  }
+
+  function resetDraft() {
+    roster = { QB: null, RB: null, WR: null, TE: null, Defense: null, Coach: null };
+    draftedTeams = [];
+    currentTeamObj = null;
+    currentFetchedRoster = null;
+
+    const positions = ["QB", "RB", "WR", "TE", "Defense", "Coach"];
+    positions.forEach(pos => {
+      document.getElementById(`roster-${pos}`).querySelector(".player-info").innerHTML = `<span class="name" style="color:#555;">Empty</span>`;
+    });
+
+    const posSelect = document.getElementById("position-select");
+    posSelect.innerHTML = `
+      <option value="QB">QB (Quarterback)</option>
+      <option value="RB">RB (Running Back)</option>
+      <option value="WR">WR (Wide Receiver)</option>
+      <option value="TE">TE (Tight End)</option>
+      <option value="Defense">Defense</option>
+      <option value="Coach">Coach</option>
+    `;
+
+    document.getElementById("results").style.display = "none";
+    document.getElementById("challenge-btn").style.display = "none";
+    document.getElementById("reset-btn").style.display = "none";
+    document.getElementById("draft-section").style.display = "block";
+    document.getElementById("placeholder").style.display = "block";
+    document.getElementById("team-logo-img").style.display = "none";
+    document.getElementById("draft-btn").disabled = true;
+
+    window.history.replaceState({}, document.title, window.location.pathname);
+    document.getElementById('challenge-banner').style.display = 'none';
+    targetWinsToBeat = null;
+
+    spinTeam();
+  }
+</script>
+</body>
+</html>
