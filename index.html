@@ -24,7 +24,6 @@
   .slot-label { font-family: 'Press Start 2P', cursive; font-size: 10px; color: #888; }
   .player-name { font-weight: bold; font-size: 20px; color: #fff; }
 
-  /* KICKER UI */
   #kicker-container { display: none; background: #000; padding: 20px; border-radius: 15px; border: 3px solid #ffb300; position: relative; }
   .goal-posts { width: 60%; margin-left: 20%; height: 120px; border-left: 10px solid yellow; border-right: 10px solid yellow; border-bottom: 10px solid yellow; margin-bottom: 40px; position: relative; }
   #kicking-ball { width: 24px; height: 34px; background: #8b4513; border-radius: 50%; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; display: none; z-index: 10; }
@@ -34,10 +33,9 @@
   }
   .kick-meter { width: 100%; height: 30px; background: #333; border-radius: 15px; position: relative; overflow: hidden; }
   .meter-target { width: 65px; height: 100%; background: #0f0; position: absolute; left: 50%; transform: translateX(-50%); box-shadow: 0 0 15px #0f0; }
-  #meter-cursor { width: 20px; height: 20px; background: #fff; border-radius: 50%; position: absolute; top: 5px; left: 0; animation: slide 0.6s ease-in-out infinite alternate; border: 2px solid #000;}
+  #meter-cursor { width: 20px; height: 20px; background: #fff; border-radius: 50%; position: absolute; top: 5px; left: 0; animation: slide 0.7s ease-in-out infinite alternate; border: 2px solid #000;}
   @keyframes slide { from { left: 5%; } to { left: 90%; } }
 
-  /* SIM ANIMATION */
   #animation-container { display: none; margin: 25px 0; }
   #tecmo-screen { width: 100%; height: 160px; background-color: #2e7d32; position: relative; overflow: hidden; border: 4px solid #fff; border-radius: 10px; }
   .yard-line { width: 100%; height: 3px; background: rgba(255,255,255,0.4); position: absolute; animation: scrollField 0.8s linear infinite; }
@@ -110,7 +108,18 @@
 </div>
 <script>
   let isMuted = false, audioCtx = null, rosterData = null, draftedTeams = [], roster = {QB:null,RB:null,WR:null,TE:null,Defense:null,Coach:null}, currentTeam = null, finalWins = 0, bonusWins = 0, targetWins = null, teamPower = 0;
-  const logoMap = {"Arizona Cardinals":"ari","Atlanta Falcons":"atl","Baltimore Ravens":"bal","Buffalo Bills":"buf","Carolina Panthers":"car","Chicago Bears":"chi","Cincinnati Bengals":"cin","Cleveland Browns":"cle","Dallas Cowboys":"dal","Broncos":"den","Detroit Lions":"det","Green Bay Packers":"gb","Houston Texans":"hou","Colts":"ind","Jaguars":"jax","Chiefs":"kc","Raiders":"lv","Chargers":"lac","Rams":"lar","Dolphins":"mia","Vikings":"min","Patriots":"ne","Saints":"no","Giants":"nyg","Jets":"nyj","Eagles":"phi","Steelers":"pit","49ers":"sf","Seahawks":"sea","Buccaneers":"tb","Titans":"ten","Commanders":"wsh"};
+  
+  const logoMap = {
+    "Arizona Cardinals": "ari", "Atlanta Falcons": "atl", "Baltimore Ravens": "bal", "Buffalo Bills": "buf",
+    "Carolina Panthers": "car", "Chicago Bears": "chi", "Cincinnati Bengals": "cin", "Cleveland Browns": "cle",
+    "Dallas Cowboys": "dal", "Denver Broncos": "den", "Detroit Lions": "det", "Green Bay Packers": "gb",
+    "Houston Texans": "hou", "Indianapolis Colts": "ind", "Jacksonville Jaguars": "jax", "Kansas City Chiefs": "kc",
+    "Las Vegas Raiders": "lv", "Los Angeles Chargers": "lac", "Los Angeles Rams": "lar", "Miami Dolphins": "mia",
+    "Minnesota Vikings": "min", "New England Patriots": "ne", "New Orleans Saints": "no", "New York Giants": "nyg",
+    "New York Jets": "nyj", "Philadelphia Eagles": "phi", "Pittsburgh Steelers": "pit", "San Francisco 49ers": "sf",
+    "Seattle Seahawks": "sea", "Tampa Bay Buccaneers": "tb", "Tennessee Titans": "ten", "Washington Commanders": "wsh"
+  };
+
   const elitePlayers = ["Bosch Mallon", "Hat-Trick Ma-Homes", "Crusty McRunnery", "L'Amour Action", "King Henry", "Joe Furrow", "Rock Sturdy", "Don Far-Baugh"];
   const simEvents = ["WEEK 1: Bosch Mallon throws a laser.","WEEK 4: Locker room beef over snacks.","WEEK 7: HC loses his mind at the refs.","WEEK 12: RB breaks three ankles.","WEEK 16: Last second FG for the win!"];
 
@@ -123,7 +132,8 @@
     const img = document.getElementById("team-logo-img"); img.style.display="block";
     const available = Object.keys(rosterData).filter(t => !draftedTeams.includes(t));
     let count = 0; function perform() {
-      const name = available[Math.floor(Math.random()*available.length)]; img.src = `https://a.espncdn.com/i/teamlogos/nfl/500/${logoMap[name]||'nfl'}.png`;
+      const name = available[Math.floor(Math.random()*available.length)]; 
+      img.src = `https://a.espncdn.com/i/teamlogos/nfl/500/${logoMap[name]||'nfl'}.png`;
       playSound(300 + count*15); if(count++ < 20) setTimeout(perform, 100); else { currentTeam = name; loadRoster(); }
     } perform();
   }
@@ -157,20 +167,14 @@
     const cursor = document.getElementById("meter-cursor"), target = document.querySelector(".meter-target"), ball = document.getElementById("kicking-ball"), btn = document.getElementById("kick-action-btn");
     const cursorRect = cursor.getBoundingClientRect(), targetRect = target.getBoundingClientRect();
     const cursorCenter = cursorRect.left + (cursorRect.width / 2);
-    
-    // SNAPSHOT LOGIC: Freeze visual immediately
     cursor.style.animation = "none";
     cursor.style.left = (cursorRect.left - cursor.parentElement.getBoundingClientRect().left) + "px";
     btn.disabled = true;
-
     const isHit = (cursorCenter >= targetRect.left && cursorCenter <= targetRect.right);
     const kickOffset = (cursorCenter - (targetRect.left + targetRect.width/2)) * 0.9;
     document.documentElement.style.setProperty('--kickX', `${kickOffset}px`);
-
-    ball.style.display = "block";
-    ball.style.animation = "ballFlight 1s forwards ease-out";
+    ball.style.display = "block"; ball.style.animation = "ballFlight 1s forwards ease-out";
     playCrowd();
-
     setTimeout(() => {
       if (isHit) { bonusWins = 2; playSound(800, 0.4); alert("IT'S GOOD! +2 WINS"); } 
       else { bonusWins = -1; playSound(200, 0.4); alert("WIDE! -1 WIN"); }
