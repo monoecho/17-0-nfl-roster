@@ -175,4 +175,66 @@
     let wins = Math.floor(Math.random() * 9) + 4;
     finalCalculatedWins = wins;
     const stories = {
-      good: ["Week 1: Explosive start! Contender status confirmed.", "Week 6: Mid-season dominance. Power rankings #1.", "Week 12: Playoff clinch!
+      good: ["Week 1: Explosive start! Contender status confirmed.", "Week 6: Mid-season dominance. Power rankings #1.", "Week 12: Playoff clinch! Coach of the Year favorite.", "Week 17: Finishing strong. Home field advantage secured!"],
+      mid: ["Week 1: Mixed results. Finding chemistry.", "Week 6: Fighting for a Wild Card spot.", "Week 12: In the hunt. Must-win territory.", "Week 17: Season finale. Checking other scores..."],
+      bad: ["Week 1: Rough opening. Injury bug hits.", "Week 6: Locker room tension. GM under fire.", "Week 12: Out of the race. Fans want the draft.", "Week 17: Finale. Playing for a top-5 pick."]
+    };
+    let step = 0;
+    const ticker = setInterval(() => {
+      let type = wins >= 12 ? 'good' : (wins >= 8 ? 'mid' : 'bad');
+      document.getElementById("sim-scoreboard").innerText = `RECORD: ${Math.floor((wins/4)*(step+1))} - ${Math.floor(((17-wins)/4)*(step+1))}`;
+      document.getElementById("sim-event-ticker").innerText = stories[type][step];
+      if (step++ >= 3) { clearInterval(ticker); showFinal(); }
+    }, 1500);
+  }
+
+  function showFinal() {
+    document.getElementById("animation-container").style.display = "none";
+    const r = document.getElementById("results");
+    let msg = `<strong>FINAL RECORD: ${finalCalculatedWins} - ${17-finalCalculatedWins}</strong><br><br>`;
+    
+    if (finalCalculatedWins === 17) msg += "ABSOLUTE PERFECTION. CANTON AWAITS.";
+    else if (finalCalculatedWins >= 13) msg += "ELITE SEASON. SECURED THE 1-SEED.";
+    else if (finalCalculatedWins >= 10) msg += "PAINFULLY AVERAGE. WILD CARD FRAUD.";
+    else msg += "DUMPSTER FIRE. INVESTIGATE THE GM.";
+
+    if (targetWinsToBeat !== null) {
+      msg += "<br><br><hr style='border:1px solid #444; margin:15px 0;'>";
+      if (finalCalculatedWins > targetWinsToBeat) { msg += "HEAD-TO-HEAD WIN! 🏆"; confetti(); playHooray(); }
+      else if (finalCalculatedWins < targetWinsToBeat) { msg += "HEAD-TO-HEAD LOSS... 😭"; playSad(); }
+      else msg += "WE TIED. 🤝";
+    } else if (finalCalculatedWins >= 13) { confetti(); playHooray(); }
+
+    r.innerHTML = msg; r.style.display = "block";
+    document.getElementById("challenge-btn").style.display = "block";
+    document.getElementById("reset-btn").style.display = "block";
+  }
+
+  function resetDraft() { window.location.href = window.location.origin + window.location.pathname; }
+  function handleChallengeAction() {
+    const teamStr = Object.values(roster).map(s => s.name).join(',');
+    const url = `${window.location.origin}${window.location.pathname}?w=${finalCalculatedWins}&t=${encodeURIComponent(teamStr)}`;
+    navigator.clipboard.writeText(url).then(() => alert("Challenge Link Copied!"));
+  }
+
+  window.onload = async () => {
+    try {
+      const res = await fetch('rosters.json');
+      rosterData = await res.json();
+    } catch(e) { console.error("Could not load rosters.json"); }
+
+    const params = new URLSearchParams(window.location.search);
+    if(params.has('w')) {
+      targetWinsToBeat = parseInt(params.get('w'));
+      let bannerHTML = `<strong>⚠️ CHALLENGE ACTIVE ⚠️</strong><br>Beat: <span style="color:#ffb300;">${targetWinsToBeat}</span> Wins`;
+      if(params.has('t')) {
+        const picks = decodeURIComponent(params.get('t')).split(',');
+        if (picks.length >= 6) bannerHTML += `<div style="margin-top:10px; font-size:13px; color:#ddd; text-align:left; background:rgba(255,255,255,0.1); padding:8px; border-radius:4px;">Challenger: QB: ${picks[0]} | HC: ${picks[5]}</div>`;
+      }
+      document.getElementById('challenge-banner').innerHTML = bannerHTML;
+      document.getElementById('challenge-banner').style.display = 'block';
+    }
+  };
+</script>
+</body>
+</html>
