@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>17-0 NFL Roster Builder: Offline Edition</title>
+<title>17-0 NFL Roster Builder: Pro Edition</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -16,27 +16,36 @@
   #mute-toggle.active { color: #d50a0a; border-color: #d50a0a; }
   h2, h3 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px; margin-top: 0; }
   h2 { font-size: 36px; color: #fff; text-transform: uppercase; }
+  
   #challenge-banner { display: none; background: #013369; color: #fff; padding: 15px; border-radius: 4px; margin-bottom: 20px; border: 2px solid #fff; text-align: center; }
+  #challenge-banner strong { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: #ffb300; }
+  
   .team-logo-container { height: 160px; display: flex; align-items: center; justify-content: center; margin: 15px 0; background: #222; border-radius: 8px; border: 1px inset #333; overflow: hidden;}
   #team-logo-img { max-height: 140px; max-width: 150px; object-fit: contain; display: none; filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.5)); }
   select, button { padding: 12px; margin: 8px; font-size: 16px; width: 90%; max-width: 300px; box-sizing: border-box; }
   select { background: #222; color: #fff; border: 1px solid #444; border-radius: 4px; }
   button { font-family: 'Bebas Neue', sans-serif; font-size: 20px; background: #d50a0a; color: white; border: none; border-radius: 4px; cursor: pointer; }
+  
   .roster-slot { padding: 12px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #1a1a1a; margin-bottom: 5px; border-radius: 4px; }
   .roster-slot strong { width: 80px; color: #aaa; font-family: 'Bebas Neue', sans-serif; font-size: 20px; }
   .player-info { display: flex; align-items: center; font-weight: bold; }
   .player-info img { height: 25px; margin-left: 10px; }
+  
   .center-btn-wrapper { display: flex; justify-content: center; width: 100%; margin-top: 20px; }
+  
   #animation-container { display: none; margin-top: 20px; text-align: center; background: #111; padding: 15px; border-radius: 8px; }
   #sim-scoreboard { background: #000; color: #0f0; font-family: 'Courier New', monospace; font-size: 20px; padding: 5px; margin-bottom: 10px; border: 1px solid #333; }
+  #sim-event-ticker { font-size: 16px; color: #ffb300; min-height: 40px; font-weight: bold; }
   #results { font-size: 18px; line-height: 1.4; display: none; margin-top: 20px; text-align: center; background: #222; padding: 20px; border-radius: 8px; }
+  #challenge-btn { background: #013369; display: none; width: 250px; margin: 10px auto; }
+  #reset-btn { background: #444; display: none; width: 250px; margin: 0 auto; }
 </style>
 </head>
 <body>
 
 <div class="card" id="draft-section">
   <button id="mute-toggle" onclick="toggleMute()">SOUND: ON</button>
-  <h2>17-0 Roster Builder</h2>
+  <h2>Roster Builder 2026</h2>
   <div class="team-logo-container">
     <span id="placeholder"><button onclick="startFirstSpin()">START DRAFT</button></span>
     <img id="team-logo-img" src="" alt="Team Logo">
@@ -64,7 +73,7 @@
   <div class="center-btn-wrapper"><button id="sim-btn" onclick="triggerSimulation()" style="display:none; width: 100%; background: #28a745;">SIMULATE SEASON</button></div>
   <div id="animation-container">
     <div id="sim-scoreboard">RECORD: 0 - 0</div>
-    <div id="sim-event-ticker">Loading Season...</div>
+    <div id="sim-event-ticker">Booting up simulation...</div>
   </div>
   <div id="results"></div>
   <div class="action-btn-container"><button id="challenge-btn" onclick="handleChallengeAction()" style="display:none; width: 250px; background: #013369;">SHARE CHALLENGE</button><button id="reset-btn" onclick="resetDraft()" style="display:none; width: 250px; background: #444;">NEW DRAFT</button></div>
@@ -89,53 +98,24 @@
   function toggleMute() { isMuted = !isMuted; document.getElementById("mute-toggle").innerText = isMuted ? "SOUND: OFF" : "SOUND: ON"; }
   function initAudio() { if (!audioCtx) audioCtx = new AudioContext(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
   function playRetroBlip() { if (isMuted || !audioCtx) return; const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'square'; osc.frequency.setValueAtTime(400 + Math.random() * 400, audioCtx.currentTime); gain.gain.setValueAtTime(0.05, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.05); }
+  function playHooray() { if (isMuted || !audioCtx) return; const notes = [523.25, 659.25, 783.99, 1046.50]; notes.forEach((f, i) => { const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.type = 'triangle'; o.frequency.setValueAtTime(f, audioCtx.currentTime + (i * 0.1)); g.gain.setValueAtTime(0.1, audioCtx.currentTime + (i * 0.1)); o.start(audioCtx.currentTime + (i * 0.1)); o.stop(audioCtx.currentTime + (i * 0.1) + 0.3); }); }
+  function playSad() { if (isMuted || !audioCtx) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.type = 'sawtooth'; o.frequency.setValueAtTime(293.66, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(196.00, audioCtx.currentTime + 1.0); g.gain.setValueAtTime(0.1, audioCtx.currentTime); o.start(); o.stop(audioCtx.currentTime + 1.0); }
 
   window.onload = async () => {
-    const pathsToTry = ['rosters.json', './rosters.json', window.location.pathname + 'rosters.json'];
-    
-    for (let path of pathsToTry) {
-      try {
-        console.log("Attempting to load rosters from:", path);
-        const res = await fetch(path);
-        if (res.ok) {
-          rosterData = await res.json();
-          console.log("Roster data loaded successfully from:", path);
-          break; // Stop once we find it!
-        }
-      } catch (e) {
-        console.warn("Path failed:", path);
-      }
-    }
+    try {
+      const res = await fetch('rosters.json');
+      rosterData = await res.json();
+    } catch(e) { console.error("Could not load rosters.json"); }
 
-    if (!rosterData) {
-      console.error("Critical Error: rosters.json could not be found anywhere.");
-      alert("Error: Data file not found. Make sure rosters.json is in your GitHub repo.");
-      return;
-    }
-
-    // Process challenge links
     const params = new URLSearchParams(window.location.search);
     if(params.has('w')) {
       targetWinsToBeat = parseInt(params.get('w'));
-      let bannerHTML = `<strong>⚠️ CHALLENGE ACTIVE ⚠️</strong><br>Target: <span style="color:#ffb300;">${targetWinsToBeat}</span> Wins`;
+      let bannerHTML = `<strong>⚠️ CHALLENGE ACTIVE ⚠️</strong><br>Beat: <span style="color:#ffb300;">${targetWinsToBeat}</span> Wins`;
       if(params.has('t')) {
         const picks = decodeURIComponent(params.get('t')).split(',');
         if (picks.length >= 6) {
           bannerHTML += `<div style="margin-top:10px; font-size:13px; color:#ddd; text-align:left; background:rgba(255,255,255,0.1); padding:8px; border-radius:4px;">Challenger: QB: ${picks[0]} | HC: ${picks[5]}</div>`;
         }
-      }
-      document.getElementById('challenge-banner').innerHTML = bannerHTML;
-      document.getElementById('challenge-banner').style.display = 'block';
-    }
-  };
-
-    const params = new URLSearchParams(window.location.search);
-    if(params.has('w')) {
-      targetWinsToBeat = parseInt(params.get('w'));
-      let bannerHTML = `<strong>⚠️ CHALLENGE ACTIVE ⚠️</strong><br>Target: <span style="color:#ffb300;">${targetWinsToBeat}</span> Wins`;
-      if(params.has('t')) {
-        const picks = decodeURIComponent(params.get('t')).split(',');
-        bannerHTML += `<div style="margin-top:10px; font-size:13px; color:#ddd; text-align:left; background:rgba(255,255,255,0.1); padding:8px; border-radius:4px;">Challenger: QB: ${picks[0]} | HC: ${picks[5]}</div>`;
       }
       document.getElementById('challenge-banner').innerHTML = bannerHTML;
       document.getElementById('challenge-banner').style.display = 'block';
@@ -154,7 +134,7 @@
     function performSpin() {
       currentTeamObj = available[Math.floor(Math.random() * available.length)];
       img.src = currentTeamObj.logo; playRetroBlip();
-      if (count < 25) { count++; delay += 10; setTimeout(performSpin, delay); } 
+      if (count < 20) { count++; delay += 10; setTimeout(performSpin, delay); } 
       else { loadTeamRoster(currentTeamObj.name); }
     }
     performSpin();
@@ -183,36 +163,12 @@
     document.getElementById(`roster-${pos}`).querySelector(".player-info").innerHTML = `${p} <img src="${currentTeamObj.logo}">`;
     draftedTeams.push(currentTeamObj.name);
     document.getElementById("position-select").remove(document.getElementById("position-select").selectedIndex);
-    if (Object.values(roster).every(v => v !== null)) { document.getElementById("draft-section").style.display = "none"; document.getElementById("sim-btn").style.display = "block"; }
-    else spinTeam();
+    if (Object.values(roster).every(v => v !== null)) { 
+      document.getElementById("draft-section").style.display = "none"; 
+      document.getElementById("sim-btn").style.display = "block"; 
+    } else { spinTeam(); }
   }
 
   function triggerSimulation() {
     document.getElementById("sim-btn").style.display = "none";
-    document.getElementById("animation-container").style.display = "block";
-    let wins = Math.floor(Math.random() * 9) + 4;
-    finalCalculatedWins = wins;
-    let step = 0;
-    const ticker = setInterval(() => {
-      document.getElementById("sim-scoreboard").innerText = `RECORD: ${Math.floor((wins/4)*(step+1))} - ${Math.floor(((17-wins)/4)*(step+1))}`;
-      if (step++ >= 3) { clearInterval(ticker); showFinal(); }
-    }, 1200);
-  }
-
-  function showFinal() {
-    document.getElementById("animation-container").style.display = "none";
-    const r = document.getElementById("results");
-    r.innerHTML = `<strong style="font-size: 24px;">FINAL RECORD: ${finalCalculatedWins} - ${17-finalCalculatedWins}</strong>`;
-    r.style.display = "block";
-    document.getElementById("challenge-btn").style.display = "block";
-    document.getElementById("reset-btn").style.display = "block";
-    if (finalCalculatedWins >= 11) confetti();
-  }
-
-  function resetDraft() { window.location.reload(); }
-  function handleChallengeAction() { alert("Link copied!"); }
-</script>
-</body>
-</html>
-
-
+    document.getElementById("
