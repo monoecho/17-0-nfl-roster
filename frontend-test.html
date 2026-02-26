@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Frontend Serverless Test</title>
+</head>
+<body>
+  <h2>Testing the Hidden Netlify Function</h2>
+  <button onclick="pingMyServer()">Fetch Data Securely</button>
+  <pre id="data-output" style="background: #222; color: #0f0; padding: 20px; font-size: 16px;"></pre>
+
+  <script>
+    function pingMyServer() {
+      const output = document.getElementById('data-output');
+      output.innerText = "Pinging Netlify Serverless Function...";
+
+      // Call your own server instead of the NFL API
+      fetch('/.netlify/functions/getRoster')
+        .then(response => response.json())
+        .then(data => {
+          output.innerText = JSON.stringify(data, null, 2);
+        })
+        .catch(error => {
+          output.innerText = "Error: " + error;
+        });
+    }
+  </script>
+</body>
+</html>
