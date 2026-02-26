@@ -84,14 +84,18 @@
 </head>
 <body>
 
+<audio id="slot-sound" src="https://actions.google.com/sounds/v1/casino/slot_machine_spin.ogg" preload="auto"></audio>
+
 <div id="challenge-banner"></div>
 
 <div class="card" id="draft-section">
   <h2>The 17-0 Roster Builder</h2>
   <p style="color: #aaa; margin-bottom: 20px;">Wait for the spin, select your position, and pick your player.</p>
   
-  <div class="team-logo-container">
-    <span id="placeholder" class="placeholder-text">Press Start to Spin</span>
+  <div class="team-logo-container" id="logo-box">
+    <span id="placeholder" class="placeholder-text">
+      <button onclick="startFirstSpin()" style="background:#d50a0a; color:#fff; border:none; padding:15px 30px; font-family:'Bebas Neue', sans-serif; font-size:26px; cursor:pointer; border-radius:4px; box-shadow:0 4px 6px rgba(0,0,0,0.5); margin: 0;">START DRAFT</button>
+    </span>
     <img id="team-logo-img" src="" alt="Team Logo">
   </div>
   
@@ -146,39 +150,42 @@
 </div>
 
 <script>
+
   const apiTeamIds = {
     "Las Vegas Raiders": 1,
-    "Jacksonville Jaguars": 2,
-    "New England Patriots": 3,
-    "New York Giants": 4,
-    "Baltimore Ravens": 5,
-    "Tennessee Titans": 6,
-    "Detroit Lions": 7,
-    "Atlanta Falcons": 8,
-    "Cleveland Browns": 9,
-    "Cincinnati Bengals": 10,
-    "Arizona Cardinals": 11,
-    "Philadelphia Eagles": 12,
-    "New York Jets": 13,
-    "San Francisco 49ers": 14,
-    "Green Bay Packers": 15,
-    "Chicago Bears": 16,
-    "Kansas City Chiefs": 17,
-    "Washington Commanders": 18,
-    "Carolina Panthers": 19,
-    "Buffalo Bills": 20,
-    "Indianapolis Colts": 21,
-    "Pittsburgh Steelers": 22,
-    "Seattle Seahawks": 23,
-    "Tampa Bay Buccaneers": 24,
-    "Miami Dolphins": 25,
-    "Houston Texans": 26,
-    "New Orleans Saints": 27,
-    "Denver Broncos": 28,
-    "Dallas Cowboys": 29,
-    "Los Angeles Chargers": 30,
-    "Los Angeles Rams": 31,
-    "Minnesota Vikings": 32
+  "Jacksonville Jaguars": 2,
+  "New England Patriots": 3,
+  "New York Giants": 4,
+  "Baltimore Ravens": 5,
+  "Tennessee Titans": 6,
+  "Detroit Lions": 7,
+  "Atlanta Falcons": 8,
+  "Cleveland Browns": 9,
+  "Cincinnati Bengals": 10,
+  "Arizona Cardinals": 11,
+  "Philadelphia Eagles": 12,
+  "New York Jets": 13,
+  "San Francisco 49ers": 14,
+  "Green Bay Packers": 15,
+  "Chicago Bears": 16,
+  "Kansas City Chiefs": 17,
+  "Washington Commanders": 18,
+  "Carolina Panthers": 19,
+  "Buffalo Bills": 20,
+  "Indianapolis Colts": 21,
+  "Pittsburgh Steelers": 22,
+  "Seattle Seahawks": 23,
+  "Tampa Bay Buccaneers": 24,
+  "Miami Dolphins": 25,
+  "Houston Texans": 26,
+  "New Orleans Saints": 27,
+  "Denver Broncos": 28,
+  "Dallas Cowboys": 29,
+  "Los Angeles Chargers": 30,
+  "Los Angeles Rams": 31,
+  "Minnesota Vikings": 32,
+  "NFC": 33,
+  "AFC": 34,
   };
 
   const teams = [
@@ -203,13 +210,12 @@
   const elitePlayers = ["Patrick Mahomes", "Josh Allen", "Lamar Jackson", "Christian McCaffrey", "Derrick Henry", "Tyreek Hill", "Justin Jefferson", "Saquon Barkley", "Andy Reid", "Ravens D/ST", "Lions D/ST", "Chiefs D/ST"];
   const proBowlPlayers = ["Joe Burrow", "C.J. Stroud", "Jalen Hurts", "Jahmyr Gibbs", "Amon-Ra St. Brown", "Ja'Marr Chase", "CeeDee Lamb", "Travis Kelce", "George Kittle", "Kyle Shanahan", "Dan Campbell", "Bills D/ST", "Eagles D/ST", "Texans D/ST"];
 
-  const simEvents = [
-    "Week 1: Your QB just threw for 400 yards!", "Week 3: Your RB broke off a 75-yard touchdown run.",
-    "Week 4: Your defense logged 6 sacks this game.", "Week 6: Disaster! Star player injured, out for 2 weeks.",
-    "Week 7: Locker room drama. Your HC is losing the team.", "Week 9: Defense forces 3 turnovers in a crucial divisional game.",
-    "Week 11: Your Kicker just broke the record for most consecutive FG points!", "Week 12: Your HC goes for it on 4th down and gets it!",
-    "Week 14: Your WR caught a one-handed Hail Mary to win at the buzzer!", "Week 15: Your QB just scored the most touchdowns in a game this season.",
-    "Week 16: Weather delay! The team struggles in the snow.", "Week 17: Dominant victory to close out the regular season!"
+  // Replaced random shuffle with chronological storytelling
+  const orderedSimEvents = [
+    "Week 1: The season kicks off! Your QB sets the tone with a massive opening drive.",
+    "Week 6: Mid-season grind. Your defense forces a clutch turnover to win a divisional game.",
+    "Week 12: The playoff push begins. Your head coach makes a gutsy 4th down call and converts.",
+    "Week 17: The finale. Everything comes down to this last drive to secure your playoff seed!"
   ];
 
   const perfectTiers = ["Absolute perfection. You didn't just beat the league; you humiliated them. This roster is going straight to Canton.", "17-0. You cracked the code. Your GM is getting a statue built outside the stadium tomorrow. Total domination.", "An undefeated regular season. The '72 Dolphins are sick to their stomachs right now. Don't blow it in the Super Bowl."];
@@ -221,8 +227,7 @@
   let roster = { QB: null, RB: null, WR: null, TE: null, Defense: null, Coach: null };
   let currentTeamObj = null;
   let draftedTeams = []; 
-  let currentFetchedRoster = null; // Holds the live data from your server
-  
+  let currentFetchedRoster = null;
   let finalCalculatedWins = 0;
   let targetWinsToBeat = null;
 
@@ -243,13 +248,18 @@
           </div>`;
         }
       }
-      
       const banner = document.getElementById('challenge-banner');
       banner.innerHTML = bannerHTML;
       banner.style.display = 'block';
     }
-    spinTeam();
   };
+
+  // Unlocks the browser audio and triggers the first slot machine roll
+  function startFirstSpin() {
+    document.getElementById("placeholder").innerHTML = "Press Start to Spin";
+    document.getElementById("placeholder").style.display = "none";
+    spinTeam();
+  }
 
   function spinTeam() {
     document.getElementById("draft-btn").disabled = true;
@@ -263,6 +273,11 @@
     const playerSelect = document.getElementById("player-select");
     playerSelect.innerHTML = '<option value="">Spinning...</option>';
     
+    // Play the slot machine sound
+    const spinSound = document.getElementById("slot-sound");
+    spinSound.currentTime = 0;
+    spinSound.play().catch(e => console.log("Audio blocked by browser"));
+
     const availableTeams = teams.filter(t => !draftedTeams.includes(t.name));
     
     let spins = 0;
@@ -279,7 +294,7 @@
         delay += 12; 
         setTimeout(doSpin, delay);
       } else {
-        // Spin finished! Now fetch the live data from Netlify.
+        spinSound.pause(); // Kill the sound when the wheel stops
         fetchLiveRoster(currentTeamObj.name);
       }
     }
@@ -287,13 +302,11 @@
     doSpin();
   }
 
-  // The new function that securely talks to your Netlify Server
   async function fetchLiveRoster(teamName) {
     const playerSelect = document.getElementById("player-select");
     playerSelect.innerHTML = '<option value="">Fetching Live Data...</option>';
     
-    // Look up the ID from your hardcoded dictionary
-    const teamId = apiTeamIds[teamName] || 17; // Default to 17 (Chiefs) if missing
+    const teamId = apiTeamIds[teamName] || 17; 
     
     try {
       const response = await fetch(`/.netlify/functions/getRoster?teamId=${teamId}`);
@@ -316,12 +329,10 @@
     const playerSelect = document.getElementById("player-select");
     
     playerSelect.innerHTML = "";
-    
     if (posSelect.options.length === 0 || !currentFetchedRoster) return;
     
     const pos = posSelect.value;
     
-    // Fallback logic for Defense and Coach since API only returns individual players
     let players = [];
     if (pos === "Defense") {
       players = [`${currentTeamObj.name} D/ST`];
@@ -367,11 +378,13 @@
     const ticker = document.getElementById("sim-event-ticker");
     let eventCount = 0;
     
-    const shuffledEvents = simEvents.sort(() => 0.5 - Math.random());
-    
+    // Cycle through the chronological events without shuffling
+    ticker.innerText = orderedSimEvents[eventCount];
+    eventCount++;
+
     const intervalId = setInterval(() => {
-      if (eventCount < shuffledEvents.length) {
-        ticker.innerText = shuffledEvents[eventCount];
+      if (eventCount < orderedSimEvents.length) {
+        ticker.innerText = orderedSimEvents[eventCount];
         eventCount++;
       }
     }, 5000);
@@ -529,7 +542,8 @@
     document.getElementById('challenge-banner').style.display = 'none';
     targetWinsToBeat = null;
 
-    spinTeam();
+    // Resetting now requires the user to click START DRAFT again to ensure audio plays
+    document.getElementById("placeholder").innerHTML = '<button onclick="startFirstSpin()" style="background:#d50a0a; color:#fff; border:none; padding:15px 30px; font-family:\'Bebas Neue\', sans-serif; font-size:26px; cursor:pointer; border-radius:4px; box-shadow:0 4px 6px rgba(0,0,0,0.5); margin: 0;">START DRAFT</button>';
   }
 </script>
 </body>
