@@ -10,7 +10,6 @@
 <style>
   :root { --primary: #d50a0a; --accent: #013369; --glow: rgba(213, 10, 10, 0.4); }
   
-  /* FIELD BACKGROUND */
   body { 
     font-family: 'Inter', sans-serif; 
     background-color: #2e7d32; 
@@ -22,17 +21,17 @@
   
   .main-container { width: 100%; max-width: 540px; min-height: 100vh; padding: 20px; box-sizing: border-box; position: relative; z-index: 5; }
   
-  /* CRT SCANLINE OVERLAY */
   body::before { content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02)); background-size: 100% 3px, 3px 100%; pointer-events: none; z-index: 1000; }
   
-  .glass-card { background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(12px); border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 25px; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9); margin-bottom: 20px; text-align: center; border-top: 6px solid var(--primary); }
+  .glass-card { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(12px); border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 25px; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9); margin-bottom: 20px; text-align: center; border-top: 6px solid var(--primary); }
   
-  h2 { font-family: 'Press Start 2P', cursive; font-size: 18px; text-shadow: 3px 3px 0 var(--primary); margin-bottom: 25px; line-height: 1.6; }
+  h2 { font-family: 'Press Start 2P', cursive; font-size: 16px; text-shadow: 3px 3px 0 var(--primary); margin-bottom: 25px; line-height: 1.6; }
   
   select, button { width: 100%; padding: 20px; margin: 10px 0; font-size: 24px; border-radius: 10px; box-sizing: border-box; }
   select { background: #1a1a1a; color: #fff; border: 3px solid var(--primary); font-weight: bold; appearance: none; text-align: center; }
   button { font-family: 'Bebas Neue', sans-serif; background: var(--primary); color: white; border: none; cursor: pointer; text-transform: uppercase; }
-  button:hover { filter: brightness(1.2); }
+  
+  #mute-toggle { width: auto; position: absolute; top: 15px; right: 15px; padding: 8px 12px; font-size: 12px; margin:0; background:#333; z-index: 1001; }
 
   .team-logo-container { height: 180px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 15px; margin-bottom: 15px; }
   #team-logo-img { max-height: 150px; display: none; filter: drop-shadow(0 0 20px var(--glow)); }
@@ -41,7 +40,6 @@
   .slot-label { font-family: 'Press Start 2P', cursive; font-size: 10px; color: #888; }
   .player-name { font-weight: bold; font-size: 21px; color: #fff; }
 
-  /* FIELD GOAL MINI GAME STYLES */
   #kicker-container { display: none; background: #000; padding: 20px; border-radius: 10px; border: 3px solid #ffb300; margin: 20px 0; }
   .goal-posts { width: 100%; height: 100px; border-left: 10px solid yellow; border-right: 10px solid yellow; border-bottom: 10px solid yellow; margin-bottom: 20px; position: relative; }
   .kick-meter { width: 100%; height: 30px; background: #333; border-radius: 15px; position: relative; overflow: hidden; }
@@ -52,22 +50,21 @@
   #animation-container { display: none; margin: 25px 0; width: 100%; }
   #tecmo-screen { width: 100%; height: 180px; background-color: #2e7d32; position: relative; overflow: hidden; border: 4px solid #fff; border-radius: 10px; }
   #sim-scoreboard { font-family: 'Press Start 2P', cursive; font-size: 16px; color: #0f0; margin-bottom: 12px; }
-  #sim-event-ticker { color: #ffb300; font-family: 'Press Start 2P', cursive; font-size: 11px; margin-top: 15px; line-height: 1.4; }
+  #sim-event-ticker { color: #ffb300; font-family: 'Press Start 2P', cursive; font-size: 10px; margin-top: 15px; line-height: 1.4; }
   #results { display: none; padding: 30px; border-radius: 16px; border: 4px solid var(--primary); background: #111; font-size: 20px; margin-top: 15px; }
 </style>
 </head>
 <body>
 
 <div class="main-container">
+  <button id="mute-toggle" onclick="toggleMute()">SOUND: ON</button>
+
   <div class="glass-card" id="draft-section">
-    <button id="mute-toggle" onclick="toggleMute()" style="width: auto; position: absolute; top: 15px; right: 15px; padding: 8px 12px; font-size: 12px; margin:0; background:#333;">ON</button>
     <h2>UNDERGROUND<br>ROSTER BUILDER '26</h2>
-    
     <div class="team-logo-container">
       <button id="start-btn" onclick="startFirstSpin()" style="font-size: 28px;">INSERT COIN</button>
       <img id="team-logo-img" src="">
     </div>
-
     <select id="position-select" onchange="updatePlayerDropdown()" disabled>
       <option value="QB">QB</option><option value="RB">RB</option><option value="WR">WR</option><option value="TE">TE</option><option value="Defense">DEF</option><option value="Coach">HC</option>
     </select>
@@ -76,7 +73,7 @@
   </div>
 
   <div class="glass-card">
-    <h3 style="font-family: 'Press Start 2P'; font-size: 11px; color: #aaa; margin-bottom: 15px;">ACTIVE ROSTER</h3>
+    <h3 style="font-family: 'Press Start 2P'; font-size: 10px; color: #aaa; margin-bottom: 15px;">ACTIVE ROSTER</h3>
     <div id="roster-QB" class="roster-slot"><span class="slot-label">QB</span><div class="player-name">---</div></div>
     <div id="roster-RB" class="roster-slot"><span class="slot-label">RB</span><div class="player-name">---</div></div>
     <div id="roster-WR" class="roster-slot"><span class="slot-label">WR</span><div class="player-name">---</div></div>
@@ -89,8 +86,7 @@
     </div>
 
     <div id="kicker-container">
-      <h3 style="font-family:'Press Start 2P'; font-size:12px; color:#ffb300;">WEEK 9: FIELD GOAL TIME!</h3>
-      <p style="font-size:14px; margin-bottom:15px;">Hit the GREEN ZONE for +2 Wins!<br>MISS for -1 Win.</p>
+      <h3 style="font-family:'Press Start 2P'; font-size:12px; color:#ffb300;">WEEK 9: FIELD GOAL!</h3>
       <div class="goal-posts"></div>
       <div class="kick-meter">
         <div class="meter-target"></div>
@@ -100,13 +96,13 @@
     </div>
 
     <div id="animation-container">
-      <div id="sim-scoreboard">BOOTING...</div>
+      <div id="sim-scoreboard">RECORD: 0-0</div>
       <div id="tecmo-screen">
         <div style="width:100%; height:3px; background:rgba(255,255,255,0.4); position:absolute; top:30%;"></div>
         <div style="width:100%; height:3px; background:rgba(255,255,255,0.4); position:absolute; top:70%;"></div>
         <div style="width:24px; height:24px; background:var(--primary); position:absolute; bottom:20px; left:50%; box-shadow:3px 3px 0 #000;"></div>
       </div>
-      <div id="sim-event-ticker">GENERATING SCHEDULE...</div>
+      <div id="sim-event-ticker">SIMULATING...</div>
     </div>
 
     <div id="results"></div>
@@ -130,18 +126,46 @@
   };
 
   const simEvents = [
-    "WEEK 1: QB throws a 70-yard moonshot!", "WEEK 4: Locker room fight over pizza.", "WEEK 6: Interception with a helmet!", "WEEK 12: RB breaks three ankles.", "WEEK 14: Snowstorm! Blind football.", "WEEK 16: Miracle catch!"
+    "WEEK 1: Bosch Mallon throws a laser!", "WEEK 4: Locker room beef over snacks.", "WEEK 6: Defense is playing lights out.", "WEEK 12: RB breaks three ankles.", "WEEK 14: Snow game! It's a mess.", "WEEK 16: Hail Mary caught!"
   ];
 
-  function startFirstSpin() { if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); document.getElementById("start-btn").style.display = "none"; spinTeam(); }
+  function toggleMute() {
+    isMuted = !isMuted;
+    document.getElementById("mute-toggle").innerText = isMuted ? "SOUND: OFF" : "SOUND: ON";
+    if (!isMuted && audioCtx) audioCtx.resume();
+  }
+
+  function playBlip(freq = 440) {
+    if (isMuted) return;
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.connect(g);
+    g.connect(audioCtx.destination);
+    o.type = 'square';
+    o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    g.gain.setValueAtTime(0.01, audioCtx.currentTime);
+    o.start();
+    o.stop(audioCtx.currentTime + 0.05);
+  }
+
+  function startFirstSpin() {
+    playBlip(600);
+    document.getElementById("start-btn").style.display = "none";
+    spinTeam();
+  }
 
   function spinTeam() {
-    const img = document.getElementById("team-logo-img"); img.style.display = "block";
+    const img = document.getElementById("team-logo-img");
+    img.style.display = "block";
     const available = Object.keys(rosterData).filter(t => !draftedTeams.includes(t));
     let count = 0;
     function perform() {
       const name = available[Math.floor(Math.random() * available.length)];
       img.src = `https://a.espncdn.com/i/teamlogos/nfl/500/${logoMap[name] || 'nfl'}.png`;
+      playBlip(300 + (count * 10));
       if (count++ < 20) setTimeout(perform, 100);
       else { currentTeam = name; loadRoster(name); }
     }
@@ -157,45 +181,51 @@
 
   function updatePlayerDropdown() {
     const pos = document.getElementById("position-select").value;
-    const sel = document.getElementById("player-select"); sel.innerHTML = "";
+    const sel = document.getElementById("player-select");
+    sel.innerHTML = "";
     let list = (pos === "Defense") ? [`${currentTeam} D/ST`] : (pos === "Coach") ? [rosterData[currentTeam]["Coach"]] : rosterData[currentTeam][pos];
     list.forEach(p => { let o = document.createElement("option"); o.innerText = p; sel.appendChild(o); });
   }
 
   function draftPlayer() {
+    playBlip(800);
     const pos = document.getElementById("position-select").value;
     const p = document.getElementById("player-select").value;
     roster[pos] = p;
     document.getElementById(`roster-${pos}`).querySelector(".player-name").innerText = p;
     draftedTeams.push(currentTeam);
     document.getElementById("position-select").remove(document.getElementById("position-select").selectedIndex);
-    if (Object.values(roster).every(v => v !== null)) { document.getElementById("draft-section").style.display = "none"; document.getElementById("sim-btn").style.display = "block"; }
-    else spinTeam();
+    if (Object.values(roster).every(v => v !== null)) {
+      document.getElementById("draft-section").style.display = "none";
+      document.getElementById("sim-btn").style.display = "block";
+    } else spinTeam();
   }
 
   function triggerSimulation() {
+    playBlip(500);
     document.getElementById("sim-btn").style.display = "none";
     document.getElementById("animation-container").style.display = "block";
     finalWins = Math.floor(Math.random() * 8) + 4;
     
     let step = 0;
     const timer = setInterval(() => {
-      document.getElementById("sim-scoreboard").innerText = `WEEK ${step + 1}: ${Math.floor((finalWins/6)*(step+1))}-${Math.floor(((17-finalWins)/6)*(step+1))}`;
-      document.getElementById("sim-event-ticker").innerText = simEvents[step] || "THE GRIND CONTINUES...";
+      document.getElementById("sim-scoreboard").innerText = `RECORD: ${Math.floor((finalWins/6)*(step+1))}-${Math.floor(((17-finalWins)/6)*(step+1))}`;
+      document.getElementById("sim-event-ticker").innerText = simEvents[step] || "THE SEASON CONTINUES...";
+      playBlip(400);
       
-      if (step === 2) { // Pause for Mini-Game at Week 9
+      if (step === 2) {
         clearInterval(timer);
         setTimeout(() => {
           document.getElementById("animation-container").style.display = "none";
           document.getElementById("kicker-container").style.display = "block";
-        }, 2000);
+        }, 1500);
       }
       
       if (step++ >= 5) {
         clearInterval(timer);
         showFinal();
       }
-    }, 3000);
+    }, 2500);
   }
 
   function attemptKick() {
@@ -207,15 +237,15 @@
     document.getElementById("kicker-container").style.display = "none";
     document.getElementById("animation-container").style.display = "block";
 
-    if (Math.abs(ballPos - center) < 30) {
+    if (Math.abs(ballPos - center) < 35) {
       bonusWins = 2;
-      alert("ITS GOOD! +2 WINS!");
+      playBlip(1000); playBlip(1200);
+      alert("IT'S GOOD! +2 WINS!");
     } else {
       bonusWins = -1;
+      playBlip(200);
       alert("WIDE LEFT! -1 WIN.");
     }
-    
-    // Resume simulation logic could be more complex, but for now we finish it
     showFinal();
   }
 
@@ -224,16 +254,18 @@
     const r = document.getElementById("results");
     const total = Math.max(0, Math.min(17, finalWins + bonusWins));
     
-    let roast = (total >= 12) ? "🔥 ELITE SAVANT." : "💩 DUMPSTER FIRE.";
+    let roast = (total >= 13) ? "🏆 GENIUS GM STATUS." : (total >= 9 ? "😐 MID-SEASON FRAUD." : "💩 TOTAL DUMPSTER FIRE.");
     r.innerHTML = `<h2>FINAL: ${total}-${17-total}</h2><p>${roast}</p>`;
     r.style.display = "block";
     document.getElementById("challenge-btn").style.display = "block";
     document.getElementById("reset-btn").style.display = "block";
-    if (total >= 13) confetti();
+    if (total >= 13) {
+        confetti();
+        playBlip(1000);
+    }
   }
 
   function resetDraft() { window.location.href = window.location.origin + window.location.pathname; }
-  function toggleMute() { isMuted = !isMuted; }
   function handleChallengeAction() { alert("Link Copied!"); }
 
   window.onload = async () => { const res = await fetch('rosters.json'); rosterData = await res.json(); };
