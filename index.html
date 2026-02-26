@@ -14,44 +14,42 @@
   /* CRT SCANLINE OVERLAY */
   body::before { content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02)); background-size: 100% 3px, 3px 100%; pointer-events: none; z-index: 1000; }
   
-  .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 20px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9); margin-bottom: 15px; text-align: center; border-top: 5px solid var(--primary); transition: all 0.5s ease; position: relative; }
+  .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 15px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9); margin-bottom: 12px; text-align: center; border-top: 4px solid var(--primary); transition: all 0.5s ease; position: relative; }
   
-  h2 { font-family: 'Press Start 2P', cursive; font-size: 14px; text-shadow: 2px 2px 0 var(--primary); margin-bottom: 20px; }
+  h2 { font-family: 'Press Start 2P', cursive; font-size: 13px; text-shadow: 2px 2px 0 var(--primary); margin-bottom: 15px; }
   
-  /* 30% BIGGER UI */
-  select, button { width: 95%; padding: 20px; margin: 10px 0; font-size: 24px; border-radius: 8px; box-sizing: border-box; }
+  /* 10% REDUCED SIZE UI (From 24px/20px down to 21px/18px) */
+  select, button { width: 95%; padding: 16px; margin: 8px 0; font-size: 21px; border-radius: 8px; box-sizing: border-box; }
   select { background: #1a1a1a; color: #fff; border: 2px solid var(--primary); font-weight: bold; appearance: none; text-align: center; }
   button { font-family: 'Bebas Neue', sans-serif; background: var(--primary); color: white; border: none; cursor: pointer; text-transform: uppercase; }
-  button:hover { filter: brightness(1.2); box-shadow: 0 0 25px var(--glow); }
+  button:hover { filter: brightness(1.2); box-shadow: 0 0 20px var(--glow); }
 
-  .team-logo-container { height: 160px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border-radius: 12px; margin-bottom: 15px; }
-  #team-logo-img { max-height: 140px; display: none; filter: drop-shadow(0 0 15px var(--glow)); }
+  .team-logo-container { height: 140px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border-radius: 12px; margin-bottom: 10px; }
+  #team-logo-img { max-height: 120px; display: none; filter: drop-shadow(0 0 12px var(--glow)); }
 
-  .roster-slot { background: rgba(0,0,0,0.5); padding: 12px; margin: 6px 0; border-radius: 8px; border-left: 4px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
-  .slot-label { font-family: 'Press Start 2P', cursive; font-size: 9px; color: #555; }
-  .player-name { font-weight: bold; font-size: 19px; color: #fff; }
+  .roster-slot { background: rgba(0,0,0,0.5); padding: 10px; margin: 5px 0; border-radius: 8px; border-left: 4px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
+  .slot-label { font-family: 'Press Start 2P', cursive; font-size: 8px; color: #555; }
+  .player-name { font-weight: bold; font-size: 17px; color: #fff; }
 
   /* TECMO ANIMATION */
-  #animation-container { display: none; margin: 20px 0; }
-  #tecmo-screen { width: 100%; height: 150px; background-color: #2e7d32; position: relative; overflow: hidden; border: 3px solid #fff; border-radius: 8px; }
+  #animation-container { display: none; margin: 15px 0; }
+  #tecmo-screen { width: 100%; height: 140px; background-color: #2e7d32; position: relative; overflow: hidden; border: 3px solid #fff; border-radius: 8px; }
   .yard-line { width: 100%; height: 2px; background: rgba(255,255,255,0.4); position: absolute; animation: scrollField 0.6s linear infinite; }
   @keyframes scrollField { 0% { top: -10%; } 100% { top: 110%; } }
-  .tecmo-player { width: 20px; height: 20px; background: var(--accent); position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); animation: run 1.5s infinite; box-shadow: 2px 2px 0 #000; }
-  @keyframes run { 0%, 100% { left: 40%; } 50% { left: 60%; } }
+  .tecmo-player { width: 18px; height: 18px; background: var(--accent); position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); animation: run 1.5s infinite; box-shadow: 2px 2px 0 #000; }
+  @keyframes run { 0%, 100% { left: 42%; } 50% { left: 58%; } }
 
-  #sim-scoreboard { font-family: 'Press Start 2P', cursive; font-size: 12px; color: #0f0; margin-bottom: 10px; }
-  #results { display: none; padding: 25px; border-radius: 12px; border: 3px solid var(--primary); background: #111; line-height: 1.5; font-size: 18px; margin-top: 15px; }
+  #sim-scoreboard { font-family: 'Press Start 2P', cursive; font-size: 11px; color: #0f0; margin-bottom: 8px; }
+  #results { display: none; padding: 20px; border-radius: 12px; border: 3px solid var(--primary); background: #111; line-height: 1.4; font-size: 17px; margin-top: 10px; }
   
-  /* CENTERING WRAPPER */
   .center-flex { display: flex; flex-direction: column; align-items: center; width: 100%; }
-  .super-bowl-glow { border-color: #ffb300 !important; box-shadow: 0 0 30px rgba(255, 179, 0, 0.6); }
 </style>
 </head>
 <body>
 
 <div class="glass-card" id="draft-section">
-  <button id="mute-toggle" onclick="toggleMute()" style="width: auto; position: absolute; top: 10px; right: 10px; padding: 5px 10px; font-size: 10px;">SOUND: ON</button>
-  <h2>UNDERGROUND<br>ROSTER BUILDER '26</h2>
+  <button id="mute-toggle" onclick="toggleMute()" style="width: auto; position: absolute; top: 10px; right: 10px; padding: 5px 8px; font-size: 10px;">ON</button>
+  <h2>UNDERGROUND BUILDER '26</h2>
   
   <div class="team-logo-container">
     <button id="start-btn" onclick="startFirstSpin()">INSERT COIN</button>
@@ -68,7 +66,7 @@
 <div id="challenge-banner" class="glass-card" style="display:none; border-color: #ffb300; background: rgba(255, 179, 0, 0.1);"></div>
 
 <div class="glass-card">
-  <h3 style="font-family: 'Press Start 2P'; font-size: 10px; color: #777; margin-bottom: 15px;">ACTIVE ROSTER</h3>
+  <h3 style="font-family: 'Press Start 2P'; font-size: 9px; color: #777; margin-bottom: 12px;">ACTIVE ROSTER</h3>
   <div id="roster-QB" class="roster-slot"><span class="slot-label">QB</span><div class="player-name">---</div></div>
   <div id="roster-RB" class="roster-slot"><span class="slot-label">RB</span><div class="player-name">---</div></div>
   <div id="roster-WR" class="roster-slot"><span class="slot-label">WR</span><div class="player-name">---</div></div>
@@ -77,25 +75,24 @@
   <div id="roster-Coach" class="roster-slot"><span class="slot-label">HC</span><div class="player-name">---</div></div>
   
   <div class="center-flex">
-    <button id="sim-btn" onclick="triggerSimulation()" style="display:none; background: #28a745;">SIMULATE SEASON</button>
+    <button id="sim-btn" onclick="triggerSimulation()" style="display:none; background: #28a745;">SIM SEASON</button>
   </div>
 
   <div id="animation-container">
     <div id="sim-scoreboard">0-0</div>
     <div id="tecmo-screen">
-      <div id="dumpster" style="display:none; position:absolute; top:30%; left:45%; font-size:40px; z-index:5;">🔥</div>
       <div class="yard-line" style="top: 20%;"></div>
       <div class="yard-line" style="top: 50%;"></div>
       <div class="yard-line" style="top: 80%;"></div>
       <div class="tecmo-player"></div>
     </div>
-    <div id="sim-event-ticker" style="color: #ffb300; font-family: 'Press Start 2P'; font-size: 10px; margin-top: 10px;"></div>
+    <div id="sim-event-ticker" style="color: #ffb300; font-family: 'Press Start 2P'; font-size: 9px; margin-top: 10px;"></div>
   </div>
 
   <div id="results"></div>
   
   <div class="center-flex">
-    <button id="challenge-btn" onclick="handleChallengeAction()" style="display:none; background: #013369;">SHARE CHALLENGE</button>
+    <button id="challenge-btn" onclick="handleChallengeAction()" style="display:none; background: #013369;">SHARE LINK</button>
     <button id="reset-btn" onclick="resetDraft()" style="display:none; background: #444;">NEW DRAFT</button>
   </div>
 </div>
@@ -110,11 +107,23 @@
   let teamPower = 0;
   let targetWinsToBeat = null;
 
+  // VERIFIED ESPN LOGO CODES
+  const logoMap = {
+    "Arizona Cardinals": "ari", "Atlanta Falcons": "atl", "Baltimore Ravens": "bal", "Buffalo Bills": "buf",
+    "Carolina Panthers": "car", "Chicago Bears": "chi", "Cincinnati Bengals": "cin", "Cleveland Browns": "cle",
+    "Dallas Cowboys": "dal", "Denver Broncos": "den", "Detroit Lions": "det", "Green Bay Packers": "gb",
+    "Houston Texans": "hou", "Indianapolis Colts": "ind", "Jacksonville Jaguars": "jax", "Kansas City Chiefs": "kc",
+    "Las Vegas Raiders": "lv", "Los Angeles Chargers": "lac", "Los Angeles Rams": "lar", "Miami Dolphins": "mia",
+    "Minnesota Vikings": "min", "New England Patriots": "ne", "New Orleans Saints": "no", "New York Giants": "nyg",
+    "New York Jets": "nyj", "Philadelphia Eagles": "phi", "Pittsburgh Steelers": "pit", "San Francisco 49ers": "sf",
+    "Seattle Seahawks": "sea", "Tampa Bay Buccaneers": "tb", "Tennessee Titans": "ten", "Washington Commanders": "wsh"
+  };
+
   const teamThemes = {
-    "Buffalo Bills": { p: "#00338D", s: "#C60C30", g: "rgba(0, 51, 141, 0.5)" },
-    "Kansas City Chiefs": { p: "#E31837", s: "#FFB612", g: "rgba(227, 24, 55, 0.5)" },
-    "Dallas Cowboys": { p: "#003594", s: "#869397", g: "rgba(0, 53, 148, 0.5)" },
-    "San Francisco 49ers": { p: "#AA0000", s: "#B3995D", g: "rgba(170, 0, 0, 0.5)" }
+    "Buffalo Bills": { p: "#00338D", s: "#C60C30", g: "rgba(0,51,141,0.5)" },
+    "Kansas City Chiefs": { p: "#E31837", s: "#FFB612", g: "rgba(227,24,55,0.5)" },
+    "Dallas Cowboys": { p: "#003594", s: "#869397", g: "rgba(0,53,148,0.5)" },
+    "San Francisco 49ers": { p: "#AA0000", s: "#B3995D", g: "rgba(170,0,0,0.5)" }
   };
 
   const elitePlayers = ["Bosch Mallon", "Hat-Trick Ma-Homes", "Crusty McRunnery", "L'Amour Action", "King Henry", "Joe Furrow", "Rock Sturdy", "Don Far-Baugh"];
@@ -126,7 +135,10 @@
     document.documentElement.style.setProperty('--glow', theme.g);
   }
 
-  function startFirstSpin() { if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); document.getElementById("start-btn").style.display = "none"; spinTeam(); }
+  function initAudio() { if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+  function playBlip() { if (isMuted || !audioCtx) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.type = 'square'; o.frequency.setValueAtTime(400, audioCtx.currentTime); g.gain.setValueAtTime(0.01, audioCtx.currentTime); o.start(); o.stop(audioCtx.currentTime + 0.05); }
+
+  function startFirstSpin() { initAudio(); document.getElementById("start-btn").style.display = "none"; spinTeam(); }
 
   function spinTeam() {
     const img = document.getElementById("team-logo-img"); img.style.display = "block";
@@ -134,7 +146,9 @@
     let count = 0; let delay = 40;
     function perform() {
       const name = available[Math.floor(Math.random() * available.length)];
-      img.src = `https://a.espncdn.com/i/teamlogos/nfl/500/${name.split(' ').pop().toLowerCase().substring(0,3)}.png`;
+      const code = logoMap[name] || "nfl";
+      img.src = `https://a.espncdn.com/i/teamlogos/nfl/500/${code}.png`;
+      playBlip();
       if (count++ < 25) { delay += 10; setTimeout(perform, delay); }
       else { applyTheme(name); currentTeam = name; loadRoster(name); }
     }
@@ -172,7 +186,7 @@
   function triggerSimulation() {
     document.getElementById("sim-btn").style.display = "none";
     document.getElementById("animation-container").style.display = "block";
-    let wins = Math.floor(Math.random() * 8) + 3 + Math.floor(teamPower);
+    let wins = Math.floor(Math.random() * 8) + 2 + Math.floor(teamPower);
     if (wins > 17) wins = 17;
     let step = 0;
     const timer = setInterval(() => {
@@ -186,10 +200,10 @@
     document.getElementById("animation-container").style.display = "none";
     const r = document.getElementById("results");
     let roast = "";
-    if (wins === 17) roast = "🏆 UNTOUCHABLE. Perfection. Absolute god-tier GM skills.";
-    else if (wins >= 12) roast = "🔥 ELITE. You built a monster. Enjoy the deep playoff run.";
-    else if (wins >= 8) roast = "😐 MID. One-and-done in the playoffs. Boring as hell.";
-    else roast = "💩 TRASH. This roster is a war crime. Fire the entire staff.";
+    if (wins === 17) roast = "🏆 UNTOUCHABLE. Perfection achieved.";
+    else if (wins >= 12) roast = "🔥 ELITE. You built a monster.";
+    else if (wins >= 8) roast = "😐 MID. One-and-done playoff exit.";
+    else roast = "💩 TRASH. This roster is a war crime.";
 
     if (targetWinsToBeat !== null) {
       roast += `<br><hr><br>${wins > targetWinsToBeat ? "CHALLENGE WON! 🏆" : "CHALLENGE FAILED. 😭"}`;
