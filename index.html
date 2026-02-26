@@ -13,39 +13,40 @@
   body { font-family: 'Roboto', sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; background-color: #1e3f20; background-image: repeating-linear-gradient(0deg, transparent, transparent 48px, rgba(255,255,255,0.1) 48px, rgba(255,255,255,0.1) 50px); color: #fff; }
   .card { background: #111; padding: 20px; border-radius: 8px; box-shadow: 0 8px 16px rgba(0,0,0,0.5); margin-bottom: 20px; text-align: center; border-top: 5px solid #d50a0a; border-bottom: 5px solid #013369; position: relative; z-index: 10; }
   #mute-toggle { position: absolute; top: 15px; right: 15px; background: none; border: 1px solid #444; color: #777; font-size: 12px; padding: 5px 8px; cursor: pointer; border-radius: 4px; width: auto; z-index: 20;}
-  #mute-toggle.active { color: #d50a0a; border-color: #d50a0a; }
   h2, h3 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px; margin-top: 0; }
   h2 { font-size: 36px; color: #fff; text-transform: uppercase; }
+  
   #challenge-banner { display: none; background: #013369; color: #fff; padding: 15px; border-radius: 4px; margin-bottom: 20px; border: 2px solid #fff; text-align: center; }
+  #challenge-banner strong { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: #ffb300; }
+  
   .team-logo-container { height: 160px; display: flex; align-items: center; justify-content: center; margin: 15px 0; background: #222; border-radius: 8px; border: 1px inset #333; overflow: hidden;}
   #team-logo-img { max-height: 140px; max-width: 150px; object-fit: contain; display: none; filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.5)); }
   select, button { padding: 12px; margin: 8px; font-size: 16px; width: 90%; max-width: 300px; box-sizing: border-box; }
   select { background: #222; color: #fff; border: 1px solid #444; border-radius: 4px; }
   button { font-family: 'Bebas Neue', sans-serif; font-size: 20px; background: #d50a0a; color: white; border: none; border-radius: 4px; cursor: pointer; }
+  
   .roster-slot { padding: 12px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #1a1a1a; margin-bottom: 5px; border-radius: 4px; }
   .roster-slot strong { width: 80px; color: #aaa; font-family: 'Bebas Neue', sans-serif; font-size: 20px; }
   .player-info { display: flex; align-items: center; font-weight: bold; }
   .player-info img { height: 25px; margin-left: 10px; }
   
-  /* CENTERED BUTTON CONTAINER */
+  /* CENTERED UI */
   .center-btn-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; margin-top: 20px; }
   
   #animation-container { display: none; margin-top: 20px; text-align: center; background: #111; padding: 15px; border-radius: 8px; border: 2px solid #333; }
-  #tecmo-screen { width: 100%; height: 180px; background-color: #2e7d32; position: relative; overflow: hidden; border: 4px solid #fff; }
+  #tecmo-screen { width: 100%; height: 180px; background-color: #2e7d32; position: relative; overflow: hidden; border: 4px solid #fff; transition: background-color 0.5s; }
   .yard-line { width: 100%; height: 4px; background: rgba(255,255,255,0.6); position: absolute; animation: scrollField 1s linear infinite; }
   @keyframes scrollField { 0% { top: -10%; } 100% { top: 110%; } }
   .tecmo-player { width: 24px; height: 24px; background: #013369; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); animation: runDodging 3s ease-in-out infinite; }
   @keyframes runDodging { 0%, 100% { left: 50%; } 25% { left: 20%; } 75% { left: 80%; } }
   
-  /* DUMPSTER FIRE ANIMATION */
-  .fire-bg { background-color: #5d1a1a !important; }
-  .dumpster-icon { font-size: 50px; position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); animation: flicker 0.2s infinite; display: none;}
-  @keyframes flicker { 0% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } }
+  #dumpster { font-size: 50px; position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); display: none; animation: flicker 0.2s infinite; }
+  @keyframes flicker { 0% { opacity: 0.8; } 100% { opacity: 1; } }
 
   #sim-scoreboard { background: #000; color: #0f0; font-family: 'Courier New', monospace; font-size: 20px; padding: 5px; margin-bottom: 10px; border: 1px solid #333; }
   #sim-event-ticker { font-size: 16px; color: #ffb300; min-height: 40px; font-weight: bold; }
   #results { font-size: 18px; line-height: 1.4; display: none; margin-top: 20px; text-align: center; background: #222; padding: 20px; border-radius: 8px; border: 1px solid #444; }
-  .super-bowl-glow { border-color: #ffb300 !important; box-shadow: 0 0 20px rgba(255, 179, 0, 0.4); }
+  .super-bowl-glow { border-color: #ffb300 !important; box-shadow: 0 0 25px rgba(255, 179, 0, 0.6); }
 </style>
 </head>
 <body>
@@ -83,11 +84,7 @@
   
   <div id="animation-container">
     <div id="sim-scoreboard">RECORD: 0 - 0</div>
-    <div id="tecmo-screen">
-      <div id="dumpster" class="dumpster-icon">🔥🗑️</div>
-      <div class="yard-line"></div>
-      <div class="tecmo-player"></div>
-    </div>
+    <div id="tecmo-screen"><div id="dumpster">🔥🗑️</div><div class="yard-line"></div><div class="tecmo-player"></div></div>
     <div id="sim-event-ticker">Booting up simulation...</div>
   </div>
   
@@ -109,7 +106,7 @@
   let targetWinsToBeat = null;
 
   const coachNames = {
-    "Arizona Cardinals": "Mike LaFleur", "Atlanta Falcons": "Kevin Stefanski", "Baltimore Ravens": "Jesse Minter", "Buffalo Bills": "Joe Brady", "Carolina Panthers": "Dave Canales", "Chicago Bears": "Matt Eberflus", "Cincinnati Bengals": "Zac Taylor", "Cleveland Browns": "Todd Monken", "Dallas Cowboys": "Mike McCarthy", "Denver Broncos": "Sean Payton", "Detroit Lions": "Dan Campbell", "Green Bay Packers": "Matt LaFleur", "Houston Texans": "DeMeco Ryans", "Indianapolis Colts": "Shane Steichen", "Jacksonville Jaguars": "Doug Pederson", "Kansas City Chiefs": "Andy Reid", "Las Vegas Raiders": "Klint Kubiak", "Los Angeles Chargers": "Jim Harbaugh", "Los Angeles Rams": "Sean McVay", "Miami Dolphins": "Jeff Hafley", "Minnesota Vikings": "Kevin O'Connell", "New England Patriots": "Jerod Mayo", "New Orleans Saints": "Darren Rizzi", "New York Giants": "John Harbaugh", "New York Jets": "Jeff Ulbrich", "Philadelphia Eagles": "Nick Sirianni", "Pittsburgh Steelers": "Mike McCarthy", "San Francisco 49ers": "Kyle Shanahan", "Seattle Seahawks": "Mike Macdonald", "Tampa Bay Buccaneers": "Todd Bowles", "Tennessee Titans": "Robert Saleh", "Washington Commanders": "Dan Quinn"
+    "Arizona Cardinals": "Jonathan Gannon", "Atlanta Falcons": "Raheem Morris", "Baltimore Ravens": "John Harbaugh", "Buffalo Bills": "Joe Brady", "Carolina Panthers": "Dave Canales", "Chicago Bears": "Ben Johnson", "Cincinnati Bengals": "Zac Taylor", "Cleveland Browns": "Kevin Stefanski", "Dallas Cowboys": "Brian Schottenheimer", "Denver Broncos": "Sean Payton", "Detroit Lions": "Dan Campbell", "Green Bay Packers": "Matt LaFleur", "Houston Texans": "DeMeco Ryans", "Indianapolis Colts": "Shane Steichen", "Jacksonville Jaguars": "Liam Coen", "Kansas City Chiefs": "Andy Reid", "Las Vegas Raiders": "Pete Carroll", "Los Angeles Chargers": "Jim Harbaugh", "Los Angeles Rams": "Sean McVay", "Miami Dolphins": "Mike McDaniel", "Minnesota Vikings": "Kevin O'Connell", "New England Patriots": "Mike Vrabel", "New Orleans Saints": "Kellen Moore", "New York Giants": "John Harbaugh", "New York Jets": "Aaron Glenn", "Philadelphia Eagles": "Nick Sirianni", "Pittsburgh Steelers": "Mike Tomlin", "San Francisco 49ers": "Kyle Shanahan", "Seattle Seahawks": "Mike Macdonald", "Tampa Bay Buccaneers": "Todd Bowles", "Tennessee Titans": "Brian Callahan", "Washington Commanders": "Dan Quinn"
   };
 
   const teams = [
@@ -118,39 +115,27 @@
 
   function toggleMute() { isMuted = !isMuted; document.getElementById("mute-toggle").innerText = isMuted ? "SOUND: OFF" : "SOUND: ON"; }
   function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-  
-  function playRetroBlip() { 
-    if (isMuted || !audioCtx) return; 
-    const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); 
-    o.connect(g); g.connect(audioCtx.destination); 
-    o.type = 'square'; o.frequency.setValueAtTime(600, audioCtx.currentTime); 
-    g.gain.setValueAtTime(0.02, audioCtx.currentTime); o.start(); o.stop(audioCtx.currentTime + 0.05); 
+  function playBlip() { if (isMuted || !audioCtx) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.type = 'square'; o.frequency.setValueAtTime(600, audioCtx.currentTime); g.gain.setValueAtTime(0.01, audioCtx.currentTime); o.start(); o.stop(audioCtx.currentTime + 0.05); }
+
+  function playHooray() {
+    if (isMuted || !audioCtx) return;
+    const melody = [523, 659, 783, 1046, 783, 1046]; 
+    melody.forEach((f, i) => {
+      const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination);
+      o.type = 'square'; o.frequency.setValueAtTime(f, audioCtx.currentTime + (i * 0.15));
+      g.gain.setValueAtTime(0.03, audioCtx.currentTime + (i * 0.15)); g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (i * 0.15) + 0.1);
+      o.start(audioCtx.currentTime + (i * 0.15)); o.stop(audioCtx.currentTime + (i * 0.15) + 0.15);
+    });
   }
 
   function playSad() {
     if (isMuted || !audioCtx) return;
-    const notes = [392, 370, 349, 311]; // G, Gb, F, Eb
-    notes.forEach((freq, i) => {
-      const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-      o.connect(g); g.connect(audioCtx.destination);
-      o.type = 'sawtooth'; o.frequency.setValueAtTime(freq, audioCtx.currentTime + (i * 0.3));
-      o.frequency.exponentialRampToValueAtTime(freq - 50, audioCtx.currentTime + (i * 0.3) + 0.25);
-      g.gain.setValueAtTime(0.05, audioCtx.currentTime + (i * 0.3));
-      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (i * 0.3) + 0.25);
+    const notes = [392, 370, 349, 311]; 
+    notes.forEach((f, i) => {
+      const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination);
+      o.type = 'sawtooth'; o.frequency.setValueAtTime(f, audioCtx.currentTime + (i * 0.3)); o.frequency.exponentialRampToValueAtTime(f - 50, audioCtx.currentTime + (i * 0.3) + 0.25);
+      g.gain.setValueAtTime(0.04, audioCtx.currentTime + (i * 0.3)); g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (i * 0.3) + 0.25);
       o.start(audioCtx.currentTime + (i * 0.3)); o.stop(audioCtx.currentTime + (i * 0.3) + 0.3);
-    });
-  }
-
-  function playHooray() {
-    if (isMuted || !audioCtx) return;
-    const melody = [523, 659, 783, 1046, 783, 1046]; // C5, E5, G5, C6, G5, C6
-    melody.forEach((freq, i) => {
-      const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-      o.connect(g); g.connect(audioCtx.destination);
-      o.type = 'square'; o.frequency.setValueAtTime(freq, audioCtx.currentTime + (i * 0.15));
-      g.gain.setValueAtTime(0.03, audioCtx.currentTime + (i * 0.15));
-      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (i * 0.15) + 0.1);
-      o.start(audioCtx.currentTime + (i * 0.15)); o.stop(audioCtx.currentTime + (i * 0.15) + 0.15);
     });
   }
 
@@ -162,8 +147,8 @@
     let count = 0; let delay = 50;
     function perform() {
       currentTeamObj = available[Math.floor(Math.random() * available.length)];
-      img.src = currentTeamObj.logo; playRetroBlip();
-      if (count++ < 25) { delay += 15; setTimeout(perform, delay); }
+      img.src = currentTeamObj.logo; playBlip();
+      if (count++ < 30) { delay += 10; setTimeout(perform, delay); }
       else loadTeamRoster(currentTeamObj.name);
     }
     perform();
@@ -171,9 +156,7 @@
 
   function loadTeamRoster(name) {
     currentFetchedRoster = rosterData[name];
-    document.getElementById("position-select").disabled = false;
-    document.getElementById("player-select").disabled = false;
-    document.getElementById("draft-btn").disabled = false;
+    document.getElementById("position-select").disabled = false; document.getElementById("player-select").disabled = false; document.getElementById("draft-btn").disabled = false;
     updatePlayerDropdown();
   }
 
@@ -198,12 +181,12 @@
   function triggerSimulation() {
     document.getElementById("sim-btn").style.display = "none";
     document.getElementById("animation-container").style.display = "block";
-    let wins = Math.floor(Math.random() * 14) + 1; // Expanded range for bigger drama
+    let wins = Math.floor(Math.random() * 15);
     finalCalculatedWins = wins;
     const stories = {
-      good: ["Week 1: Massive win! League on notice.", "Week 6: Mid-season dominance.", "Week 12: Playoff clinch!", "Week 17: Finishing strong."],
-      mid: ["Week 1: Tight game, pulled out the win.", "Week 6: .500 record. Gritty stuff.", "Week 12: In the Wild Card hunt.", "Week 17: Finale. Checking scores..."],
-      bad: ["Week 1: Disaster start.", "Week 6: Another loss. Draft talk begins.", "Week 12: Eliminated. Sad vibes.", "Week 17: Finale. Top-5 pick energy."]
+      good: ["Week 1: Massive win!", "Week 6: Mid-season dominance.", "Week 12: Playoff clinch!", "Week 17: Finishing strong."],
+      mid: ["Week 1: Gritty win.", "Week 6: At .500 mark.", "Week 12: Wild Card hunting.", "Week 17: Finale pressure."],
+      bad: ["Week 1: Disaster start.", "Week 6: Locker room tension.", "Week 12: Eliminated.", "Week 17: Finale embarrassment."]
     };
     let step = 0;
     const ticker = setInterval(() => {
@@ -211,39 +194,29 @@
       document.getElementById("sim-scoreboard").innerText = `RECORD: ${Math.floor((wins/4)*(step+1))} - ${Math.floor(((17-wins)/4)*(step+1))}`;
       document.getElementById("sim-event-ticker").innerText = stories[type][step];
       if (step++ >= 3) { clearInterval(ticker); showFinal(); }
-    }, 3000);
+    }, 3000); // 3 Second intervals
   }
 
   function showFinal() {
     document.getElementById("animation-container").style.display = "none";
-    const r = document.getElementById("results");
-    r.classList.remove('super-bowl-glow');
-    document.getElementById("tecmo-screen").classList.remove('fire-bg');
+    const r = document.getElementById("results"); r.classList.remove('super-bowl-glow');
+    document.getElementById("tecmo-screen").style.backgroundColor = "#2e7d32";
     document.getElementById("dumpster").style.display = "none";
-
-    let msg = `<strong>FINAL RECORD: ${finalCalculatedWins} - ${17-finalCalculatedWins}</strong><br><br>`;
     
+    let msg = `<strong>FINAL RECORD: ${finalCalculatedWins} - ${17-finalCalculatedWins}</strong><br><br>`;
     if (finalCalculatedWins === 17) {
-      msg += "🏆 PERFECT SEASON! GOAT STATUS.";
-      r.classList.add('super-bowl-glow');
-      confetti(); playHooray();
-    } else if (finalCalculatedWins >= 12) {
-      msg += "ELITE SQUAD. CONTENDERS.";
-      confetti(); playHooray();
-    } else if (finalCalculatedWins >= 8) {
-      msg += "MEDIOCRE. FIRST ROUND EXIT INCOMING.";
-    } else {
-      msg += "🗑️ TRASH. TOTAL DUMPSTER FIRE. FIRE THE GM.";
+      msg += "🏆 SUPER BOWL CHAMPIONS! 🏆<br>PERFECTION ACHIEVED."; r.classList.add('super-bowl-glow'); playHooray(); confetti({ particleCount: 300 });
+    } else if (finalCalculatedWins >= 11) { msg += "ELITE SQUAD. CONTENDERS."; playHooray(); confetti(); }
+    else if (finalCalculatedWins >= 8) msg += "MEDIOCRE. FIRST ROUND EXIT.";
+    else {
+      msg += "🗑️ TOTAL DUMPSTER FIRE. FIRE THE GM.";
       document.getElementById("animation-container").style.display = "block";
-      document.getElementById("tecmo-screen").classList.add('fire-bg');
+      document.getElementById("tecmo-screen").style.backgroundColor = "#5d1a1a";
       document.getElementById("dumpster").style.display = "block";
       playSad();
     }
-
-    if (targetWinsToBeat !== null) {
-      msg += `<br><hr><br>${finalCalculatedWins > targetWinsToBeat ? "CHALLENGE WON! 🏆" : "CHALLENGE FAILED. 😭"}`;
-    }
-
+    
+    if (targetWinsToBeat !== null) { msg += `<br><hr><br>${finalCalculatedWins > targetWinsToBeat ? "CHALLENGE WON! 🏆" : "CHALLENGE FAILED. 😭"}`; }
     r.innerHTML = msg; r.style.display = "block";
     document.getElementById("challenge-btn").style.display = "block";
     document.getElementById("reset-btn").style.display = "block";
@@ -251,9 +224,9 @@
 
   function resetDraft() { window.location.href = window.location.origin + window.location.pathname; }
   function handleChallengeAction() {
-    const teamStr = Object.values(roster).map(s => s.name).join(',');
-    const url = `${window.location.origin}${window.location.pathname}?w=${finalCalculatedWins}&t=${encodeURIComponent(teamStr)}`;
-    navigator.clipboard.writeText(url).then(() => alert("Challenge Link Copied!"));
+    const t = Object.values(roster).map(s => s.name).join(',');
+    const url = `${window.location.origin}${window.location.pathname}?w=${finalCalculatedWins}&t=${encodeURIComponent(t)}`;
+    navigator.clipboard.writeText(url).then(() => alert("Link Copied!"));
   }
 
   window.onload = async () => {
