@@ -478,4 +478,90 @@
       } else if (wins < targetWinsToBeat) {
         message += `<span style="color:#ef4444; font-family: 'Bebas Neue', sans-serif; font-size: 24px;">HEAD-TO-HEAD LOSS:<br>You choked. Your friend put up ${targetWinsToBeat} wins and you couldn't match it. Pay up.</span>`;
       } else {
-        message += `<span
+        message += `<span style="color:#fbbf24; font-family: 'Bebas Neue', sans-serif; font-size: 24px;">HEAD-TO-HEAD TIE:<br>You both rolled exactly ${targetWinsToBeat} wins. Spin again to break the tie.</span>`;
+      }
+      document.getElementById("challenge-btn").innerText = "COPY RESULTS TO TEXT BACK";
+    } else {
+      document.getElementById("challenge-btn").innerText = "COPY CHALLENGE LINK";
+    }
+
+    resultDiv.innerHTML = message;
+    resultDiv.style.display = "block";
+    document.getElementById("challenge-btn").style.display = "block";
+    document.getElementById("reset-btn").style.display = "block";
+  }
+
+  function handleChallengeAction() {
+    if (targetWinsToBeat !== null) {
+      let outcome = "";
+      if (finalCalculatedWins > targetWinsToBeat) outcome = "I WON! 🏆";
+      else if (finalCalculatedWins < targetWinsToBeat) outcome = "I CHOKED! 😭";
+      else outcome = "WE TIED! 🤝";
+
+      const textToShare = `🏈 17-0 NFL Roster Builder 🏈\n\nChallenger rolled: ${targetWinsToBeat} Wins\nI rolled: ${finalCalculatedWins} Wins - ${outcome}\n\nMy Squad:\nQB: ${roster['QB'].name}\nRB: ${roster['RB'].name}\nWR: ${roster['WR'].name}\nTE: ${roster['TE'].name}\nDEF: ${roster['Defense'].name}\nHC: ${roster['Coach'].name}\n\nPlay here: ${window.location.origin + window.location.pathname}`;
+      
+      navigator.clipboard.writeText(textToShare).then(() => {
+        const btn = document.getElementById("challenge-btn");
+        btn.innerText = "COPIED TO CLIPBOARD!";
+        btn.style.background = "#28a745";
+        setTimeout(() => {
+          btn.innerText = "COPY RESULTS TO TEXT BACK";
+          btn.style.background = "#013369";
+        }, 2000);
+      }).catch(err => alert("Failed to copy. Check your browser permissions."));
+      
+    } else {
+      const teamString = Object.values(roster).map(slot => slot.name).join(',');
+      const encodedTeam = encodeURIComponent(teamString);
+      const customLink = window.location.origin + window.location.pathname + "?w=" + finalCalculatedWins + "&t=" + encodedTeam;
+      
+      navigator.clipboard.writeText(customLink).then(() => {
+        const btn = document.getElementById("challenge-btn");
+        btn.innerText = "LINK COPIED!";
+        btn.style.background = "#28a745";
+        setTimeout(() => {
+          btn.innerText = "COPY CHALLENGE LINK";
+          btn.style.background = "#013369";
+        }, 2000);
+      }).catch(err => alert("Failed to copy link. Check your browser permissions."));
+    }
+  }
+
+  function resetDraft() {
+    roster = { QB: null, RB: null, WR: null, TE: null, Defense: null, Coach: null };
+    draftedTeams = [];
+    currentTeamObj = null;
+    currentFetchedRoster = null;
+
+    const positions = ["QB", "RB", "WR", "TE", "Defense", "Coach"];
+    positions.forEach(pos => {
+      document.getElementById(`roster-${pos}`).querySelector(".player-info").innerHTML = `<span class="name" style="color:#555;">Empty</span>`;
+    });
+
+    const posSelect = document.getElementById("position-select");
+    posSelect.innerHTML = `
+      <option value="QB">QB (Quarterback)</option>
+      <option value="RB">RB (Running Back)</option>
+      <option value="WR">WR (Wide Receiver)</option>
+      <option value="TE">TE (Tight End)</option>
+      <option value="Defense">Defense</option>
+      <option value="Coach">Coach</option>
+    `;
+
+    document.getElementById("results").style.display = "none";
+    document.getElementById("challenge-btn").style.display = "none";
+    document.getElementById("reset-btn").style.display = "none";
+    document.getElementById("draft-section").style.display = "block";
+    document.getElementById("placeholder").style.display = "block";
+    document.getElementById("team-logo-img").style.display = "none";
+    document.getElementById("draft-btn").disabled = true;
+
+    window.history.replaceState({}, document.title, window.location.pathname);
+    document.getElementById('challenge-banner').style.display = 'none';
+    targetWinsToBeat = null;
+
+    document.getElementById("placeholder").innerHTML = '<button onclick="startFirstSpin()" style="background:#d50a0a; color:#fff; border:none; padding:15px 30px; font-family:\'Bebas Neue\', sans-serif; font-size:26px; cursor:pointer; border-radius:4px; box-shadow:0 4px 6px rgba(0,0,0,0.5); margin: 0;">START DRAFT</button>';
+  }
+</script>
+</body>
+</html>
