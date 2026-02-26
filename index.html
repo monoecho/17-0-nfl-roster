@@ -91,9 +91,43 @@
   function playRetroBlip() { if (isMuted || !audioCtx) return; const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'square'; osc.frequency.setValueAtTime(400 + Math.random() * 400, audioCtx.currentTime); gain.gain.setValueAtTime(0.05, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.05); }
 
   window.onload = async () => {
-    // Load local JSON immediately
-    const res = await fetch('rosters.json');
-    rosterData = await res.json();
+    const pathsToTry = ['rosters.json', './rosters.json', window.location.pathname + 'rosters.json'];
+    
+    for (let path of pathsToTry) {
+      try {
+        console.log("Attempting to load rosters from:", path);
+        const res = await fetch(path);
+        if (res.ok) {
+          rosterData = await res.json();
+          console.log("Roster data loaded successfully from:", path);
+          break; // Stop once we find it!
+        }
+      } catch (e) {
+        console.warn("Path failed:", path);
+      }
+    }
+
+    if (!rosterData) {
+      console.error("Critical Error: rosters.json could not be found anywhere.");
+      alert("Error: Data file not found. Make sure rosters.json is in your GitHub repo.");
+      return;
+    }
+
+    // Process challenge links
+    const params = new URLSearchParams(window.location.search);
+    if(params.has('w')) {
+      targetWinsToBeat = parseInt(params.get('w'));
+      let bannerHTML = `<strong>⚠️ CHALLENGE ACTIVE ⚠️</strong><br>Target: <span style="color:#ffb300;">${targetWinsToBeat}</span> Wins`;
+      if(params.has('t')) {
+        const picks = decodeURIComponent(params.get('t')).split(',');
+        if (picks.length >= 6) {
+          bannerHTML += `<div style="margin-top:10px; font-size:13px; color:#ddd; text-align:left; background:rgba(255,255,255,0.1); padding:8px; border-radius:4px;">Challenger: QB: ${picks[0]} | HC: ${picks[5]}</div>`;
+        }
+      }
+      document.getElementById('challenge-banner').innerHTML = bannerHTML;
+      document.getElementById('challenge-banner').style.display = 'block';
+    }
+  };
 
     const params = new URLSearchParams(window.location.search);
     if(params.has('w')) {
@@ -180,4 +214,5 @@
 </script>
 </body>
 </html>
+
 
