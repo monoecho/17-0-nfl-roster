@@ -16,22 +16,40 @@
   #mute-toggle.active { color: #d50a0a; border-color: #d50a0a; }
   h2, h3 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px; margin-top: 0; }
   h2 { font-size: 36px; color: #fff; text-transform: uppercase; }
+  
+  /* BLUE CHALLENGE BOX */
   #challenge-banner { display: none; background: #013369; color: #fff; padding: 15px; border-radius: 4px; margin-bottom: 20px; border: 2px solid #fff; text-align: center; }
   #challenge-banner strong { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: #ffb300; }
+  
   .team-logo-container { height: 160px; display: flex; align-items: center; justify-content: center; margin: 15px 0; background: #222; border-radius: 8px; border: 1px inset #333; overflow: hidden;}
   #team-logo-img { max-height: 140px; max-width: 150px; object-fit: contain; display: none; filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.5)); }
   select, button { padding: 12px; margin: 8px; font-size: 16px; width: 90%; max-width: 300px; box-sizing: border-box; }
   select { background: #222; color: #fff; border: 1px solid #444; border-radius: 4px; }
   button { font-family: 'Bebas Neue', sans-serif; font-size: 20px; background: #d50a0a; color: white; border: none; border-radius: 4px; cursor: pointer; }
+  
   .roster-slot { padding: 12px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #1a1a1a; margin-bottom: 5px; border-radius: 4px; }
   .roster-slot strong { width: 80px; color: #aaa; font-family: 'Bebas Neue', sans-serif; font-size: 20px; }
   .player-info { display: flex; align-items: center; font-weight: bold; }
   .player-info img { height: 25px; margin-left: 10px; }
+  
   .center-btn-wrapper { display: flex; justify-content: center; width: 100%; margin-top: 20px; }
-  #animation-container { display: none; margin-top: 20px; text-align: center; background: #111; padding: 15px; border-radius: 8px; }
+  
+  /* TECMO ANIMATION STYLES */
+  #animation-container { display: none; margin-top: 20px; text-align: center; background: #111; padding: 15px; border-radius: 8px; border: 2px solid #333; }
+  #tecmo-screen { width: 100%; height: 180px; background-color: #2e7d32; position: relative; overflow: hidden; border: 4px solid #fff; border-radius: 4px; margin-bottom: 15px; box-sizing: border-box; }
+  .yard-line { width: 100%; height: 4px; background: rgba(255,255,255,0.6); position: absolute; animation: scrollField 1s linear infinite; }
+  @keyframes scrollField { 0% { top: -10%; } 100% { top: 110%; } }
+  .tecmo-player { width: 24px; height: 24px; background: #013369; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); box-shadow: 3px 3px 0 #000; animation: runDodging 3s ease-in-out infinite; }
+  .tecmo-ball { width: 8px; height: 12px; background: #8b4513; position: absolute; top: 6px; right: -4px; border-radius: 40%; }
+  @keyframes runDodging { 0%, 100% { left: 50%; } 25% { left: 20%; } 75% { left: 80%; } }
+  .tecmo-defender { width: 24px; height: 24px; background: #d50a0a; position: absolute; top: -30px; box-shadow: 3px 3px 0 #000; }
+  .def1 { left: 15%; animation: defenderRush 2.5s linear infinite; }
+  .def2 { left: 75%; animation: defenderRush 2.2s linear infinite; }
+  @keyframes defenderRush { 0% { top: -15%; } 100% { top: 115%; } }
+
   #sim-scoreboard { background: #000; color: #0f0; font-family: 'Courier New', monospace; font-size: 20px; padding: 5px; margin-bottom: 10px; border: 1px solid #333; }
   #sim-event-ticker { font-size: 16px; color: #ffb300; min-height: 40px; font-weight: bold; }
-  #results { font-size: 18px; line-height: 1.4; display: none; margin-top: 20px; text-align: center; background: #222; padding: 20px; border-radius: 8px; }
+  #results { font-size: 18px; line-height: 1.4; display: none; margin-top: 20px; text-align: center; background: #222; padding: 20px; border-radius: 8px; border: 1px solid #444; }
 </style>
 </head>
 <body>
@@ -64,19 +82,26 @@
   <div id="roster-Coach" class="roster-slot"><strong>HC</strong> <div class="player-info">Empty</div></div>
   
   <div class="center-btn-wrapper"><button id="sim-btn" onclick="triggerSimulation()" style="display:none; width: 100%; background: #28a745;">SIMULATE SEASON</button></div>
+  
   <div id="animation-container">
     <div id="sim-scoreboard">RECORD: 0 - 0</div>
+    <div id="tecmo-screen">
+      <div class="yard-line"></div>
+      <div class="tecmo-defender def1"></div>
+      <div class="tecmo-defender def2"></div>
+      <div class="tecmo-player"><div class="tecmo-ball"></div></div>
+    </div>
     <div id="sim-event-ticker">Booting up simulation...</div>
   </div>
+  
   <div id="results"></div>
-  <div class="action-btn-container">
-    <button id="challenge-btn" onclick="handleChallengeAction()" style="display:none; width: 250px; background: #013369;">SHARE CHALLENGE</button>
+  <div class="action-btn-container" style="text-align: center; margin-top: 15px;">
+    <button id="challenge-btn" onclick="handleChallengeAction()" style="display:none; width: 250px; background: #013369; margin-bottom: 10px;">SHARE CHALLENGE</button>
     <button id="reset-btn" onclick="resetDraft()" style="display:none; width: 250px; background: #444;">NEW DRAFT</button>
   </div>
 </div>
 
 <script>
-  // 1. GLOBAL VARIABLES
   let isMuted = false;
   let audioCtx = null;
   let rosterData = null;
@@ -91,27 +116,19 @@
     { name: "Arizona Cardinals", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/ari.png" }, { name: "Atlanta Falcons", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/atl.png" }, { name: "Baltimore Ravens", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/bal.png" }, { name: "Buffalo Bills", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/buf.png" }, { name: "Carolina Panthers", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/car.png" }, { name: "Chicago Bears", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/chi.png" }, { name: "Cincinnati Bengals", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/cin.png" }, { name: "Cleveland Browns", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/cle.png" }, { name: "Dallas Cowboys", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/dal.png" }, { name: "Denver Broncos", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/den.png" }, { name: "Detroit Lions", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/det.png" }, { name: "Green Bay Packers", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/gb.png" }, { name: "Houston Texans", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/hou.png" }, { name: "Indianapolis Colts", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/ind.png" }, { name: "Jacksonville Jaguars", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/jax.png" }, { name: "Kansas City Chiefs", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/kc.png" }, { name: "Las Vegas Raiders", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/lv.png" }, { name: "Los Angeles Chargers", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/lac.png" }, { name: "Los Angeles Rams", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/lar.png" }, { name: "Miami Dolphins", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/mia.png" }, { name: "Minnesota Vikings", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/min.png" }, { name: "New England Patriots", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/ne.png" }, { name: "New Orleans Saints", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/no.png" }, { name: "New York Giants", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/nyg.png" }, { name: "New York Jets", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/nyj.png" }, { name: "Philadelphia Eagles", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/phi.png" }, { name: "Pittsburgh Steelers", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/pit.png" }, { name: "San Francisco 49ers", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/sf.png" }, { name: "Seattle Seahawks", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/sea.png" }, { name: "Tampa Bay Buccaneers", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/tb.png" }, { name: "Tennessee Titans", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/ten.png" }, { name: "Washington Commanders", logo: "https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png" }
   ];
 
-  // 2. CORE FUNCTIONS
   function toggleMute() { isMuted = !isMuted; document.getElementById("mute-toggle").innerText = isMuted ? "SOUND: OFF" : "SOUND: ON"; }
   function initAudio() { if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } if (audioCtx.state === 'suspended') audioCtx.resume(); }
   function playRetroBlip() { if (isMuted || !audioCtx) return; const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'square'; osc.frequency.setValueAtTime(400 + Math.random() * 400, audioCtx.currentTime); gain.gain.setValueAtTime(0.05, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.05); }
   function playHooray() { if (isMuted || !audioCtx) return; const notes = [523.25, 659.25, 783.99, 1046.50]; notes.forEach((f, i) => { const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.type = 'triangle'; o.frequency.setValueAtTime(f, audioCtx.currentTime + (i * 0.1)); g.gain.setValueAtTime(0.1, audioCtx.currentTime + (i * 0.1)); o.start(audioCtx.currentTime + (i * 0.1)); o.stop(audioCtx.currentTime + (i * 0.1) + 0.3); }); }
   function playSad() { if (isMuted || !audioCtx) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.type = 'sawtooth'; o.frequency.setValueAtTime(293.66, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(196.00, audioCtx.currentTime + 1.0); g.gain.setValueAtTime(0.1, audioCtx.currentTime); o.start(); o.stop(audioCtx.currentTime + 1.0); }
 
-  // START DRAFT TRIGGER
-  function startFirstSpin() { 
-    initAudio(); 
-    document.getElementById("placeholder").style.display = "none"; 
-    spinTeam(); 
-  }
+  function startFirstSpin() { initAudio(); document.getElementById("placeholder").style.display = "none"; spinTeam(); }
 
   function spinTeam() {
-    document.getElementById("draft-btn").disabled = true; 
-    document.getElementById("position-select").disabled = true;
+    document.getElementById("draft-btn").disabled = true; document.getElementById("position-select").disabled = true;
     const img = document.getElementById("team-logo-img"); img.style.display = "block";
     const available = teams.filter(t => !draftedTeams.includes(t.name));
     let count = 0; let delay = 40;
-    
     function performSpin() {
       currentTeamObj = available[Math.floor(Math.random() * available.length)];
       img.src = currentTeamObj.logo; playRetroBlip();
@@ -158,60 +175,4 @@
     let wins = Math.floor(Math.random() * 9) + 4;
     finalCalculatedWins = wins;
     const stories = {
-      good: ["Week 1: Explosive start!", "Week 6: Mid-season dominance.", "Week 12: Playoff clinch!", "Week 17: Finishing strong."],
-      mid: ["Week 1: Mixed results.", "Week 6: Fighting for a Wild Card.", "Week 12: In the hunt.", "Week 17: Season finale."],
-      bad: ["Week 1: Rough opening.", "Week 6: Locker room tension.", "Week 12: Out of the race.", "Week 17: Playing for pride."]
-    };
-    let step = 0;
-    const ticker = setInterval(() => {
-      let type = wins >= 12 ? 'good' : (wins >= 8 ? 'mid' : 'bad');
-      document.getElementById("sim-scoreboard").innerText = `RECORD: ${Math.floor((wins/4)*(step+1))} - ${Math.floor(((17-wins)/4)*(step+1))}`;
-      document.getElementById("sim-event-ticker").innerText = stories[type][step];
-      if (step++ >= 3) { clearInterval(ticker); showFinal(); }
-    }, 1500);
-  }
-
-  function showFinal() {
-    document.getElementById("animation-container").style.display = "none";
-    const r = document.getElementById("results");
-    r.innerHTML = `<strong style="font-size: 24px;">FINAL RECORD: ${finalCalculatedWins} - ${17-finalCalculatedWins}</strong>`;
-    r.style.display = "block";
-    document.getElementById("challenge-btn").style.display = "block";
-    document.getElementById("reset-btn").style.display = "block";
-    if (targetWinsToBeat !== null && finalCalculatedWins > targetWinsToBeat) { confetti(); playHooray(); }
-    else if (targetWinsToBeat !== null && finalCalculatedWins < targetWinsToBeat) { playSad(); }
-    else if (finalCalculatedWins >= 13) { confetti(); playHooray(); }
-  }
-
-  function resetDraft() { window.location.href = window.location.origin + window.location.pathname; }
-  
-  function handleChallengeAction() {
-    const teamStr = Object.values(roster).map(s => s.name).join(',');
-    const url = `${window.location.origin}${window.location.pathname}?w=${finalCalculatedWins}&t=${encodeURIComponent(teamStr)}`;
-    navigator.clipboard.writeText(url).then(() => alert("Challenge Link Copied!"));
-  }
-
-  // 3. ONLOAD HANDLER
-  window.onload = async () => {
-    try {
-      const res = await fetch('rosters.json');
-      rosterData = await res.json();
-    } catch(e) { console.error("Could not load rosters.json"); }
-
-    const params = new URLSearchParams(window.location.search);
-    if(params.has('w')) {
-      targetWinsToBeat = parseInt(params.get('w'));
-      let bannerHTML = `<strong>⚠️ CHALLENGE ACTIVE ⚠️</strong><br>Target: <span style="color:#ffb300;">${targetWinsToBeat}</span> Wins`;
-      if(params.has('t')) {
-        const picks = decodeURIComponent(params.get('t')).split(',');
-        if (picks.length >= 6) {
-          bannerHTML += `<div style="margin-top:10px; font-size:13px; color:#ddd; text-align:left; background:rgba(255,255,255,0.1); padding:8px; border-radius:4px;">Challenger: QB: ${picks[0]} | HC: ${picks[5]}</div>`;
-        }
-      }
-      document.getElementById('challenge-banner').innerHTML = bannerHTML;
-      document.getElementById('challenge-banner').style.display = 'block';
-    }
-  };
-</script>
-</body>
-</html>
+      good: ["Week 1: Explosive start! Contender status confirmed.", "Week 6: Mid-season dominance. Power rankings #1.", "Week 12: Playoff clinch!
