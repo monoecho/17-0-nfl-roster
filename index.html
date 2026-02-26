@@ -11,37 +11,42 @@
   :root { --primary: #d50a0a; --accent: #013369; --glow: rgba(213, 10, 10, 0.4); }
   body { font-family: 'Inter', sans-serif; background-color: #080808; color: #fff; margin: 0; padding: 0; display: flex; justify-content: center; overflow-x: hidden; }
   
-  /* PORTRAIT CONSTRAINT */
-  .main-container { width: 100%; max-width: 450px; min-height: 100vh; padding: 15px; box-sizing: border-box; position: relative; }
+  /* 20% LARGER PORTRAIT CONSTRAINT (From 450px to 540px) */
+  .main-container { width: 100%; max-width: 540px; min-height: 100vh; padding: 20px; box-sizing: border-box; position: relative; }
   
   /* CRT SCANLINE OVERLAY */
   body::before { content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02)); background-size: 100% 3px, 3px 100%; pointer-events: none; z-index: 1000; }
   
-  .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 15px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9); margin-bottom: 12px; text-align: center; border-top: 4px solid var(--primary); transition: all 0.5s ease; position: relative; }
+  .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 25px; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9); margin-bottom: 20px; text-align: center; border-top: 6px solid var(--primary); transition: all 0.5s ease; position: relative; }
   
-  h2 { font-family: 'Press Start 2P', cursive; font-size: 12px; text-shadow: 2px 2px 0 var(--primary); margin-bottom: 15px; }
+  /* BIGGER TITLES */
+  h2 { font-family: 'Press Start 2P', cursive; font-size: 18px; text-shadow: 3px 3px 0 var(--primary); margin-bottom: 25px; line-height: 1.6; }
   
-  select, button { width: 100%; padding: 16px; margin: 8px 0; font-size: 20px; border-radius: 8px; box-sizing: border-box; }
-  select { background: #1a1a1a; color: #fff; border: 2px solid var(--primary); font-weight: bold; appearance: none; text-align: center; }
+  select, button { width: 100%; padding: 20px; margin: 10px 0; font-size: 24px; border-radius: 10px; box-sizing: border-box; }
+  select { background: #1a1a1a; color: #fff; border: 3px solid var(--primary); font-weight: bold; appearance: none; text-align: center; }
   button { font-family: 'Bebas Neue', sans-serif; background: var(--primary); color: white; border: none; cursor: pointer; text-transform: uppercase; }
   button:hover { filter: brightness(1.2); transform: scale(1.02); }
 
-  .team-logo-container { height: 140px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border-radius: 12px; margin-bottom: 10px; }
-  #team-logo-img { max-height: 120px; display: none; filter: drop-shadow(0 0 12px var(--glow)); }
+  .team-logo-container { height: 180px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border-radius: 15px; margin-bottom: 15px; }
+  #team-logo-img { max-height: 150px; display: none; filter: drop-shadow(0 0 20px var(--glow)); }
 
-  .roster-slot { background: rgba(0,0,0,0.5); padding: 10px; margin: 5px 0; border-radius: 8px; border-left: 4px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
-  .slot-label { font-family: 'Press Start 2P', cursive; font-size: 8px; color: #555; }
-  .player-name { font-weight: bold; font-size: 17px; color: #fff; }
+  .roster-slot { background: rgba(0,0,0,0.5); padding: 15px; margin: 8px 0; border-radius: 10px; border-left: 5px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
+  .slot-label { font-family: 'Press Start 2P', cursive; font-size: 10px; color: #555; }
+  .player-name { font-weight: bold; font-size: 21px; color: #fff; }
 
-  #animation-container { display: none; margin: 15px 0; width: 100%; }
-  #tecmo-screen { width: 100%; height: 140px; background-color: #2e7d32; position: relative; overflow: hidden; border: 3px solid #fff; border-radius: 8px; }
-  .yard-line { width: 100%; height: 2px; background: rgba(255,255,255,0.4); position: absolute; animation: scrollField 0.6s linear infinite; }
+  /* BIGGER SIMULATION BOX */
+  #animation-container { display: none; margin: 25px 0; width: 100%; }
+  #tecmo-screen { width: 100%; height: 180px; background-color: #2e7d32; position: relative; overflow: hidden; border: 4px solid #fff; border-radius: 10px; }
+  .yard-line { width: 100%; height: 3px; background: rgba(255,255,255,0.4); position: absolute; animation: scrollField 0.6s linear infinite; }
   @keyframes scrollField { 0% { top: -10%; } 100% { top: 110%; } }
-  .tecmo-player { width: 18px; height: 18px; background: var(--accent); position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); animation: run 1.5s infinite; box-shadow: 2px 2px 0 #000; }
-  @keyframes run { 0%, 100% { left: 42%; } 50% { left: 58%; } }
+  .tecmo-player { width: 24px; height: 24px; background: var(--accent); position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); animation: run 1.5s infinite; box-shadow: 3px 3px 0 #000; }
+  @keyframes run { 0%, 100% { left: 40%; } 50% { left: 60%; } }
 
-  #sim-scoreboard { font-family: 'Press Start 2P', cursive; font-size: 11px; color: #0f0; margin-bottom: 8px; }
-  #results { display: none; padding: 20px; border-radius: 12px; border: 3px solid var(--primary); background: #111; line-height: 1.4; font-size: 17px; margin-top: 10px; }
+  /* BIGGER SIM TEXT */
+  #sim-scoreboard { font-family: 'Press Start 2P', cursive; font-size: 16px; color: #0f0; margin-bottom: 12px; text-shadow: 2px 2px #000; }
+  #sim-event-ticker { color: #ffb300; font-family: 'Press Start 2P', cursive; font-size: 11px; margin-top: 15px; line-height: 1.4; min-height: 40px; }
+  
+  #results { display: none; padding: 30px; border-radius: 16px; border: 4px solid var(--primary); background: #111; line-height: 1.5; font-size: 20px; margin-top: 15px; }
   .center-flex { display: flex; flex-direction: column; align-items: center; width: 100%; }
 </style>
 </head>
@@ -49,11 +54,11 @@
 
 <div class="main-container">
   <div class="glass-card" id="draft-section">
-    <button id="mute-toggle" onclick="toggleMute()" style="width: auto; position: absolute; top: 10px; right: 10px; padding: 5px 8px; font-size: 10px; margin:0;">ON</button>
-    <h2>UNDERGROUND BUILDER '26</h2>
+    <button id="mute-toggle" onclick="toggleMute()" style="width: auto; position: absolute; top: 15px; right: 15px; padding: 8px 12px; font-size: 12px; margin:0;">ON</button>
+    <h2>UNDERGROUND<br>ROSTER BUILDER '26</h2>
     
     <div class="team-logo-container">
-      <button id="start-btn" onclick="startFirstSpin()">INSERT COIN</button>
+      <button id="start-btn" onclick="startFirstSpin()" style="font-size: 28px;">INSERT COIN</button>
       <img id="team-logo-img" src="">
     </div>
 
@@ -67,7 +72,7 @@
   <div id="challenge-banner" class="glass-card" style="display:none; border-color: #ffb300; background: rgba(255, 179, 0, 0.1);"></div>
 
   <div class="glass-card">
-    <h3 style="font-family: 'Press Start 2P'; font-size: 9px; color: #777; margin-bottom: 12px;">ACTIVE ROSTER</h3>
+    <h3 style="font-family: 'Press Start 2P'; font-size: 11px; color: #777; margin-bottom: 15px;">ACTIVE ROSTER</h3>
     <div id="roster-QB" class="roster-slot"><span class="slot-label">QB</span><div class="player-name">---</div></div>
     <div id="roster-RB" class="roster-slot"><span class="slot-label">RB</span><div class="player-name">---</div></div>
     <div id="roster-WR" class="roster-slot"><span class="slot-label">WR</span><div class="player-name">---</div></div>
@@ -76,22 +81,22 @@
     <div id="roster-Coach" class="roster-slot"><span class="slot-label">HC</span><div class="player-name">---</div></div>
     
     <div class="center-flex">
-      <button id="sim-btn" onclick="triggerSimulation()" style="display:none; background: #28a745;">SIM SEASON</button>
+      <button id="sim-btn" onclick="triggerSimulation()" style="display:none; background: #28a745;">SIMULATE SEASON</button>
       
       <div id="animation-container">
-        <div id="sim-scoreboard">0-0</div>
+        <div id="sim-scoreboard">BOOTING...</div>
         <div id="tecmo-screen">
           <div class="yard-line" style="top: 20%;"></div>
           <div class="yard-line" style="top: 50%;"></div>
           <div class="yard-line" style="top: 80%;"></div>
           <div class="tecmo-player"></div>
         </div>
-        <div id="sim-event-ticker" style="color: #ffb300; font-family: 'Press Start 2P'; font-size: 9px; margin-top: 10px;"></div>
+        <div id="sim-event-ticker">GENERATING SCHEDULE...</div>
       </div>
 
       <div id="results"></div>
       
-      <button id="challenge-btn" onclick="handleChallengeAction()" style="display:none; background: #013369;">SHARE LINK</button>
+      <button id="challenge-btn" onclick="handleChallengeAction()" style="display:none; background: #013369;">SHARE CHALLENGE</button>
       <button id="reset-btn" onclick="resetDraft()" style="display:none; background: #444;">NEW DRAFT</button>
     </div>
   </div>
@@ -114,11 +119,24 @@
 
   const teamThemes = {
     "Buffalo Bills": { p: "#00338D", s: "#C60C30", g: "rgba(0,51,141,0.5)" },
-    "Kansas City Chiefs": { p: "#E31837", s: "#FFB612", g: "rgba(227,24,55,0.5)" },
+    "Kansas City Chiefs": { p: "#E31837", s: "#FFB612", g: "rgba(227, 24, 55, 0.5)" },
     "Dallas Cowboys": { p: "#003594", s: "#869397", g: "rgba(0, 53, 148, 0.5)" }
   };
 
   const elitePlayers = ["Bosch Mallon", "Hat-Trick Ma-Homes", "Crusty McRunnery", "L'Amour Action", "King Henry", "Joe Furrow", "Rock Sturdy", "Don Far-Baugh"];
+
+  const simEvents = [
+    "WEEK 1: QB throws a 70-yard moonshot!",
+    "WEEK 4: Locker room fight over the last slice of pizza.",
+    "WEEK 6: Defense intercepts a pass with their helmet!",
+    "WEEK 9: HC loses his voice screaming at the ref.",
+    "WEEK 12: RB breaks three ankles on a single run.",
+    "WEEK 14: Snowstorm! Nobody can see the ball.",
+    "WEEK 16: Miracle catch in the end zone!",
+    "BYE WEEK: The team goes to a local taqueria.",
+    "WEEK 2: Special Teams blunders a field goal.",
+    "WEEK 10: The kicker hits the upright three times."
+  ];
 
   function applyTheme(name) {
     const theme = teamThemes[name] || { p: "#d50a0a", s: "#013369", g: "rgba(213,10,10,0.4)" };
@@ -177,24 +195,42 @@
     document.getElementById("animation-container").style.display = "block";
     finalWins = Math.floor(Math.random() * 8) + 2 + Math.floor(teamPower);
     if (finalWins > 17) finalWins = 17;
+    
     let step = 0;
+    const totalSteps = 5;
+    const ticker = document.getElementById("sim-event-ticker");
+    const scoreboard = document.getElementById("sim-scoreboard");
+
     const timer = setInterval(() => {
-      document.getElementById("sim-scoreboard").innerText = `RECORD: ${Math.floor((finalWins/4)*(step+1))}-${Math.floor(((17-finalWins)/4)*(step+1))}`;
-      document.getElementById("sim-event-ticker").innerText = (finalWins > 11) ? "TOTAL DOMINATION" : "GRINDING IT OUT";
-      if (step++ >= 3) { clearInterval(timer); showFinal(); }
-    }, 2500);
+      scoreboard.innerText = `RECORD: ${Math.floor((finalWins/totalSteps)*(step+1))}-${Math.floor(((17-finalWins)/totalSteps)*(step+1))}`;
+      ticker.innerText = simEvents[Math.floor(Math.random() * simEvents.length)];
+      
+      if (step++ >= totalSteps - 1) {
+        clearInterval(timer);
+        setTimeout(showFinal, 1000);
+      }
+    }, 4000); // 4 SECOND DELAY PER STEP
   }
 
   function showFinal() {
     document.getElementById("animation-container").style.display = "none";
     const r = document.getElementById("results");
-    let roast = (finalWins >= 12) ? "🔥 ELITE. You built a monster." : "💩 TRASH. Fire the GM.";
-    if (targetWinsToBeat !== null) roast += `<br><hr>${finalWins > targetWinsToBeat ? "CHALLENGE WON!" : "CHALLENGE FAILED."}`;
+    let roast = "";
+    if (finalWins === 17) roast = "🏆 UNTOUCHABLE. Perfection achieved. You are the GM GOAT.";
+    else if (finalWins >= 12) roast = "🔥 ELITE. You built a monster. Enjoy the deep playoff run.";
+    else if (finalWins >= 8) roast = "😐 MID. One-and-done playoff exit. Boring roster.";
+    else if (finalWins >= 4) roast = "💩 STANKY. Your fans are burning their season tickets.";
+    else roast = "🤡 WAR CRIME. This isn't a team, it's a circus. Fire everyone.";
+
+    if (targetWinsToBeat !== null) {
+      roast += `<br><hr><br>${finalWins > targetWinsToBeat ? "CHALLENGE WON! 🏆" : "CHALLENGE FAILED. 😭"}`;
+    }
+
     r.innerHTML = `<h2 style="color:#0f0;">FINAL: ${finalWins}- ${17-finalWins}</h2><p>${roast}</p>`;
     r.style.display = "block";
     document.getElementById("challenge-btn").style.display = "block";
     document.getElementById("reset-btn").style.display = "block";
-    if (finalWins >= 13) confetti();
+    if (finalWins >= 13) confetti({ particleCount: 250 });
   }
 
   function resetDraft() { window.location.href = window.location.origin + window.location.pathname; }
@@ -206,13 +242,7 @@
       await navigator.clipboard.writeText(url);
       alert("Challenge Link Copied!");
     } catch (err) {
-      const textArea = document.createElement("textarea");
-      textArea.value = url;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textArea);
-      alert("Challenge Link Copied (Fallback)!");
+      alert("Error copying link. Use a modern browser!");
     }
   }
 
