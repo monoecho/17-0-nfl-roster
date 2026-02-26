@@ -33,14 +33,13 @@
     z-index: 10;
   }
   
-  /* Mute Button Style */
   #mute-toggle { position: absolute; top: 15px; right: 15px; background: none; border: 1px solid #444; color: #777; font-size: 12px; padding: 5px 8px; cursor: pointer; border-radius: 4px; width: auto; font-family: 'Roboto', sans-serif;}
   #mute-toggle.active { color: #d50a0a; border-color: #d50a0a; }
 
   h2, h3 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px; margin-top: 0; }
   h2 { font-size: 36px; color: #fff; text-transform: uppercase; }
   
-  #challenge-banner { display: none; background: #ffb300; color: #111; padding: 12px; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; border-radius: 4px; margin-bottom: 20px; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.3); position: relative; z-index: 10;}
+  #challenge-banner { display: none; background: #013369; color: #fff; padding: 12px; font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; border-radius: 4px; margin-bottom: 20px; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.3); position: relative; z-index: 10;}
   
   .team-logo-container { height: 160px; display: flex; align-items: center; justify-content: center; margin: 15px 0; background: #222; border-radius: 8px; border: 1px inset #333; }
   #team-logo-img { max-height: 140px; max-width: 150px; object-fit: contain; display: none; filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.5)); }
@@ -59,6 +58,8 @@
   .roster-slot img { height: 35px; width: 35px; object-fit: contain; margin-left: 10px; filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5)); }
   .player-info { display: flex; align-items: center; font-weight: bold; font-size: 16px; color: #fff; }
   
+  .center-btn-wrapper { display: flex; justify-content: center; width: 100%; margin-top: 20px; }
+
   #animation-container { display: none; margin-top: 20px; text-align: center; background: #111; padding: 15px; border-radius: 8px; border: 2px solid #333; }
   #tecmo-screen { width: 100%; height: 180px; background-color: #2e7d32; position: relative; overflow: hidden; border: 4px solid #fff; border-radius: 4px; margin-bottom: 15px; box-sizing: border-box; }
   .yard-line { width: 100%; height: 4px; background: rgba(255,255,255,0.6); position: absolute; animation: scrollField 1s linear infinite; }
@@ -115,7 +116,9 @@
   <div id="roster-Defense" class="roster-slot"><strong>DEF</strong> <div class="player-info">Empty</div></div>
   <div id="roster-Coach" class="roster-slot"><strong>HC</strong> <div class="player-info">Empty</div></div>
   
-  <button id="sim-btn" onclick="triggerSimulation()" style="display:none; width: 100%; background: #28a745;">SIMULATE SEASON</button>
+  <div class="center-btn-wrapper">
+    <button id="sim-btn" onclick="triggerSimulation()" style="display:none; width: 100%; background: #28a745;">SIMULATE SEASON</button>
+  </div>
   
   <div id="animation-container">
     <div id="sim-scoreboard">SEASON RECORD: 0 - 0</div>
@@ -158,6 +161,37 @@
     osc.start(); osc.stop(audioCtx.currentTime + 0.1);
   }
 
+  function playHooraySound() {
+    if (isMuted || !audioCtx) return;
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (i * 0.15));
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime + (i * 0.15));
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + (i * 0.15) + 0.4);
+      osc.start(audioCtx.currentTime + (i * 0.15));
+      osc.stop(audioCtx.currentTime + (i * 0.15) + 0.4);
+    });
+  }
+
+  // Synthesized Sad Trumpet for Losses
+  function playSadSound() {
+    if (isMuted || !audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.type = 'sawtooth';
+    // Sliding frequency downward
+    osc.frequency.setValueAtTime(293.66, audioCtx.currentTime); // D4
+    osc.frequency.exponentialRampToValueAtTime(196.00, audioCtx.currentTime + 1.0); // G3
+    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.0);
+    osc.start(); osc.stop(audioCtx.currentTime + 1.2);
+  }
+
   const apiTeamIds = {
     "Las Vegas Raiders": 1, "Jacksonville Jaguars": 2, "New England Patriots": 3, "New York Giants": 4, "Baltimore Ravens": 5, "Tennessee Titans": 6, "Detroit Lions": 7, "Atlanta Falcons": 8, "Cleveland Browns": 9, "Cincinnati Bengals": 10, "Arizona Cardinals": 11, "Philadelphia Eagles": 12, "New York Jets": 13, "San Francisco 49ers": 14, "Green Bay Packers": 15, "Chicago Bears": 16, "Kansas City Chiefs": 17, "Washington Commanders": 18, "Carolina Panthers": 19, "Buffalo Bills": 20, "Indianapolis Colts": 21, "Pittsburgh Steelers": 22, "Seattle Seahawks": 23, "Tampa Bay Buccaneers": 24, "Miami Dolphins": 25, "Houston Texans": 26, "New Orleans Saints": 27, "Denver Broncos": 28, "Dallas Cowboys": 29, "Los Angeles Chargers": 30, "Los Angeles Rams": 31, "Minnesota Vikings": 32
   };
@@ -189,10 +223,12 @@
     const urlParams = new URLSearchParams(window.location.search);
     if(urlParams.has('w')) {
       targetWinsToBeat = parseInt(urlParams.get('w'));
-      let bannerHTML = `⚠️ CHALLENGE ⚠️<br>Beat: <span id="target-wins-display">???</span> Wins`;
+      let bannerHTML = `⚠️ CHALLENGE ⚠️<br>Beat: <span id="target-wins-display" style="font-size:24px; color:#ffb300;">???</span> Wins`;
       if(urlParams.has('t')) {
         const teamArray = decodeURIComponent(urlParams.get('t')).split(',');
-        bannerHTML += `<div style="margin-top:10px; font-size:14px; font-weight:normal; color:#ddd;">Challenger: QB:${teamArray[0]} | HC:${teamArray[5]}</div>`;
+        if (teamArray.length >= 6) {
+          bannerHTML += `<div style="margin-top:10px; font-size:13px; font-weight:normal; color:#fff; text-transform: none; border-top:1px solid rgba(255,255,255,0.2); padding-top:8px;">Challenger: QB: ${teamArray[0]} | HC: ${teamArray[5]}</div>`;
+        }
       }
       document.getElementById('challenge-banner').innerHTML = bannerHTML;
       document.getElementById('challenge-banner').style.display = 'block';
@@ -267,6 +303,7 @@
 
   function fireConfetti() {
     confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#d50a0a', '#013369', '#ffffff'] });
+    playHooraySound();
   }
 
   function calculateSeason() {
@@ -283,7 +320,10 @@
       document.getElementById("target-wins-display").innerText = targetWinsToBeat;
       msg += "<br><br><hr>";
       if (finalCalculatedWins > targetWinsToBeat) { msg += "HEAD-TO-HEAD WIN! 🏆"; fireConfetti(); }
-      else if (finalCalculatedWins < targetWinsToBeat) msg += "HEAD-TO-HEAD LOSS... 😭";
+      else if (finalCalculatedWins < targetWinsToBeat) { 
+        msg += "HEAD-TO-HEAD LOSS... 😭"; 
+        playSadSound(); 
+      }
       else msg += "WE TIED. 🤝";
     }
     res.innerHTML = msg; res.style.display = "block";
