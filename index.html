@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>17-0 NFL Roster Builder: Underground Stadium</title>
+<title>17-0 NFL Roster Builder: Underground Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -21,25 +21,16 @@
   
   .main-container { width: 100%; max-width: 540px; min-height: 100vh; padding: 20px; box-sizing: border-box; position: relative; z-index: 5; }
   
-  /* CRT SCANLINE OVERLAY */
   body::before { content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02)); background-size: 100% 3px, 3px 100%; pointer-events: none; z-index: 1000; }
   
   .glass-card { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 25px; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9); margin-bottom: 20px; text-align: center; border-top: 6px solid var(--primary); }
   
   h2 { font-family: 'Press Start 2P', cursive; font-size: 14px; text-shadow: 3px 3px 0 var(--primary); margin-bottom: 25px; line-height: 1.6; }
   
-  /* STYLED DROPDOWNS & BUTTONS */
   select, button { width: 100%; padding: 18px; margin: 10px 0; font-size: 22px; border-radius: 10px; box-sizing: border-box; }
-  select { 
-    background: #111 !important; 
-    color: #fff !important; 
-    border: 3px solid var(--primary); 
-    font-weight: bold; 
-    appearance: none; 
-    text-align: center;
-    cursor: pointer;
-  }
-  button { font-family: 'Bebas Neue', sans-serif; background: var(--primary); color: white; border: none; cursor: pointer; text-transform: uppercase; }
+  select { background: #111 !important; color: #fff !important; border: 3px solid var(--primary); font-weight: bold; appearance: none; text-align-content: center; cursor: pointer;}
+  button { font-family: 'Bebas Neue', sans-serif; background: var(--primary); color: white; border: none; cursor: pointer; text-transform: uppercase; transition: transform 0.1s; }
+  button:active { transform: scale(0.95); }
   
   #mute-toggle { width: auto; position: absolute; top: 15px; right: 15px; padding: 8px 12px; font-size: 10px; background:#333; z-index: 1001; }
 
@@ -50,20 +41,19 @@
   .slot-label { font-family: 'Press Start 2P', cursive; font-size: 10px; color: #888; }
   .player-name { font-weight: bold; font-size: 20px; color: #fff; }
 
-  /* FIELD GOAL MINI GAME */
+  /* FIELD GOAL GAME */
   #kicker-container { display: none; background: #000; padding: 20px; border-radius: 15px; border: 3px solid #ffb300; position: relative; }
   .goal-posts { width: 100%; height: 120px; border-left: 10px solid yellow; border-right: 10px solid yellow; border-bottom: 10px solid yellow; margin-bottom: 40px; position: relative; }
-  #kicking-ball { width: 24px; height: 34px; background: #8b4513; border-radius: 50%; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; display: none; }
+  #kicking-ball { width: 24px; height: 34px; background: #8b4513; border-radius: 50%; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; display: none; z-index: 10; }
   
   @keyframes ballFlight {
-    0% { bottom: -20px; transform: translateX(-50%) scale(1); }
-    50% { bottom: 150px; transform: translateX(-50%) scale(0.5); }
-    100% { bottom: 120px; transform: translateX(-50%) scale(0.3); opacity: 0; }
+    0% { bottom: -20px; transform: translateX(-50%) scale(1); opacity: 1; }
+    100% { bottom: 130px; transform: translateX(-50%) scale(0.4); opacity: 0.8; }
   }
 
   .kick-meter { width: 100%; height: 30px; background: #333; border-radius: 15px; position: relative; overflow: hidden; }
-  .meter-target { width: 50px; height: 100%; background: #0f0; position: absolute; left: 50%; transform: translateX(-50%); box-shadow: 0 0 15px #0f0; }
-  #meter-cursor { width: 20px; height: 20px; background: #fff; border-radius: 50%; position: absolute; top: 5px; left: 0; animation: slide 0.8s ease-in-out infinite alternate; }
+  .meter-target { width: 60px; height: 100%; background: #0f0; position: absolute; left: 50%; transform: translateX(-50%); box-shadow: 0 0 15px #0f0; }
+  #meter-cursor { width: 20px; height: 20px; background: #fff; border-radius: 50%; position: absolute; top: 5px; left: 0; animation: slide 0.7s ease-in-out infinite alternate; border: 2px solid #000;}
   @keyframes slide { from { left: 5%; } to { left: 90%; } }
 
   /* SIMULATION ANIMATION */
@@ -107,10 +97,13 @@
     <button id="sim-btn" onclick="triggerSimulation()" style="display:none; background: #28a745;">SIMULATE SEASON</button>
 
     <div id="kicker-container">
-      <h3 style="font-family:'Press Start 2P'; font-size:10px; color:#ffb300;">MID-SEASON FIELD GOAL</h3>
+      <h3 style="font-family:'Press Start 2P'; font-size:11px; color:#ffb300;">PRECISION KICK: WEEK 9</h3>
       <div class="goal-posts"><div id="kicking-ball"></div></div>
-      <div class="kick-meter"><div class="meter-target"></div><div id="meter-cursor"></div></div>
-      <button id="kick-action-btn" onclick="attemptKick()">KICK!</button>
+      <div class="kick-meter">
+        <div class="meter-target"></div>
+        <div id="meter-cursor"></div>
+      </div>
+      <button id="kick-action-btn" onclick="attemptKick()">KICK NOW!</button>
     </div>
 
     <div id="animation-container">
@@ -139,7 +132,7 @@
   function toggleMute() { isMuted = !isMuted; document.getElementById("mute-toggle").innerText = isMuted ? "OFF" : "ON"; }
   
   function playSound(f, d=0.05, type='square') { 
-    if(isMuted) return; if(!audioCtx) audioCtx = new AudioContext(); 
+    if(isMuted) return; if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
     if(audioCtx.state === 'suspended') audioCtx.resume();
     const o = audioCtx.createOscillator(), g = audioCtx.createGain(); 
     o.type=type; o.frequency.value=f; g.gain.value=0.01; o.connect(g); g.connect(audioCtx.destination); 
@@ -148,12 +141,12 @@
 
   function playCrowd() { 
     if(isMuted) return; if(!audioCtx) audioCtx = new AudioContext();
-    const bufSize = audioCtx.sampleRate * 2, buffer = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate), data = buffer.getChannelData(0); 
+    const bufSize = audioCtx.sampleRate * 1.5, buffer = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate), data = buffer.getChannelData(0); 
     for(let i=0; i<bufSize; i++) data[i] = Math.random() * 2 - 1; 
     const src = audioCtx.createBufferSource(), g = audioCtx.createGain(); 
     src.buffer = buffer; g.gain.setValueAtTime(0, audioCtx.currentTime); 
-    g.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + 0.5); 
-    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2); 
+    g.gain.linearRampToValueAtTime(0.04, audioCtx.currentTime + 0.2); 
+    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2); 
     src.connect(g); g.connect(audioCtx.destination); src.start(); 
   }
 
@@ -166,7 +159,7 @@
     function perform() {
       const name = available[Math.floor(Math.random()*available.length)];
       img.src = `https://a.espncdn.com/i/teamlogos/nfl/500/${logoMap[name]||'nfl'}.png`;
-      playSound(300 + count*10);
+      playSound(300 + count*15);
       if(count++ < 20) setTimeout(perform, 100);
       else { currentTeam = name; loadRoster(); }
     }
@@ -191,32 +184,57 @@
 
   function triggerSimulation() {
     document.getElementById("sim-btn").style.display="none"; document.getElementById("animation-container").style.display="block";
-    finalWins = Math.floor(Math.random()*8)+4;
+    finalWins = Math.floor(Math.random()*9)+3;
     let step = 0; const timer = setInterval(() => {
       document.getElementById("sim-scoreboard").innerText = `RECORD: ${Math.floor((finalWins/6)*(step+1))}-${Math.floor(((17-finalWins)/6)*(step+1))}`;
-      document.getElementById("sim-event-ticker").innerText = simEvents[step] || "STADIUM ROARING!";
+      document.getElementById("sim-event-ticker").innerText = simEvents[step] || "STADIUM SHAKING!";
       if(step === 2) { clearInterval(timer); setTimeout(() => { document.getElementById("animation-container").style.display="none"; document.getElementById("kicker-container").style.display="block"; }, 1500); }
       if(step++ >= 5) { clearInterval(timer); showFinal(); }
-    }, 2000);
+    }, 2500);
   }
 
   function attemptKick() {
-    const ball = document.getElementById("kicking-ball"), cursor = document.getElementById("meter-cursor"), target = document.querySelector(".meter-target");
-    const cursorX = cursor.offsetLeft, targetX = target.offsetLeft, targetW = target.offsetWidth;
-    document.getElementById("kick-action-btn").disabled = true;
-    ball.style.display = "block"; ball.style.animation = "ballFlight 1s forwards";
+    const cursor = document.getElementById("meter-cursor");
+    const target = document.querySelector(".meter-target");
+    const ball = document.getElementById("kicking-ball");
+    const btn = document.getElementById("kick-action-btn");
+
+    // Capture precise position
+    const cursorRect = cursor.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    const cursorCenter = cursorRect.left + (cursorRect.width / 2);
+
+    // Stop animation
+    cursor.style.animation = "none";
+    cursor.style.left = (cursorRect.left - cursor.parentElement.getBoundingClientRect().left) + "px";
+    btn.disabled = true;
+
+    // Ball Animation
+    ball.style.display = "block";
+    ball.style.animation = "ballFlight 1s forwards ease-out";
     playCrowd();
+
     setTimeout(() => {
-      if(cursorX >= targetX && cursorX <= (targetX + targetW)) { bonusWins = 2; playSound(800, 0.5); alert("IT'S GOOD! +2 WINS"); }
-      else { bonusWins = -1; playSound(200, 0.5); alert("WIDE LEFT! -1 WIN"); }
-      document.getElementById("kicker-container").style.display="none"; showFinal();
+      if (cursorCenter >= targetRect.left && cursorCenter <= targetRect.right) {
+        bonusWins = 2;
+        playSound(800, 0.4);
+        alert("IT'S GOOD! +2 WINS");
+      } else {
+        bonusWins = -1;
+        const dir = (cursorCenter < targetRect.left) ? "WIDE LEFT" : "WIDE RIGHT";
+        playSound(200, 0.4);
+        alert(dir + "! -1 WIN");
+      }
+      document.getElementById("kicker-container").style.display="none";
+      showFinal();
     }, 1100);
   }
 
   function showFinal() {
-    document.getElementById("animation-container").style.display="none";
+    document.getElementById("animation-container").style.display = "none";
     const r = document.getElementById("results"), total = Math.max(0, Math.min(17, finalWins + bonusWins));
-    r.innerHTML = `<h2>FINAL: ${total}-${17-total}</h2><p>${total>=12?"🔥 LEGENDARY GM.":"💩 DUMPSTER FIRE."}</p>`;
+    let review = (total >= 14) ? "🏆 DYNASTY MATERIAL. You built a god-tier squad." : (total >= 9 ? "😐 MID-SEASON FRAUD. One-and-done in the playoffs." : "💩 ABSOLUTE TRASH. Your owner is moving the team to London.");
+    r.innerHTML = `<h2>FINAL: ${total}-${17-total}</h2><p>${review}</p>`;
     r.style.display="block"; document.getElementById("reset-btn").style.display="block"; if(total>=13) confetti();
   }
 
