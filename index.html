@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>17-0 NFL Roster Builder: SNES Pro Edition</title>
+<title>17-0 NFL Roster Builder: 2026 Master Class</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -11,13 +11,12 @@
   :root { --primary: #d50a0a; --accent: #013369; --glow: rgba(213, 10, 10, 0.4); --kickX: 0px; }
   body { font-family: 'Inter', sans-serif; background-color: #2e7d32; background-image: linear-gradient(90deg, transparent 49%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.1) 51%, transparent 51%), repeating-linear-gradient(0deg, #2e7d32, #2e7d32 100px, #388e3c 100px, #388e3c 200px); color: #fff; margin: 0; padding: 0; display: flex; justify-content: center; overflow-x: hidden; transition: background-color 0.5s ease; }
   .main-container { width: 100%; max-width: 540px; min-height: 100vh; padding: 20px; box-sizing: border-box; position: relative; z-index: 5; }
+  body::before { content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02)); background-size: 100% 3px, 3px 100%; pointer-events: none; z-index: 1000; }
   
   .glass-card { background: rgba(0, 0, 0, 0.92); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px; padding: 25px; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9); margin-bottom: 20px; text-align: center; border-top: 6px solid var(--primary); transition: border-color 0.6s ease; }
   h2 { font-family: 'Press Start 2P', cursive; font-size: 11px; text-shadow: 2px 2px 0 var(--primary); margin-bottom: 25px; line-height: 1.6; }
   
   #start-btn { width: 85px; height: 85px; border-radius: 50%; border: 4px solid #fff; box-shadow: 0 0 15px var(--glow); background: radial-gradient(circle, var(--primary) 40%, #800 100%); display: flex; align-items: center; justify-content: center; margin: 15px auto; cursor: pointer; color: white; font-family: 'Press Start 2P'; font-size: 14px; transition: transform 0.1s; }
-  #start-btn:active { transform: scale(0.9); }
-  
   #mute-toggle { width: auto !important; position: absolute; top: 15px; right: 15px; padding: 6px 10px; font-size: 9px; background: #333; z-index: 1100; border-radius: 4px; font-family: 'Press Start 2P'; color: white; cursor: pointer; border: 1px solid #555;}
 
   select, .std-btn { width: 100%; padding: 18px; margin: 10px 0; font-size: 22px; border-radius: 10px; box-sizing: border-box; font-family: 'Bebas Neue'; text-transform: uppercase; cursor: pointer; border: none; }
@@ -30,7 +29,6 @@
   .roster-slot { background: rgba(0,0,0,0.6); padding: 10px; margin: 5px 0; border-radius: 10px; border-left: 5px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
   .player-name { font-weight: bold; font-size: 18px; color: #fff; }
 
-  /* FGMG RE-ENGINEERED */
   #kicker-container { display: none; background: #000; padding: 20px; border-radius: 15px; border: 3px solid #ffb300; position: relative; }
   .goal-posts { width: 40%; margin: 0 auto 30px auto; height: 110px; border-left: 8px solid yellow; border-right: 8px solid yellow; border-bottom: 8px solid yellow; position: relative; }
   #kicking-ball { width: 22px; height: 32px; background: #8b4513; border-radius: 50%; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; display: none; z-index: 10; }
@@ -41,17 +39,15 @@
   .power-fill { height: 100%; background: linear-gradient(90deg, #333, #ff0, #f00); width: 0%; position: absolute; left: 0; }
   #meter-cursor { width: 8px; height: 100%; background: #fff; position: absolute; left: 0; z-index: 3; box-shadow: 0 0 8px #fff; }
 
-  /* SIM ANIMATION */
   #animation-container { display: none; margin: 25px 0; }
   #tecmo-screen { width: 100%; height: 180px; background-color: #2e7d32; position: relative; overflow: hidden; border: 4px solid #fff; border-radius: 10px; }
   .yard-line { width: 100%; height: 3px; background: rgba(255,255,255,0.2); position: absolute; animation: scrollField 0.5s linear infinite; }
   @keyframes scrollField { 0% { top: -10%; } 100% { top: 110%; } }
-
   .pixel-player { width: 34px; height: 48px; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); transition: left 0.15s ease-in-out; z-index: 20; }
   .pixel-helmet { width: 22px; height: 18px; background: var(--primary); margin: 0 auto; border-radius: 5px 5px 0 0; border: 2px solid #000; position: relative; }
   .pixel-jersey { width: 30px; height: 24px; background: var(--accent); margin: -2px auto 0; border-radius: 3px; border: 2px solid #000; }
-  
   .defender { width: 28px; height: 38px; position: absolute; z-index: 15; top: -50px; background: #eee; border: 2px solid #333; border-radius: 4px; box-shadow: 2px 2px 0 #000; }
+  #results { display: none; padding: 25px; border-radius: 16px; border: 4px solid var(--primary); background: #111; font-size: 17px; line-height: 1.6; }
 </style>
 </head>
 <body>
@@ -81,14 +77,15 @@
     <div style="display:flex; justify-content:center;"><button id="sim-btn" class="std-btn" onclick="triggerSimulation()" style="display:none; background: #28a745;">SIMULATE SEASON</button></div>
     
     <div id="kicker-container">
-      <h3 style="font-family:'Press Start 2P'; font-size:9px; color:#ffb300;">FGMG: DOUBLE-BOUNCE</h3>
+      <h3 style="font-family:'Press Start 2P'; font-size:9px; color:#ffb300;">FGMG: SNES SWING</h3>
+      <div id="kick-msg" style="color:#0f0; font-family:'Press Start 2P'; font-size:10px; height:15px; margin-bottom:5px;"></div>
       <div class="goal-posts"><div id="kicking-ball"></div></div>
       <div class="swing-meter">
         <div class="power-fill" id="p-fill"></div>
         <div class="accuracy-zone"></div>
         <div id="meter-cursor"></div>
       </div>
-      <button id="kick-action-btn" class="std-btn" onclick="handleKickInput()">LOCK STRENGTH</button>
+      <button id="kick-action-btn" class="std-btn" onclick="handleKickInput()">STOP POWER</button>
     </div>
 
     <div id="animation-container">
@@ -100,7 +97,10 @@
       <div id="sim-event-ticker" style="color:#ffb300; font-family:'Press Start 2P'; font-size:8px; margin-top:15px; line-height:1.4; height:45px;">READY...</div>
     </div>
     <div id="results"></div>
-    <button id="reset-btn" class="std-btn" onclick="location.reload()" style="display:none; background: #444;">NEW DRAFT</button>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+      <button id="challenge-btn" class="std-btn" onclick="handleChallengeAction()" style="display:none; background: #013369;">SHARE CHALLENGE</button>
+      <button id="reset-btn" class="std-btn" onclick="location.reload()" style="display:none; background: #444;">NEW DRAFT</button>
+    </div>
   </div>
 </div>
 <script>
@@ -171,7 +171,7 @@
   function startKickerMeter() {
     kickStep = 1; meterPos = 0; meterDir = 1;
     meterInterval = setInterval(() => {
-      meterPos += meterDir * 5;
+      meterPos += meterDir * 3; // SLOWED DOWN BY 25%
       if(meterPos >= 100 || meterPos <= 0) meterDir *= -1;
       document.getElementById("meter-cursor").style.left = meterPos + "%";
       if(kickStep === 1) document.getElementById("p-fill").style.width = meterPos + "%";
@@ -179,15 +179,16 @@
   }
 
   function handleKickInput() {
-    const btn = document.getElementById("kick-action-btn");
+    const btn = document.getElementById("kick-action-btn"), msg = document.getElementById("kick-msg");
     if(kickStep === 1) { 
       kickStep = 2; powerVal = meterPos; 
       btn.innerText = "LOCK ACCURACY";
     } else {
       clearInterval(meterInterval); 
       accuracyVal = meterPos;
-      // accuracyVal between 10 and 20 is the sweet spot
-      executeKick(accuracyVal > 8 && accuracyVal < 25);
+      let isGood = (accuracyVal > 8 && accuracyVal < 25);
+      msg.innerText = (powerVal < 60) ? "TOO WEAK!" : (!isGood ? (accuracyVal < 8 ? "WIDE LEFT!" : "WIDE RIGHT!") : "IT'S GOOD!");
+      executeKick(isGood && powerVal > 60);
     }
   }
 
@@ -195,16 +196,19 @@
     const ball = document.getElementById("kicking-ball"); document.getElementById("kick-action-btn").disabled = true;
     const curve = (accuracyVal - 15) * 1.8; document.documentElement.style.setProperty('--kickX', `${curve}px`);
     ball.style.display = "block"; ball.style.animation = "ballFlight 1s forwards ease-out";
-    setTimeout(() => { bonusWins = (isGood && powerVal > 70) ? 2 : -1; document.getElementById("kicker-container").style.display="none"; showFinal(); }, 1100);
+    setTimeout(() => { bonusWins = isGood ? 2 : -1; document.getElementById("kicker-container").style.display="none"; showFinal(); }, 1100);
   }
 
   function showFinal() {
     document.getElementById("animation-container").style.display = "none";
     const r = document.getElementById("results"), total = Math.max(0, Math.min(17, finalWins + bonusWins));
-    const cat = total === 17 ? 'god' : (total >= 13 ? 'elite' : (total >= 8 ? 'mid' : 'bad'));
-    const burns = ["WAR CRIME MANAGEMENT.", "DUMPSTER FIRE.", "MID-SEASON FRAUD.", "PLAYOFF FLOP.", "GM DEITY."];
-    r.innerHTML = `<h2>FINAL: ${total}-${17-total}</h2><p>${total > 15 ? burns[4] : (total > 8 ? burns[2] : burns[0])}</p>`;
-    r.style.display="block"; document.getElementById("reset-btn").style.display="block"; if(total>=14) confetti();
+    r.innerHTML = `<h2>FINAL: ${total}-${17-total}</h2><p>${total >= 14 ? "GM DEITY." : (total >= 9 ? "PLAYOFF LOCK." : "MANAGEMENT WAR CRIME.")}</p>`;
+    r.style.display="block"; document.getElementById("reset-btn").style.display="block"; document.getElementById("challenge-btn").style.display="block"; if(total>=14) confetti();
+  }
+
+  async function handleChallengeAction() {
+    const total = Math.max(0, Math.min(17, finalWins + bonusWins));
+    navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?w=${total}&t=${encodeURIComponent(Object.values(roster).join(','))}`).then(() => alert("Link Copied!"));
   }
   window.onload = async () => { const res = await fetch('rosters.json'); rosterData = await res.json(); };
 </script>
