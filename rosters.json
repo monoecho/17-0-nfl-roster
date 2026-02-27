@@ -1,34 +1,225 @@
 {
-  "Arizona Cardinals": {"QB": ["Flyer Hurry", "Jacoby Brisket"], "RB": ["James Corner", "Tray Benz-On"], "WR": ["Starvin Harrison Jr", "Mikey Wilson"], "TE": ["Tray McPride"], "Coach": "Mike La-Floor"},
-  "Atlanta Falcons": {"QB": ["Michael Phown-Ix", "Kirk Cousins"], "RB": ["Bijan Birdman", "Tyler All-Gear"], "WR": ["Drake London-Calling", "Darnell Money"], "TE": ["Kyle Pits"], "Coach": "Ra-Steam Chorus"},
-  "Baltimore Ravens": {"QB": ["L'Amour Action", "Tyler Hunt-Lee"], "RB": ["King Henry", "Keaton Missile"], "WR": ["Zay Flowers-Power", "D'Andre Hop-Skip"], "TE": ["Mark Land-Drews"], "Coach": "John Far-Baugh"},
-  "Buffalo Bills": {"QB": ["Bosch Mallon", "Mitch Trubisk-Keys"], "RB": ["James Cookin", "Ray Day-Vis"], "WR": ["Khalil Shaker", "Keon Coal-Man"], "TE": ["Dalton Kin-Cade"], "Coach": "Shawn McGermit"},
-  "Carolina Panthers": {"QB": ["Bryce Old", "Andy Salt-On"], "RB": ["Chuba Hub-Cap", "Jonny Brooks"], "WR": ["Diontae Fun-Son", "Xavier Le-Leg-Ite"], "TE": ["Ja-Tavion Sand-Storm"], "Coach": "Dave Can-Nels"},
-  "Chicago Bears": {"QB": ["Cable Bill-iams", "Tyson Bag-It"], "RB": ["D'Andre Swift-Move", "Roschon John-Son"], "WR": ["DJ Moore-Points", "Keenan Old-Man"], "TE": ["Cole K-Met"], "Coach": "Hen Ron-Son"},
-  "Cincinnati Bengals": {"QB": ["Joe Furrow", "Jake Brown-Out"], "RB": ["Chase Brown-Sugah", "Zack Moss-Boss"], "WR": ["Ja-Marr Chase-Bank", "Tea Higgins"], "TE": ["Mike Get-Sickly"], "Coach": "Zac Tailor"},
-  "Cleveland Browns": {"QB": ["The-Shawn Watson", "James Win-Stun"], "RB": ["Nick Chub-Club", "Jerome Ford-Truck"], "WR": ["Amari Cooper-S", "Jerry Judy"], "TE": ["David N-Joke-U"], "Coach": "Kevin Stefan-Ski"},
-  "Dallas Cowboys": {"QB": ["Dak Press-Button", "Tray Lance-A-Lot"], "RB": ["Zeke Bell-Iott", "Rico Dow-Down"], "WR": ["CeeDee Disc", "Brandin Cooks-Meat"], "TE": ["Jake Fergie"], "Coach": "Brian Shot-Caller"},
-  "Denver Broncos": {"QB": ["Bo Knocks", "Jarrett Stid-Ham"], "RB": ["Javonte Will-Run", "Jaleel Mc-Laughing"], "WR": ["Courtland Sutton-Down", "Josh Reyn-Olds"], "TE": ["Lucas Krull-The-Conqueror"], "Coach": "Sean Pay-Ton-Of-Fun"},
-  "Detroit Lions": {"QB": ["Jared Goff-Ball", "Hendon Hook-Shot"], "RB": ["Jahmyr Gib-Us", "David Mont-Gummy"], "WR": ["Amon-Ra Sun-God", "Jameson Will-Power"], "TE": ["Sam La-Porta-Potty"], "Coach": "Dan Camp-Bell-Curve"},
-  "Green Bay Packers": {"QB": ["Jordan Love-Interest", "Sean Cliff-Hanger"], "RB": ["Josh Jacob-Crack-On", "AJ Dill-Pickle"], "WR": ["Christian Watt-Son", "Jayden Reed-It"], "TE": ["Luke Mus-Grave"], "Coach": "Matt La-Floor-It"},
-  "Houston Texans": {"QB": ["C.J. Shroud", "Davis Mill-Stone"], "RB": ["Joe Mix-Tape", "Dameon Pierce-Ear"], "WR": ["Nico Coll-Ins", "Stefon Digs-A-Hole"], "TE": ["Dalton Schultz-N-Giggle"], "Coach": "De-Me-Go Ryans"},
-  "Indianapolis Colts": {"QB": ["Ant Richardson", "Joe Flacc-Old"], "RB": ["Jonny Taylor", "Tray Ser-Mon"], "WR": ["Mike Pitt-Man", "Josh Down-Town"], "TE": ["Jelani Woods-Walker"], "Coach": "Shane Stay-Chen"},
-  "Jacksonville Jaguars": {"QB": ["Trevor Law-Order", "Mac Jones-y"], "RB": ["Trav Etienne Jr", "Tank Big-Sea"], "WR": ["Chris Kirk-Land", "Brian Thomas III"], "TE": ["Evan En-Gram"], "Coach": "Liam Coen-y"},
-  "Kansas City Chiefs": {"QB": ["Hat-Trick Ma-Homes", "Carson Went-Away"], "RB": ["Isiah Pa-Che-Go", "Clyde Ed-Head"], "WR": ["Rashee Rice-Crispy", "Xavier Worth-It"], "TE": ["Travy Catchy"], "Coach": "Candy Reed"},
-  "Las Vegas Raiders": {"QB": ["Gardner Men-Shoe", "Aidan O-Con-Man"], "RB": ["Zamir White-Out", "Alex Matt-I-Son"], "WR": ["Devante Add-A-Name", "Jakobi May-Be"], "TE": ["Brock Bow-Wows"], "Coach": "Skeet Barrel"},
-  "Los Angeles Chargers": {"QB": ["Just-In Her-Bert", "Easton Stick-Shift"], "RB": ["Gus Ed-Words", "JK Dobb-Ins"], "WR": ["Josh Palm-Reader", "Ladd Mc-Conkey-Kong"], "TE": ["Will Diss-Lee"], "Coach": "Jim Har-Baugh-Stard"},
-  "Los Angeles Rams": {"QB": ["Matt Staff-Old", "Jimmy Gar-Op-Polo"], "RB": ["Kyren Will-Win", "Blake Cor-Um"], "WR": ["Puka Na-Coo", "Cooper Cup-O-Joe"], "TE": ["Colby Park-In-Son"], "Coach": "Sean Mc-Vay-Vay"},
-  "Miami Dolphins": {"QB": ["Tua Tag-A-Long", "Mike White-Out"], "RB": ["Raheem Most-Start", "DeVon A-Train"], "WR": ["Cheetah Mill", "Jaylen Wad-Dull"], "TE": ["Jonnu Smith-y"], "Coach": "Mike Mc-Dan-Yell"},
-  "Minnesota Vikings": {"QB": ["Sam Darn-It", "JJ Mc-Car-The-Third"], "RB": ["Aaron Jones-y", "Ty Chan-Dull"], "WR": ["Just Jefferson", "Jordan Add-I-Son"], "TE": ["TJ Hock-In-Sock"], "Coach": "Kevin O-Con-Nell"},
-  "New England Patriots": {"QB": ["Jacoby Brisket", "Drake May-Be"], "RB": ["Ram-Dre Steven-Son", "Ant Gib-Son"], "WR": ["Ken Bourne", "Ja-Lynn Polk-A-Dot"], "TE": ["Hunter Henry-The-Eighth"], "Coach": "Mike V-Rabel"},
-  "New Orleans Saints": {"QB": ["Derek Car-Wash", "Jake Hay-Ner"], "RB": ["Alvin Ka-Ma-Ra", "Jam-A-Lot Williams"], "WR": ["Chris O-Live", "Rashid Shaking"], "TE": ["Taysom Hill-Billy"], "Coach": "Kellen Less-Moore"},
-  "New York Giants": {"QB": ["Dan Jones-y", "Drew Lock-Box"], "RB": ["Devin Single-Tarry", "Ty Tracy Jr"], "WR": ["Malik Neigh-Bers", "Wan-Dale Rob-In-Son"], "TE": ["Theo John-Son"], "Coach": "Don Far-Baugh"},
-  "New York Jets": {"QB": ["A-A-Ron Dodge-Rags", "Tyrod Tail-Or"], "RB": ["Breece Hall-Way", "Braelon All-In"], "WR": ["G-Willy Wilson", "Mike Will-Power"], "TE": ["Tyler Conk-Lin"], "Coach": "Aaron Glenn-Coco"},
-  "Philadelphia Eagles": {"QB": ["Jalen Hurts-A-Lot", "Kenny Pick-Six"], "RB": ["Saquon Bark-Lee", "Ken Gain-Well"], "WR": ["AJ Brownie", "DeVonta Smith-y"], "TE": ["Dallas Go-Dert"], "Coach": "Nick Sir-Yanni"},
-  "Pittsburgh Steelers": {"QB": ["Russ Wilson-Ball", "Just Fields"], "RB": ["Najee Har-Ris", "Jaylen War-Ren"], "WR": ["G-Pickens", "Van Jeff-Er-Son"], "TE": ["Pat Free-Muth"], "Coach": "Spike Rhythm"},
-  "San Francisco 49ers": {"QB": ["Rock Sturdy", "Josh Dob-In"], "RB": ["Crusty McRunnery", "Jordan Ma-Son"], "WR": ["Brandon A-Yuck", "Deebo Sam-Yell"], "TE": ["George Kit-Tell"], "Coach": "Kyle Shan-A-Plan"},
-  "Seattle Seahawks": {"QB": ["Geno Smith-y", "Sam How-Ell"], "RB": ["Ken Walk-In", "Zach Char-Bon-Net"], "WR": ["DK Met-Calf", "Tyler Lock-It"], "TE": ["Noah Fan-Tastic"], "Coach": "Mike Mc-Don-Ald"},
-  "Tampa Bay Buccaneers": {"QB": ["Baker May-Field-Goals", "Kyle Trash"], "RB": ["Rachaad White-Bread", "Bucky Irv-Ing"], "WR": ["Mike Ev-Ans", "Chris God-Win"], "TE": ["Cade Ot-Ton-Of-Brick"], "Coach": "Todd Bowl-Cut"},
-  "Tennessee Titans": {"QB": ["Will Lev-Is", "Mason Rud-Old-Ph"], "RB": ["Tony Poll-Ard", "Ty-Jae Spears-Mint"], "WR": ["Calvin Rid-Lee", "DeAndre Hop-Skip"], "TE": ["Chig O-Konk-Woah"], "Coach": "Rob Sa-Lay"},
-  "Washington Commanders": {"QB": ["Jayden Dan-Yells", "Marc Mar-Iota"], "RB": ["Austin Eck-Ler", "Brian Rob-In-Son"], "WR": ["Terry Mc-Lauren", "Jahan Dot-Son"], "TE": ["Zach Er-Tz"], "Coach": "Dan Quinn-Stoppable"}
-}
+  "Arizona Cardinals": {
+    "QB": ["Kyler the Creator (ELITE)", "Clayton Tune-Up"],
+    "RB": ["James Con-Man", "Trey Benson-Burner"],
+    "WR": ["Marvin Harrison IV", "Michael Wil-Sun"],
+    "TE": ["Trey Mc-Pride"],
+    "Coach": "Jon Gannon-Ball"
+  },
+  "Atlanta Falcons": {
+    "QB": ["Kirk Cousins-In-Law", "Michael Penix Rising"],
+    "RB": ["Bijan Mustard (ELITE)", "Tyler All-Gears"],
+    "WR": ["Drake London-Calling", "Darnell Mooney-Tune"],
+    "TE": ["Kyle Pitts-Stop"],
+    "Coach": "Raheem Dream-Team"
+  },
+  "Baltimore Ravens": {
+    "QB": ["L'Amour Action (ELITE)", "Josh Johnson & Johnson"],
+    "RB": ["King Henry (ELITE)", "Justice Hill-Side"],
+    "WR": ["Zay Flowers-Power", "Rashod Bateman-Begins"],
+    "TE": ["Mark Man-Drews"],
+    "Coach": "John Har-Baugh"
+  },
+  "Buffalo Bills": {
+    "QB": ["Bosch Mallon (ELITE)", "Mitch Tris-Biscuit"],
+    "RB": ["James Cook-Out", "Ray Davis-Eyes"],
+    "WR": ["Khalil Shakir-Not-Stirred", "Keon Cole-Mine"],
+    "TE": ["Dalton Kin-Cade"],
+    "Coach": "Joe Play-Dee"
+  },
+  "Carolina Panthers": {
+    "QB": ["Bryce Young-Blood", "Andy Dalton-ic"],
+    "RB": ["Chuba Chub-Bard", "Jonathon Brooks-Stone"],
+    "WR": ["Diontae Johnson-Baby", "Xavier Legette-Go"],
+    "TE": ["Ja'Tavion San-Ders"],
+    "Coach": "Dave Can-All-Is"
+  },
+  "Chicago Bears": {
+    "QB": ["Caleb Will-Definitely (ELITE)", "Tyson Ba-Ghent"],
+    "RB": ["D'Andre Swift-ie", "Roschon John-Sun"],
+    "WR": ["DJ Moore-Money", "Keenan All-In", "Rome Odunze-Way"],
+    "TE": ["Cole Kmet-the-Frog"],
+    "Coach": "Matt Eber-Flus"
+  },
+  "Cincinnati Bengals": {
+    "QB": ["Joe Furrow (ELITE)", "Jake Brown-Out"],
+    "RB": ["Zack Mossy", "Chase Brown-Sugar"],
+    "WR": ["Ja'Marrvelous Mrs. Maisel (ELITE)", "Tee Hig-Gins"],
+    "TE": ["Mike Ge-Sickie"],
+    "Coach": "Zac Tay-Lord"
+  },
+  "Cleveland Browns": {
+    "QB": ["Shedeur Neigh-Bor", "Deshaun of the Dead"],
+    "RB": ["Nick Chub-a-Dub", "Jerome Ford-Truck"],
+    "WR": ["Amari Coo-Purr", "Jerry Jeu-Dee"],
+    "TE": ["David Njoku-lar"],
+    "Coach": "Kevin Stefan-Ski"
+  },
+  "Dallas Cowboys": {
+    "QB": ["Dak-Street Boy", "Trey Lance-a-Lot"],
+    "RB": ["Ezekiel Bread", "Rico Dow-Deli"],
+    "WR": ["CeeDeez Nuts (ELITE)", "Brand-In Cooks"],
+    "TE": ["Jake Fergu-Son"],
+    "Coach": "Mike Mc-Car-They"
+  },
+  "Denver Broncos": {
+    "QB": ["Bo Nix-Pix", "Zach Wil-Sun"],
+    "RB": ["Javonte Infer-No", "Audric Es-Time"],
+    "WR": ["Courtland Sut-Ton", "Troy Frank-Lin"],
+    "TE": ["Greg Dul-Cich"],
+    "Coach": "Sean Pay-Ton"
+  },
+  "Detroit Lions": {
+    "QB": ["Jared Goff-Ball", "Hendon Hook-er"],
+    "RB": ["Jahmyr-I-Go-Again (ELITE)", "David Montgom-Hurry"],
+    "WR": ["Amon-A-Roll (ELITE)", "Jameson Wil-Sun"],
+    "TE": ["Sam La-Porta-Potty"],
+    "Coach": "Dan Camp-Bell"
+  },
+  "Green Bay Packers": {
+    "QB": ["Jordan Love-Shack (ELITE)", "Sean Clif-Fhanger"],
+    "RB": ["Josh Jacobs-Ladder", "MarShawn Lloyd-Banks"],
+    "WR": ["Jayden Reed-er", "Christian Wat-Sun"],
+    "TE": ["Luke Mus-Grave"],
+    "Coach": "Matt La-Fleur"
+  },
+  "Houston Texans": {
+    "QB": ["CJ Stroudy-With-Chance-of-Deep-Balls (ELITE)"],
+    "RB": ["Joe Mixon-Lot", "Dameon Pierce-Ear"],
+    "WR": ["Nico All-Sun", "Stefon Diggs-Deep", "Tank Dell-Computers"],
+    "TE": ["Dalton Shultz-y"],
+    "Coach": "DeMeco Rye-Ans"
+  },
+  "Indianapolis Colts": {
+    "QB": ["Anthony Rich-Guy", "Gardner Min-Shoe"],
+    "RB": ["Jonathan Taylor's Version (ELITE)"],
+    "WR": ["Michael Pitt-Man", "Josh Downs-y"],
+    "TE": ["Jelani Woods-y"],
+    "Coach": "Shane Stei-Chen"
+  },
+  "Jacksonville Jaguars": {
+    "QB": ["Trevor Law-And-Order", "Mac Jones-y"],
+    "RB": ["Travis Etien-Phone-Home", "Tank Bigs-Bee"],
+    "WR": ["Brian Thomas-The-Tank", "Gabe Da-Vis"],
+    "TE": ["Evan En-Gram"],
+    "Coach": "Doug Pe-Derson"
+  },
+  "Kansas City Chiefs": {
+    "QB": ["Hat-Trick Ma-Homes (ELITE)", "Carson Wentz-Upon-Time"],
+    "RB": ["Isiah Pa-Checo", "Samaje Per-Ine"],
+    "WR": ["Xavier Wor-Thee", "Rashee Rice-Krispy"],
+    "TE": ["Travis Kel-See-Swift"],
+    "Coach": "Andy Red-Robin"
+  },
+  "Las Vegas Raiders": {
+    "QB": ["Fernando Men-Dozing", "Aidan O'Con-Man"],
+    "RB": ["Zamir White-Out", "Dylan Laube-r"],
+    "WR": ["Davante Ad-Dams", "Jakobi-Wan Meyers"],
+    "TE": ["Brock Bowers-Power"],
+    "Coach": "Flint Glue-Biak"
+  },
+  "Los Angeles Chargers": {
+    "QB": ["Justin Her-Burt", "Easton Stick-y"],
+    "RB": ["Gus Bus-Stop", "JK Dob-Bins"],
+    "WR": ["Ladd McConk-ey Kong", "Quentin John-Sun"],
+    "TE": ["Kenyon Sa-Dick"],
+    "Coach": "Jim Har-Baugh"
+  },
+  "Los Angeles Rams": {
+    "QB": ["Matthew Staf-Ford-Truck", "Stetson Ben-Net"],
+    "RB": ["Kyren Wil-Sun (ELITE)", "Blake Corum-y"],
+    "WR": ["Puka Na-Cua-Matata (ELITE)", "Cooper Kupp-Size"],
+    "TE": ["Colby Park-er"],
+    "Coach": "Sean Mc-Vay"
+  },
+  "Miami Dolphins": {
+    "QB": ["Tua Leg-it-To-Quit", "Skylar White-Noise"],
+    "RB": ["De'Von A-Chane-Reaction (ELITE)", "Raheem Most-Dirt"],
+    "WR": ["Tyreek Hill-Billy", "Jaylen Wad-Dle"],
+    "TE": ["Jonnu Smith-y"],
+    "Coach": "Mike Mc-Dan-Yells"
+  },
+  "Minnesota Vikings": {
+    "QB": ["JJ Mc-Car-The-Ism", "Sam Darn-It"],
+    "RB": ["Aaron Jones-y", "Ty Chand-Ler"],
+    "WR": ["Justin Jeffer-Sun-Airplane (ELITE)", "Jordan Addi-Sun"],
+    "TE": ["TJ Hock-In-Sun"],
+    "Coach": "Kevin O'Con-Nell"
+  },
+  "New England Patriots": {
+    "QB": ["Drake Maye-Be", "Jacoby Bris-Kett"],
+    "RB": ["Rhamondre 3000", "Antonio Gib-Sun"],
+    "WR": ["Ja'Lynn Polk-a-Dot", "Javon Bak-er"],
+    "TE": ["Hunter Hen-ry"],
+    "Coach": "Jerod May-O"
+  },
+  "New Orleans Saints": {
+    "QB": ["Derek Car-Pool", "Spencer Ratt-Ler"],
+    "RB": ["Alvin and the Ship-Munks", "Jamaal Wil-Sun"],
+    "WR": ["Chris Olave-Garden", "Rashid Sha-Heed-Said"],
+    "TE": ["Taysom Hill-Top"],
+    "Coach": "Dennis Al-Len"
+  },
+  "New York Giants": {
+    "QB": ["Jaxson Dart-Board", "Daniel Jones-y"],
+    "RB": ["Devin Singletary-Life", "Tyrone Tra-Cee"],
+    "WR": ["Malik Na-Bers (ELITE)", "Wan'Dale Rob-In-Sun"],
+    "TE": ["Theo John-Sun"],
+    "Coach": "Don Far-Baugh"
+  },
+  "New York Jets": {
+    "QB": ["Aaron Rod-Gears-Up", "Jordan Tra-Vis"],
+    "RB": ["Breece Light-Ning (ELITE)", "Braelon Al-Len"],
+    "WR": ["Garrett Wil-Sun", "Mike Ev-Ans"],
+    "TE": ["Tyler Conk-Lin"],
+    "Coach": "Rob Sa-Lay"
+  },
+  "Philadelphia Eagles": {
+    "QB": ["Jalen Hurts-So-Good (ELITE)", "Kenny Pick-ett"],
+    "RB": ["Saquon My Deez (ELITE)", "Will Ship-Ley"],
+    "WR": ["AJ Brown-Sugar", "DeVonta Smith-y"],
+    "TE": ["Dallas Goe-Dirt"],
+    "Coach": "Nick Siri-Annie"
+  },
+  "Pittsburgh Steelers": {
+    "QB": ["Justin Fields-Of-Dreams", "Russell Wil-Sun"],
+    "RB": ["Najee By Nature", "Jaylen War-Ren"],
+    "WR": ["George Pick-Ens-The-Lock", "Roman Wil-Sun"],
+    "TE": ["Pat Freier-Mouth"],
+    "Coach": "Mike Tom-Lin"
+  },
+  "San Francisco 49ers": {
+    "QB": ["Brock Wright-Sturdy (ELITE)", "Josh Dobbs-y"],
+    "RB": ["Run CMC (ELITE)", "Isaac Guer-Endo"],
+    "WR": ["Deebo Find-Ing", "Brandon Ai-Yuk-It-Up"],
+    "TE": ["George Kit-Tles-Rainbow"],
+    "Coach": "Kyle Shana-Hag-Ans"
+  },
+  "Seattle Seahawks": {
+    "QB": ["Sam Darn-It", "Geno 911!"],
+    "RB": ["Kenneth Walker, Texas Ranger", "Zach Charbon-Net"],
+    "WR": ["DK Metcalf-Your-Mother", "JSN Vor-Hees"],
+    "TE": ["Noah Fan-Tom"],
+    "Coach": "Mike Mc-Don-Alds"
+  },
+  "Tampa Bay Buccaneers": {
+    "QB": ["Baker May-Field-Of-Dreams", "Kyle Trask-Can"],
+    "RB": ["Rachaad White-Saber", "Bucky Ir-Ving"],
+    "WR": ["Mike Ev-Ans", "Chris God-Win"],
+    "TE": ["Cade Ot-Ton"],
+    "Coach": "Todd Bow-Lens"
+  },
+  "Tennessee Titans": {
+    "QB": ["Will Levis 501", "Mason Ru-Dolph"],
+    "RB": ["Tony Pol-Lard-House", "Tyjae Spears-Power"],
+    "WR": ["Calvin Rid-Ler", "Tyler Boyd-ie"],
+    "TE": ["Chig Okonk-Wont"],
+    "Coach": "Brian Cal-La-Han"
+  },
+  "Washington Commanders": {
+    "QB": ["Jayden LL-Cool", "Marcus Mario-Ta"],
+    "RB": ["Austin Pow-Ers", "Brian Rob-In-Sun"],
+    "WR": ["Terry Mc-Lauren-And-Order", "Jahan Solo"],
+    "TE": ["Zach Ertz-So-Good"],
+    "Coach": "Dan Quinn-The-Night-Away"
+  }
