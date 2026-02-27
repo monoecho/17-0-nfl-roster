@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>17-0 NFL Roster Builder: SNES Pro-Arcade</title>
+<title>17-0 NFL Roster Builder: Underground Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -12,12 +12,12 @@
   body { font-family: 'Inter', sans-serif; background-color: #2e7d32; background-image: linear-gradient(90deg, transparent 49%, rgba(255,255,255,0.2) 49%, rgba(255,255,255,0.2) 51%, transparent 51%), repeating-linear-gradient(0deg, #2e7d32, #2e7d32 100px, #388e3c 100px, #388e3c 200px); color: #fff; margin: 0; padding: 0; display: flex; justify-content: center; overflow-x: hidden; }
   .main-container { width: 100%; max-width: 540px; min-height: 100vh; padding: 20px; box-sizing: border-box; position: relative; z-index: 5; }
   body::before { content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02)); background-size: 100% 3px, 3px 100%; pointer-events: none; z-index: 1000; }
-  
   .glass-card { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 25px; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9); margin-bottom: 20px; text-align: center; border-top: 6px solid var(--primary); }
   h2 { font-family: 'Press Start 2P', cursive; font-size: 12px; text-shadow: 2px 2px 0 var(--primary); margin-bottom: 25px; line-height: 1.6; }
   
+  /* ROUND SPIN BUTTON */
   #start-btn { 
-    width: 80px; height: 80px; border-radius: 50%; padding: 0; font-size: 14px; 
+    width: 90px; height: 90px; border-radius: 50%; padding: 0; font-size: 14px; 
     border: 4px solid #fff; box-shadow: 0 0 15px var(--glow);
     background: radial-gradient(circle, var(--primary) 40%, #800 100%);
     display: flex; align-items: center; justify-content: center; margin: 15px auto;
@@ -32,21 +32,20 @@
     font-family: 'Press Start 2P'; border: 1px solid #555; color: white;
   }
 
-  select, .std-btn { width: 100%; padding: 16px; margin: 8px 0; font-size: 20px; border-radius: 10px; box-sizing: border-box; font-family: 'Bebas Neue'; text-transform: uppercase; border: none; cursor: pointer; }
+  select, .std-btn { width: 100%; padding: 18px; margin: 8px 0; font-size: 22px; border-radius: 10px; box-sizing: border-box; font-family: 'Bebas Neue'; text-transform: uppercase; border: none; cursor: pointer; }
   select { background: #111 !important; color: #fff !important; border: 3px solid var(--primary) !important; text-align-last: center; appearance: none; }
   .std-btn { background: var(--primary); color: white; }
 
-  .team-logo-container { height: 160px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 15px; margin-bottom: 10px; overflow: hidden; }
+  .team-logo-container { height: 160px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 15px; margin-bottom: 10px; position: relative; }
   #team-logo-img { max-height: 130px; filter: drop-shadow(0 0 15px var(--glow)); display: none; }
 
-  .roster-slot { background: rgba(0,0,0,0.6); padding: 10px; margin: 6px 0; border-radius: 8px; border-left: 5px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
+  .roster-slot { background: rgba(0,0,0,0.6); padding: 12px; margin: 6px 0; border-radius: 10px; border-left: 5px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
   .slot-label { font-family: 'Press Start 2P', cursive; font-size: 8px; color: #888; }
-  .player-name { font-weight: bold; font-size: 16px; color: #fff; }
+  .player-name { font-weight: bold; font-size: 18px; color: #fff; }
 
   #kicker-container { display: none; background: #000; padding: 20px; border-radius: 15px; border: 3px solid #ffb300; position: relative; }
   .goal-posts { width: 50%; margin-left: 25%; height: 120px; border-left: 8px solid yellow; border-right: 8px solid yellow; border-bottom: 8px solid yellow; margin-bottom: 40px; position: relative; }
-  #kicking-ball { width: 18px; height: 26px; background: #8b4513; border-radius: 50%; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; display: none; }
-  
+  #kicking-ball { width: 20px; height: 30px; background: #8b4513; border-radius: 50%; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; display: none; }
   @keyframes ballFlight { 0% { bottom: -20px; transform: translateX(-50%) scale(1); opacity: 1; } 100% { bottom: 140px; transform: translateX(calc(-50% + var(--kickX))) scale(0.3); opacity: 0.7; } }
   .swing-meter { width: 100%; height: 40px; background: #222; border: 2px solid #555; position: relative; overflow: hidden; margin: 10px 0; }
   .impact-zone { width: 25px; height: 100%; background: #0f0; position: absolute; right: 10%; box-shadow: 0 0 10px #0f0; z-index: 2; }
@@ -57,7 +56,6 @@
   #tecmo-screen { width: 100%; height: 160px; background-color: #2e7d32; position: relative; overflow: hidden; border: 4px solid #fff; border-radius: 10px; }
   .yard-line { width: 100%; height: 3px; background: rgba(255,255,255,0.4); position: absolute; animation: scrollField 0.8s linear infinite; }
   @keyframes scrollField { 0% { top: -10%; } 100% { top: 110%; } }
-  #results { display: none; padding: 25px; border-radius: 16px; border: 4px solid var(--primary); background: #111; font-size: 16px; line-height: 1.5; }
 </style>
 </head>
 <body>
@@ -94,7 +92,7 @@
     <div id="animation-container">
       <div id="sim-scoreboard">RECORD: 0-0</div>
       <div id="tecmo-screen"><div class="yard-line" style="top:25%"></div><div class="yard-line" style="top:50%"></div><div class="yard-line" style="top:75%"></div><div style="width:24px; height:34px; background:var(--accent); position:absolute; bottom:20px; left:50%; border-top:8px solid var(--primary);"></div></div>
-      <div id="sim-event-ticker" style="color:#ffb300; font-family:'Press Start 2P'; font-size:9px; margin-top:10px; line-height:1.4;">READY...</div>
+      <div id="sim-event-ticker" style="color:#ffb300; font-family:'Press Start 2P'; font-size:9px; margin-top:15px; line-height:1.4;">READY...</div>
     </div>
     <div id="results"></div>
     <button id="reset-btn" class="std-btn" onclick="location.reload()" style="display:none; background: #444;">NEW DRAFT</button>
@@ -108,6 +106,12 @@
   function toggleMute() { isMuted = !isMuted; document.getElementById("mute-toggle").innerText = isMuted ? "OFF" : "ON"; }
   function playSound(f, d=0.05) { if(isMuted) return; if(!audioCtx) audioCtx = new AudioContext(); if(audioCtx.state==='suspended') audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.value=f; g.gain.value=0.01; o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+d); }
 
+  async function initGame() {
+    const res = await fetch('rosters.json');
+    rosterData = await res.json();
+    document.getElementById("start-btn").disabled = false;
+  }
+
   function spinTeam() {
     const btn = document.getElementById("start-btn"), img = document.getElementById("team-logo-img");
     btn.style.display = "none"; img.style.display = "block";
@@ -115,7 +119,7 @@
     let count = 0; function perform() {
       const name = available[Math.floor(Math.random()*available.length)]; 
       img.src = `https://a.espncdn.com/i/teamlogos/nfl/500/${logoMap[name]||'nfl'}.png`;
-      playSound(300 + count*15); if(count++ < 20) setTimeout(perform, 100); else { currentTeam = name; loadRoster(); }
+      playSound(300 + count*15); if(count++ < 15) setTimeout(perform, 80); else { currentTeam = name; loadRoster(); }
     } perform();
   }
 
@@ -165,7 +169,7 @@
     r.style.display="block"; document.getElementById("reset-btn").style.display="block"; if(total>=13) confetti();
   }
 
-  window.onload = async () => { const res = await fetch('rosters.json'); rosterData = await res.json(); };
+  window.onload = initGame;
 </script>
 </body>
 </html>
