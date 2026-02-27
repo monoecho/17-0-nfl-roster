@@ -9,7 +9,7 @@
 
 <style>
   :root { --primary: #d50a0a; --accent: #013369; --glow: rgba(213, 10, 10, 0.4); --kickX: 0px; }
-  body { font-family: 'Inter', sans-serif; background-color: #2e7d32; background-image: linear-gradient(90deg, transparent 49%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.1) 51%, transparent 51%), repeating-linear-gradient(0deg, #2e7d32, #2e7d32 100px, #388e3c 100px, #388e3c 200px); color: #fff; margin: 0; padding: 0; display: flex; justify-content: center; overflow-x: hidden; transition: background-color 0.5s ease; }
+  body { font-family: 'Inter', sans-serif; background-color: #2e7d32; background-image: linear-gradient(90deg, transparent 49%, rgba(255,255,255,0.15) 49%, rgba(255,255,255,0.15) 51%, transparent 51%), repeating-linear-gradient(0deg, #2e7d32, #2e7d32 100px, #388e3c 100px, #388e3c 200px); color: #fff; margin: 0; padding: 0; display: flex; justify-content: center; overflow-x: hidden; transition: background-color 0.5s ease; }
   .main-container { width: 100%; max-width: 540px; min-height: 100vh; padding: 20px; box-sizing: border-box; position: relative; z-index: 5; }
   body::before { content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02)); background-size: 100% 3px, 3px 100%; pointer-events: none; z-index: 1000; }
   
@@ -26,19 +26,22 @@
   .team-logo-container { height: 160px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 15px; margin-bottom: 10px; overflow: hidden; }
   #team-logo-img { max-height: 130px; filter: drop-shadow(0 0 15px var(--glow)); display: none; }
 
-  .roster-slot { background: rgba(0,0,0,0.6); padding: 10px; margin: 5px 0; border-radius: 10px; border-left: 5px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
+  .roster-slot { background: rgba(0,0,0,0.6); padding: 10px; margin: 5px 0; border-radius: 10px; border-left: 5px solid var(--primary); display: flex; justify-content: space-between; align-items: center; transition: box-shadow 0.3s ease; }
   .player-name { font-weight: bold; font-size: 18px; color: #fff; }
+  
+  @keyframes pulseColor { 0% { box-shadow: 0 0 0px var(--primary); } 50% { box-shadow: 0 0 15px var(--primary); } 100% { box-shadow: 0 0 0px var(--primary); } }
 
+  /* FGMG */
   #kicker-container { display: none; background: #000; padding: 20px; border-radius: 15px; border: 3px solid #ffb300; position: relative; }
   .goal-posts { width: 40%; margin: 0 auto 30px auto; height: 110px; border-left: 8px solid yellow; border-right: 8px solid yellow; border-bottom: 8px solid yellow; position: relative; }
   #kicking-ball { width: 22px; height: 32px; background: #8b4513; border-radius: 50%; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; display: none; z-index: 10; }
   @keyframes ballFlight { 0% { bottom: -20px; transform: translateX(-50%) scale(1); opacity: 1; } 100% { bottom: 140px; transform: translateX(calc(-50% + var(--kickX))) scale(0.3); opacity: 0.7; } }
-  
   .swing-meter { width: 100%; height: 35px; background: #222; border: 2px solid #555; position: relative; overflow: hidden; margin: 15px 0; }
   .accuracy-zone { width: 40px; height: 100%; background: #0f0; position: absolute; left: 10px; box-shadow: 0 0 10px #0f0; z-index: 2; opacity: 0.6; }
   .power-fill { height: 100%; background: linear-gradient(90deg, #333, #ff0, #f00); width: 0%; position: absolute; left: 0; }
   #meter-cursor { width: 8px; height: 100%; background: #fff; position: absolute; left: 0; z-index: 3; box-shadow: 0 0 8px #fff; }
 
+  /* SIMULATION */
   #animation-container { display: none; margin: 25px 0; }
   #tecmo-screen { width: 100%; height: 180px; background-color: #2e7d32; position: relative; overflow: hidden; border: 4px solid #fff; border-radius: 10px; }
   .yard-line { width: 100%; height: 3px; background: rgba(255,255,255,0.2); position: absolute; animation: scrollField 0.5s linear infinite; }
@@ -133,16 +136,23 @@
   }
 
   function loadRoster() { ["position-select","player-select","draft-btn"].forEach(id => document.getElementById(id).disabled=false); updateDropdown(); }
+  
   function updateDropdown() {
     const pos = document.getElementById("position-select").value, sel = document.getElementById("player-select"); sel.innerHTML="";
     let list = (pos==="Defense") ? [`${currentTeam} D/ST`] : (pos==="Coach") ? [rosterData[currentTeam]["Coach"]] : rosterData[currentTeam][pos];
+    // RIGID DUPLICATE PLAYER BLACKLIST
     list.forEach(p => { if(!draftedPlayers.includes(p)) { let o = document.createElement("option"); o.innerText=p; o.value=p; sel.appendChild(o); } });
+    if(sel.options.length === 0) { let o = document.createElement("option"); o.innerText="NO PLAYERS LEFT"; sel.appendChild(o); }
   }
 
   function draftPlayer() {
     const pos = document.getElementById("position-select").value, p = document.getElementById("player-select").value;
+    if(p === "NO PLAYERS LEFT") return;
     roster[pos] = p; draftedPlayers.push(p); if (p.includes("(ELITE)")) teamPower += 2.4;
-    document.getElementById(`roster-${pos}`).querySelector(".player-name").innerText = p;
+    const slot = document.getElementById(`roster-${pos}`);
+    slot.querySelector(".player-name").innerText = p;
+    slot.style.borderLeftColor = teamThemes[currentTeam][0];
+    slot.style.animation = "pulseColor 0.8s ease-in-out";
     draftedTeams.push(currentTeam); document.getElementById("position-select").remove(document.getElementById("position-select").selectedIndex);
     if(Object.values(roster).every(v => v!==null)) { document.getElementById("draft-section").style.display="none"; document.getElementById("sim-btn").style.display="block"; } 
     else { document.getElementById("start-btn").style.display = "flex"; document.getElementById("team-logo-img").style.display = "none"; }
@@ -171,7 +181,7 @@
   function startKickerMeter() {
     kickStep = 1; meterPos = 0; meterDir = 1;
     meterInterval = setInterval(() => {
-      meterPos += meterDir * 3; // SLOWED DOWN BY 25%
+      meterPos += meterDir * 3;
       if(meterPos >= 100 || meterPos <= 0) meterDir *= -1;
       document.getElementById("meter-cursor").style.left = meterPos + "%";
       if(kickStep === 1) document.getElementById("p-fill").style.width = meterPos + "%";
@@ -181,11 +191,9 @@
   function handleKickInput() {
     const btn = document.getElementById("kick-action-btn"), msg = document.getElementById("kick-msg");
     if(kickStep === 1) { 
-      kickStep = 2; powerVal = meterPos; 
-      btn.innerText = "LOCK ACCURACY";
+      kickStep = 2; powerVal = meterPos; btn.innerText = "LOCK ACCURACY";
     } else {
-      clearInterval(meterInterval); 
-      accuracyVal = meterPos;
+      clearInterval(meterInterval); accuracyVal = meterPos;
       let isGood = (accuracyVal > 8 && accuracyVal < 25);
       msg.innerText = (powerVal < 60) ? "TOO WEAK!" : (!isGood ? (accuracyVal < 8 ? "WIDE LEFT!" : "WIDE RIGHT!") : "IT'S GOOD!");
       executeKick(isGood && powerVal > 60);
@@ -202,7 +210,7 @@
   function showFinal() {
     document.getElementById("animation-container").style.display = "none";
     const r = document.getElementById("results"), total = Math.max(0, Math.min(17, finalWins + bonusWins));
-    r.innerHTML = `<h2>FINAL: ${total}-${17-total}</h2><p>${total >= 14 ? "GM DEITY." : (total >= 9 ? "PLAYOFF LOCK." : "MANAGEMENT WAR CRIME.")}</p>`;
+    r.innerHTML = `<h2>FINAL: ${total}-${17-total}</h2><p>${total >= 14 ? "GM DEITY. Statues are already being built." : (total >= 9 ? "PLAYOFF LOCK. Solid roster building." : "WAR CRIME. Fans are burning your jersey.")}</p>`;
     r.style.display="block"; document.getElementById("reset-btn").style.display="block"; document.getElementById("challenge-btn").style.display="block"; if(total>=14) confetti();
   }
 
