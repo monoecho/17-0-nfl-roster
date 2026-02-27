@@ -12,50 +12,49 @@
   body { font-family: 'Inter', sans-serif; background-color: #2e7d32; background-image: linear-gradient(90deg, transparent 49%, rgba(255,255,255,0.2) 49%, rgba(255,255,255,0.2) 51%, transparent 51%), repeating-linear-gradient(0deg, #2e7d32, #2e7d32 100px, #388e3c 100px, #388e3c 200px); color: #fff; margin: 0; padding: 0; display: flex; justify-content: center; overflow-x: hidden; }
   .main-container { width: 100%; max-width: 540px; min-height: 100vh; padding: 20px; box-sizing: border-box; position: relative; z-index: 5; }
   body::before { content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02)); background-size: 100% 3px, 3px 100%; pointer-events: none; z-index: 1000; }
+  
   .glass-card { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 25px; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9); margin-bottom: 20px; text-align: center; border-top: 6px solid var(--primary); }
   h2 { font-family: 'Press Start 2P', cursive; font-size: 14px; text-shadow: 3px 3px 0 var(--primary); margin-bottom: 25px; line-height: 1.6; }
   
-  select, button { width: 100%; padding: 18px; margin: 10px 0; font-size: 22px; border-radius: 10px; box-sizing: border-box; }
+  /* ROUND SPIN BUTTON */
+  #start-btn { 
+    width: 100px; height: 100px; border-radius: 50%; padding: 0; font-size: 18px; 
+    border: 4px solid #fff; box-shadow: 0 0 20px var(--glow), inset 0 0 10px rgba(0,0,0,0.5);
+    background: radial-gradient(circle, var(--primary) 40%, #800 100%);
+    display: flex; align-items: center; justify-content: center; margin: 0 auto;
+    transition: transform 0.1s;
+  }
+  #start-btn:active { transform: scale(0.9); }
+
+  select, button:not(#start-btn) { width: 100%; padding: 18px; margin: 10px 0; font-size: 22px; border-radius: 10px; box-sizing: border-box; }
   select { background: #111 !important; color: #fff !important; border: 3px solid var(--primary); font-weight: bold; appearance: none; text-align-last: center; cursor: pointer;}
   button { font-family: 'Bebas Neue', sans-serif; background: var(--primary); color: white; border: none; cursor: pointer; text-transform: uppercase; }
   #mute-toggle { width: auto; position: absolute; top: 15px; right: 15px; padding: 8px 12px; font-size: 10px; background:#333; z-index: 1001; }
   
-  /* LOGO & ROSTER */
   .team-logo-container { height: 160px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 15px; margin-bottom: 15px; }
   #team-logo-img { max-height: 140px; display: none; filter: drop-shadow(0 0 20px var(--glow)); }
   .roster-slot { background: rgba(0,0,0,0.6); padding: 12px; margin: 6px 0; border-radius: 10px; border-left: 5px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
   .slot-label { font-family: 'Press Start 2P', cursive; font-size: 9px; color: #888; }
   .player-name { font-weight: bold; font-size: 18px; color: #fff; }
 
-  /* PRO-SWING KICKER UI */
+  /* KICKER UI */
   #kicker-container { display: none; background: #000; padding: 20px; border-radius: 15px; border: 3px solid #ffb300; position: relative; }
   .goal-posts { width: 50%; margin-left: 25%; height: 120px; border-left: 8px solid yellow; border-right: 8px solid yellow; border-bottom: 8px solid yellow; margin-bottom: 40px; position: relative; }
   #kicking-ball { width: 20px; height: 30px; background: #8b4513; border-radius: 50%; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; display: none; z-index: 10; }
-  
-  @keyframes ballFlight {
-    0% { bottom: -20px; transform: translateX(-50%) scale(1); opacity: 1; }
-    100% { bottom: 140px; transform: translateX(calc(-50% + var(--kickX))) scale(0.3); opacity: 0.7; }
-  }
-
-  /* THE METER */
+  @keyframes ballFlight { 0% { bottom: -20px; transform: translateX(-50%) scale(1); opacity: 1; } 100% { bottom: 140px; transform: translateX(calc(-50% + var(--kickX))) scale(0.3); opacity: 0.7; } }
   .swing-meter { width: 100%; height: 40px; background: #222; border: 2px solid #555; position: relative; overflow: hidden; margin: 10px 0; }
-  .impact-zone { width: 20px; height: 100%; background: #fff; position: absolute; right: 10%; box-shadow: 0 0 10px #fff; z-index: 2; }
-  .power-fill { height: 100%; background: linear-gradient(90deg, #f00, #ff0, #0f0); width: 0%; position: absolute; left: 0; transition: none; }
+  .impact-zone { width: 25px; height: 100%; background: #0f0; position: absolute; right: 10%; box-shadow: 0 0 10px #0f0; z-index: 2; }
+  .power-fill { height: 100%; background: linear-gradient(90deg, #f00, #ff0, #0f0); width: 0%; position: absolute; left: 0; }
   #meter-cursor { width: 6px; height: 100%; background: #0ff; position: absolute; right: 0; z-index: 3; box-shadow: 0 0 8px #0ff; }
 
-  /* SIM ANIMATION */
   #animation-container { display: none; margin: 25px 0; }
   #tecmo-screen { width: 100%; height: 160px; background-color: #2e7d32; position: relative; overflow: hidden; border: 4px solid #fff; border-radius: 10px; }
   .yard-line { width: 100%; height: 3px; background: rgba(255,255,255,0.4); position: absolute; animation: scrollField 0.8s linear infinite; }
   @keyframes scrollField { 0% { top: -10%; } 100% { top: 110%; } }
   .pixel-player { width: 30px; height: 40px; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); animation: runBob 0.4s infinite alternate; }
   .pixel-helmet { width: 20px; height: 16px; background: var(--primary); margin: 0 auto; border-radius: 4px 4px 0 0; position: relative; }
-  .pixel-visor { width: 14px; height: 4px; background: #111; position: absolute; top: 5px; left: 3px; }
   .pixel-jersey { width: 26px; height: 18px; background: var(--accent); margin: -2px auto 0; border-radius: 2px; }
   @keyframes runBob { from { bottom: 20px; } to { bottom: 25px; } }
-
-  #sim-scoreboard { font-family: 'Press Start 2P', cursive; font-size: 14px; color: #0f0; margin-bottom: 12px; }
-  #sim-event-ticker { color: #ffb300; font-family: 'Press Start 2P', cursive; font-size: 10px; margin-top: 15px; line-height: 1.4; height: 40px; }
   #results { display: none; padding: 25px; border-radius: 16px; border: 4px solid var(--primary); background: #111; font-size: 16px; line-height: 1.5; }
 </style>
 </head>
@@ -66,7 +65,7 @@
   <div class="glass-card" id="draft-section">
     <h2>UNDERGROUND<br>STADIUM BUILDER</h2>
     <div class="team-logo-container">
-      <button id="start-btn" onclick="startFirstSpin()" style="font-size: 28px;">SPIN</button>
+      <button id="start-btn" onclick="startFirstSpin()">SPIN</button>
       <img id="team-logo-img" src="">
     </div>
     <select id="position-select" onchange="updateDropdown()" disabled>
@@ -92,7 +91,7 @@
       <div class="goal-posts"><div id="kicking-ball"></div></div>
       <div class="swing-meter">
         <div class="power-fill" id="p-fill"></div>
-        <div class="impact-zone"></div>
+        <div class="impact-zone" id="i-zone"></div>
         <div id="meter-cursor"></div>
       </div>
       <button id="kick-action-btn" onclick="handleKickInput()">START SWING</button>
@@ -102,15 +101,12 @@
       <div id="sim-scoreboard">RECORD: 0-0</div>
       <div id="tecmo-screen">
         <div class="yard-line" style="top:25%"></div><div class="yard-line" style="top:50%"></div><div class="yard-line" style="top:75%"></div>
-        <div class="pixel-player"><div class="pixel-helmet"><div class="pixel-visor"></div></div><div class="pixel-jersey"></div></div>
+        <div class="pixel-player"><div class="pixel-helmet"></div><div class="pixel-jersey"></div></div>
       </div>
-      <div id="sim-event-ticker">READY...</div>
+      <div id="sim-event-ticker" style="color:#ffb300; font-family:'Press Start 2P'; font-size:10px; margin-top:15px; line-height:1.4;">READY...</div>
     </div>
     <div id="results"></div>
-    <div style="display:flex; flex-direction:column; align-items:center;">
-      <button id="challenge-btn" onclick="handleChallengeAction()" style="display:none; background: #013369;">SHARE CHALLENGE</button>
-      <button id="reset-btn" onclick="location.reload()" style="display:none; background: #444;">NEW DRAFT</button>
-    </div>
+    <button id="reset-btn" onclick="location.reload()" style="display:none; background: #444;">NEW DRAFT</button>
   </div>
 </div>
 
@@ -120,7 +116,6 @@
 
   const logoMap = {"Arizona Cardinals":"ari","Atlanta Falcons":"atl","Baltimore Ravens":"bal","Buffalo Bills":"buf","Carolina Panthers":"car","Chicago Bears":"chi","Cincinnati Bengals":"cin","Cleveland Browns":"cle","Dallas Cowboys":"dal","Denver Broncos":"den","Detroit Lions":"det","Green Bay Packers":"gb","Houston Texans":"hou","Indianapolis Colts":"ind","Jacksonville Jaguars":"jax","Kansas City Chiefs":"kc","Las Vegas Raiders":"lv","Los Angeles Chargers":"lac","Los Angeles Rams":"lar","Miami Dolphins":"mia","Minnesota Vikings":"min","New England Patriots":"ne","New Orleans Saints":"no","New York Giants":"nyg","New York Jets":"nyj","Philadelphia Eagles":"phi","Pittsburgh Steelers":"pit","San Francisco 49ers":"sf","Seattle Seahawks":"sea","Tampa Bay Buccaneers":"tb","Tennessee Titans":"ten","Washington Commanders":"wsh"};
   const elitePlayers = ["Bosch Mallon", "Hat-Trick Ma-Homes", "L'Amour Action", "King Henry", "Joe Furrow", "Rock Sturdy", "Don Far-Baugh", "Sam Darn-It"];
-  const simEvents = ["WEEK 1: Bosch Mallon throws a moonshot.","WEEK 4: Locker room beef over snacks.","WEEK 7: HC loses his mind at refs.","WEEK 12: RB breaks three ankles.","WEEK 16: Last second FG try!"];
 
   function toggleMute() { isMuted = !isMuted; document.getElementById("mute-toggle").innerText = isMuted ? "OFF" : "ON"; }
   function playSound(f, d=0.05) { if(isMuted) return; if(!audioCtx) audioCtx = new AudioContext(); if(audioCtx.state==='suspended') audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.value=f; g.gain.value=0.01; o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+d); }
@@ -130,7 +125,8 @@
     const img = document.getElementById("team-logo-img"); img.style.display="block";
     const available = Object.keys(rosterData).filter(t => !draftedTeams.includes(t));
     let count = 0; function perform() {
-      const name = available[Math.floor(Math.random()*available.length)]; img.src = `https://a.espncdn.com/i/teamlogos/nfl/500/${logoMap[name]||'nfl'}.png`;
+      const name = available[Math.floor(Math.random()*available.length)]; 
+      img.src = `https://a.espncdn.com/i/teamlogos/nfl/500/${logoMap[name]||'nfl'}.png`;
       playSound(300 + count*15); if(count++ < 20) setTimeout(perform, 100); else { currentTeam = name; loadRoster(); }
     } perform();
   }
@@ -142,11 +138,11 @@
   }
   function draftPlayer() {
     const pos = document.getElementById("position-select").value, p = document.getElementById("player-select").value;
-    roster[pos] = p; draftedPlayers.push(p); if (elitePlayers.includes(p)) teamPower += 2.4;
+    roster[pos] = p; draftedPlayers.push(p); if (elitePlayers.some(e => p.includes(e))) teamPower += 2.4;
     document.getElementById(`roster-${pos}`).querySelector(".player-name").innerText = p;
     draftedTeams.push(currentTeam); document.getElementById("position-select").remove(document.getElementById("position-select").selectedIndex);
     if(Object.values(roster).every(v => v!==null)) { document.getElementById("draft-section").style.display="none"; document.getElementById("sim-btn").style.display="block"; } 
-    else { document.getElementById("start-btn").style.display = "block"; document.getElementById("start-btn").innerText = "SPIN"; }
+    else { document.getElementById("start-btn").style.display = "flex"; }
   }
 
   function triggerSimulation() {
@@ -155,43 +151,47 @@
     if(finalWins > 17) finalWins = 17;
     let step = 0; const timer = setInterval(() => {
       document.getElementById("sim-scoreboard").innerText = `RECORD: ${Math.floor((finalWins/6)*(step+1))}-${Math.floor(((17-finalWins)/6)*(step+1))}`;
-      document.getElementById("sim-event-ticker").innerText = simEvents[Math.floor(Math.random()*simEvents.length)];
-      if(step === 2) { clearInterval(timer); setTimeout(() => { document.getElementById("animation-container").style.display="none"; document.getElementById("kicker-container").style.display="block"; }, 1500); }
+      if(step === 2) { 
+        clearInterval(timer); 
+        setTimeout(() => { 
+          document.getElementById("animation-container").style.display="none"; 
+          document.getElementById("kicker-container").style.display="block";
+          if(finalWins < 8) { document.getElementById("i-zone").style.width = "15px"; }
+        }, 1500); 
+      }
       if(step++ >= 5) { clearInterval(timer); showFinal(); }
     }, 2500);
   }
 
   function handleKickInput() {
     const cursor = document.getElementById("meter-cursor"), fill = document.getElementById("p-fill"), btn = document.getElementById("kick-action-btn");
-    if(kickStep === 0) { // START
+    if(kickStep === 0) { 
       kickStep = 1; btn.innerText = "SET POWER";
       meterInterval = setInterval(() => {
-        meterPos += meterDir * 4;
+        meterPos += meterDir * 5;
         if(meterPos <= -95) { meterDir = 1; }
         if(meterPos >= 0 && kickStep > 1) { clearInterval(meterInterval); }
         cursor.style.transform = `translateX(${meterPos}%)`;
       }, 20);
-    } else if(kickStep === 1) { // SET POWER
+    } else if(kickStep === 1) { 
       kickStep = 2; powerVal = Math.abs(meterPos);
       fill.style.width = `${powerVal}%`;
       meterDir = 1; btn.innerText = "HIT ACCURACY";
-    } else if(kickStep === 2) { // SET ACCURACY
-      clearInterval(meterInterval);
-      impactVal = meterPos;
-      executeKickAnimation();
+    } else if(kickStep === 2) { 
+      clearInterval(meterInterval); impactVal = meterPos;
+      const target = document.getElementById("i-zone");
+      const targetLeft = - (target.offsetLeft / target.parentElement.offsetWidth * 100);
+      executeKickAnimation(Math.abs(impactVal) < 15);
     }
   }
 
-  function executeKickAnimation() {
+  function executeKickAnimation(isGood) {
     const ball = document.getElementById("kicking-ball");
     document.getElementById("kick-action-btn").disabled = true;
-    const kickOffset = (impactVal + 5) * 1.5; 
-    document.documentElement.style.setProperty('--kickX', `${kickOffset}px`);
+    document.documentElement.style.setProperty('--kickX', `${(impactVal + 10) * 1.2}px`);
     ball.style.display = "block"; ball.style.animation = "ballFlight 1s forwards ease-out";
     setTimeout(() => {
-      if(powerVal > 80 && Math.abs(impactVal + 10) < 15) { bonusWins = 2; alert("IT'S GOOD! +2 WINS"); }
-      else if(powerVal < 50) { bonusWins = -1; alert("SHORT! -1 WIN"); }
-      else { bonusWins = -1; alert("WIDE! -1 WIN"); }
+      if(isGood && powerVal > 60) { bonusWins = 2; alert("GOOD!"); } else { bonusWins = -1; alert("MISS!"); }
       document.getElementById("kicker-container").style.display="none"; showFinal();
     }, 1100);
   }
@@ -199,13 +199,8 @@
   function showFinal() {
     document.getElementById("animation-container").style.display = "none";
     const r = document.getElementById("results"), total = Math.max(0, Math.min(17, finalWins + bonusWins));
-    let review = total >= 12 ? "🏆 ELITE DYNASTY." : "💩 TOTAL TRASH.";
-    r.innerHTML = `<h2>FINAL: ${total}-${17-total}</h2><p>${review}</p>`;
+    r.innerHTML = `<h2>FINAL: ${total}-${17-total}</h2><p>${total >= 12 ? "ELITE." : "TRASH."}</p>`;
     r.style.display="block"; document.getElementById("reset-btn").style.display="block"; if(total>=13) confetti();
-  }
-  async function handleChallengeAction() {
-    const total = Math.max(0, Math.min(17, finalWins + bonusWins));
-    navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?w=${total}&t=${encodeURIComponent(Object.values(roster).join(','))}`).then(() => alert("Link Copied!"));
   }
   window.onload = async () => { const res = await fetch('rosters.json'); rosterData = await res.json(); };
 </script>
