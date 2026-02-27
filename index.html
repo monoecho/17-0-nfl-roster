@@ -3,61 +3,74 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>17-0 NFL Roster Builder: 2026 Master Class</title>
+<title>Football Team Picker: 2026 Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
   :root { --primary: #d50a0a; --accent: #013369; --glow: rgba(213, 10, 10, 0.4); --kickX: 0px; }
-  body { font-family: 'Inter', sans-serif; background-color: #2e7d32; background-image: linear-gradient(90deg, transparent 49%, rgba(255,255,255,0.15) 49%, rgba(255,255,255,0.15) 51%, transparent 51%), repeating-linear-gradient(0deg, #2e7d32, #2e7d32 100px, #388e3c 100px, #388e3c 200px); color: #fff; margin: 0; padding: 0; display: flex; justify-content: center; overflow-x: hidden; transition: background-color 0.5s ease; }
+  body { font-family: 'Inter', sans-serif; background-color: #2e7d32; background-image: linear-gradient(90deg, transparent 49%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.1) 51%, transparent 51%), repeating-linear-gradient(0deg, #2e7d32, #2e7d32 100px, #388e3c 100px, #388e3c 200px); color: #fff; margin: 0; padding: 0; display: flex; justify-content: center; overflow-x: hidden; transition: background-color 0.5s ease; }
   .main-container { width: 100%; max-width: 540px; min-height: 100vh; padding: 20px; box-sizing: border-box; position: relative; z-index: 5; }
-  body::before { content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02)); background-size: 100% 3px, 3px 100%; pointer-events: none; z-index: 1000; }
   
-  .glass-card { background: rgba(0, 0, 0, 0.92); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px; padding: 25px; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9); margin-bottom: 20px; text-align: center; border-top: 6px solid var(--primary); transition: border-color 0.6s ease; }
-  h2 { font-family: 'Press Start 2P', cursive; font-size: 11px; text-shadow: 2px 2px 0 var(--primary); margin-bottom: 25px; line-height: 1.6; }
+  .glass-card { background: rgba(0, 0, 0, 0.92); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px; padding: 25px; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9); margin-bottom: 20px; text-align: center; border-top: 6px solid var(--primary); }
+  h1 { font-family: 'Bebas Neue', cursive; font-size: 58px; text-shadow: 4px 4px 0 var(--primary); margin: 0 0 20px 0; letter-spacing: 2px; line-height: 0.9; }
   
   #start-btn { width: 85px; height: 85px; border-radius: 50%; border: 4px solid #fff; box-shadow: 0 0 15px var(--glow); background: radial-gradient(circle, var(--primary) 40%, #800 100%); display: flex; align-items: center; justify-content: center; margin: 15px auto; cursor: pointer; color: white; font-family: 'Press Start 2P'; font-size: 14px; transition: transform 0.1s; }
+  #start-btn:active { transform: scale(0.9); }
+  
   #mute-toggle { width: auto !important; position: absolute; top: 15px; right: 15px; padding: 6px 10px; font-size: 9px; background: #333; z-index: 1100; border-radius: 4px; font-family: 'Press Start 2P'; color: white; cursor: pointer; border: 1px solid #555;}
 
   select, .std-btn { width: 100%; padding: 18px; margin: 10px 0; font-size: 22px; border-radius: 10px; box-sizing: border-box; font-family: 'Bebas Neue'; text-transform: uppercase; cursor: pointer; border: none; }
   select { background: #111 !important; color: #fff !important; border: 3px solid var(--primary) !important; text-align-last: center; appearance: none; }
   .std-btn { background: var(--primary); color: white; }
+  .std-btn:disabled { background: #444; cursor: not-allowed; opacity: 0.6; }
 
   .team-logo-container { height: 160px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 15px; margin-bottom: 10px; overflow: hidden; }
   #team-logo-img { max-height: 130px; filter: drop-shadow(0 0 15px var(--glow)); display: none; }
 
-  .roster-slot { background: rgba(0,0,0,0.6); padding: 10px; margin: 5px 0; border-radius: 10px; border-left: 5px solid var(--primary); display: flex; justify-content: space-between; align-items: center; transition: box-shadow 0.3s ease; }
+  .roster-slot { background: rgba(0,0,0,0.6); padding: 10px; margin: 5px 0; border-radius: 10px; border-left: 5px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
   .player-name { font-weight: bold; font-size: 18px; color: #fff; }
-  
-  @keyframes pulseColor { 0% { box-shadow: 0 0 0px var(--primary); } 50% { box-shadow: 0 0 15px var(--primary); } 100% { box-shadow: 0 0 0px var(--primary); } }
 
-  /* FGMG */
+  /* FGMG PHYSICS & SHAKE */
   #kicker-container { display: none; background: #000; padding: 20px; border-radius: 15px; border: 3px solid #ffb300; position: relative; }
-  .goal-posts { width: 40%; margin: 0 auto 30px auto; height: 110px; border-left: 8px solid yellow; border-right: 8px solid yellow; border-bottom: 8px solid yellow; position: relative; }
-  #kicking-ball { width: 22px; height: 32px; background: #8b4513; border-radius: 50%; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; display: none; z-index: 10; }
-  @keyframes ballFlight { 0% { bottom: -20px; transform: translateX(-50%) scale(1); opacity: 1; } 100% { bottom: 140px; transform: translateX(calc(-50% + var(--kickX))) scale(0.3); opacity: 0.7; } }
+  .goal-field { width: 100%; height: 220px; background: #1b5e20; position: relative; margin-bottom: 15px; border: 2px solid #fff; overflow: hidden; }
+  .uprights { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 80px; height: 90px; border-left: 6px solid yellow; border-right: 6px solid yellow; border-bottom: 6px solid yellow; }
+  .shake { animation: shakePosts 0.15s ease-in-out infinite; }
+  @keyframes shakePosts { 0%, 100% { transform: translateX(-50%); } 25% { transform: translateX(-52%); } 75% { transform: translateX(-48%); } }
+  
+  #ball-physics { width: 18px; height: 26px; background: #8b4513; border-radius: 50%; position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; z-index: 10; display: none; }
+  
   .swing-meter { width: 100%; height: 35px; background: #222; border: 2px solid #555; position: relative; overflow: hidden; margin: 15px 0; }
-  .accuracy-zone { width: 40px; height: 100%; background: #0f0; position: absolute; left: 10px; box-shadow: 0 0 10px #0f0; z-index: 2; opacity: 0.6; }
   .power-fill { height: 100%; background: linear-gradient(90deg, #333, #ff0, #f00); width: 0%; position: absolute; left: 0; }
-  #meter-cursor { width: 8px; height: 100%; background: #fff; position: absolute; left: 0; z-index: 3; box-shadow: 0 0 8px #fff; }
+  #meter-cursor { width: 8px; height: 100%; background: #fff; position: absolute; left: 0; z-index: 3; }
+  
+  #aim-arrow { width: 4px; height: 70px; background: #0f0; position: absolute; bottom: 10px; left: 50%; transform-origin: bottom center; display: none; box-shadow: 0 0 10px #0f0; }
 
+  #opponent-squad { display: none; background: rgba(1, 51, 105, 0.4); border: 2px solid var(--accent); border-radius: 15px; padding: 15px; margin-bottom: 20px; font-size: 11px; text-align: left; line-height: 1.4; }
+  
   /* SIMULATION */
   #animation-container { display: none; margin: 25px 0; }
   #tecmo-screen { width: 100%; height: 180px; background-color: #2e7d32; position: relative; overflow: hidden; border: 4px solid #fff; border-radius: 10px; }
-  .yard-line { width: 100%; height: 3px; background: rgba(255,255,255,0.2); position: absolute; animation: scrollField 0.5s linear infinite; }
+  .yard-line { width: 100%; height: 3px; background: rgba(255,255,255,0.2); position: absolute; width: 100%; left: 0; animation: scrollField 0.5s linear infinite; }
   @keyframes scrollField { 0% { top: -10%; } 100% { top: 110%; } }
   .pixel-player { width: 34px; height: 48px; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); transition: left 0.15s ease-in-out; z-index: 20; }
   .pixel-helmet { width: 22px; height: 18px; background: var(--primary); margin: 0 auto; border-radius: 5px 5px 0 0; border: 2px solid #000; position: relative; }
   .pixel-jersey { width: 30px; height: 24px; background: var(--accent); margin: -2px auto 0; border-radius: 3px; border: 2px solid #000; }
   .defender { width: 28px; height: 38px; position: absolute; z-index: 15; top: -50px; background: #eee; border: 2px solid #333; border-radius: 4px; box-shadow: 2px 2px 0 #000; }
-  #results { display: none; padding: 25px; border-radius: 16px; border: 4px solid var(--primary); background: #111; font-size: 17px; line-height: 1.6; }
 </style>
 </head>
 <body>
 <div class="main-container">
   <button id="mute-toggle" onclick="toggleMute()">ON</button>
+  
   <div class="glass-card" id="draft-section">
-    <h2>UNDERGROUND<br>STADIUM BUILDER</h2>
+    <h1>FOOTBALL TEAM PICKER</h1>
+    
+    <div id="opponent-squad">
+      <strong style="color: #ffb300; font-family:'Press Start 2P'; font-size: 8px;">CHALLENGER'S SQUAD:</strong><br>
+      <div id="opp-players-list" style="margin-top: 8px; opacity: 0.9;"></div>
+    </div>
+
     <div class="team-logo-container">
       <img id="team-logo-img" src="">
       <button id="start-btn" onclick="spinTeam()">SPIN</button>
@@ -68,6 +81,7 @@
     <select id="player-select" disabled><option>...</option></select>
     <button id="draft-btn" class="std-btn" onclick="draftPlayer()" disabled>LOCK PICK</button>
   </div>
+
   <div class="glass-card">
     <div id="roster-slots">
       <div id="roster-QB" class="roster-slot"><span style="font-family:'Press Start 2P'; font-size:7px; color:#888;">QB</span><div class="player-name">---</div></div>
@@ -80,19 +94,22 @@
     <div style="display:flex; justify-content:center;"><button id="sim-btn" class="std-btn" onclick="triggerSimulation()" style="display:none; background: #28a745;">SIMULATE SEASON</button></div>
     
     <div id="kicker-container">
-      <h3 style="font-family:'Press Start 2P'; font-size:9px; color:#ffb300;">FGMG: SNES SWING</h3>
+      <h3 style="font-family:'Press Start 2P'; font-size:9px; color:#ffb300;">FGMG: PHYSICS AIM</h3>
       <div id="kick-msg" style="color:#0f0; font-family:'Press Start 2P'; font-size:10px; height:15px; margin-bottom:5px;"></div>
-      <div class="goal-posts"><div id="kicking-ball"></div></div>
-      <div class="swing-meter">
+      <div class="goal-field">
+        <div class="uprights" id="upright-posts"></div>
+        <div id="aim-arrow"></div>
+        <div id="ball-physics"></div>
+      </div>
+      <div class="swing-meter" id="kicker-meter-ui">
         <div class="power-fill" id="p-fill"></div>
-        <div class="accuracy-zone"></div>
         <div id="meter-cursor"></div>
       </div>
       <button id="kick-action-btn" class="std-btn" onclick="handleKickInput()">STOP POWER</button>
     </div>
 
     <div id="animation-container">
-      <div id="sim-scoreboard">RECORD: 0-0</div>
+      <div id="sim-scoreboard" style="font-family:'Press Start 2P'; font-size:14px; color:#0f0; margin-bottom:12px;">RECORD: 0-0</div>
       <div id="tecmo-screen">
         <div class="yard-line" style="top:20%"></div><div class="yard-line" style="top:50%"></div><div class="yard-line" style="top:80%"></div>
         <div class="pixel-player" id="main-sprite"><div class="pixel-helmet"></div><div class="pixel-jersey"></div></div>
@@ -108,16 +125,9 @@
 </div>
 <script>
   let isMuted = false, audioCtx = null, rosterData = null, draftedTeams = [], draftedPlayers = [], roster = {QB:null,RB:null,WR:null,TE:null,Defense:null,Coach:null}, currentTeam = null, finalWins = 0, bonusWins = 0, teamPower = 0;
-  let kickStep = 1, meterPos = 0, meterDir = 1, meterInterval = null, powerVal = 0, accuracyVal = 0;
-  
-  const teamThemes = { "Arizona Cardinals":["#97233f","#000000"],"Atlanta Falcons":["#a71930","#000000"],"Baltimore Ravens":["#241773","#000000"],"Buffalo Bills":["#00338d","#c60c30"],"Carolina Panthers":["#0085ca","#000000"],"Chicago Bears":["#0b162a","#c83803"],"Cincinnati Bengals":["#fb4f14","#000000"],"Cleveland Browns":["#311d00","#ff3c00"],"Dallas Cowboys":["#002244","#869397"],"Denver Broncos":["#fb4f14","#002244"],"Detroit Lions":["#0076b6","#b0b7bc"],"Green Bay Packers":["#203731","#ffb612"],"Houston Texans":["#03202f","#a71930"],"Indianapolis Colts":["#002c5f","#a5acaf"],"Jacksonville Jaguars":["#006778","#9f792c"],"Kansas City Chiefs":["#e31837","#ffb612"],"Las Vegas Raiders":["#a5acaf","#000000"],"Los Angeles Chargers":["#0073cf","#ffb612"],"Los Angeles Rams":["#002244","#b3995d"],"Miami Dolphins":["#008e97","#f26a24"],"Minnesota Vikings":["#4f2683","#ffc62f"],"New England Patriots":["#002244","#c60c30"],"New Orleans Saints":["#d3bc8d","#000000"],"New York Giants":["#0b2265","#a71930"],"New York Jets":["#003f2d","#ffffff"],"Philadelphia Eagles":["#004c54","#a5acaf"],"Pittsburgh Steelers":["#000000","#ffb612"],"San Francisco 49ers":["#aa0000","#b3995d"],"Seattle Seahawks":["#002244","#69be28"],"Tampa Bay Buccaneers":["#d50a0a","#000000"],"Tennessee Titans":["#4b92db","#0c2340"],"Washington Commanders":["#5a1414","#ffb612"] };
+  let kickStep = 1, meterPos = 0, meterDir = 1, meterInterval = null, powerVal = 0, aimAngle = 0, aimDir = 1;
   const logoMap = {"Arizona Cardinals":"ari","Atlanta Falcons":"atl","Baltimore Ravens":"bal","Buffalo Bills":"buf","Carolina Panthers":"car","Chicago Bears":"chi","Cincinnati Bengals":"cin","Cleveland Browns":"cle","Dallas Cowboys":"dal","Denver Broncos":"den","Detroit Lions":"det","Green Bay Packers":"gb","Houston Texans":"hou","Indianapolis Colts":"ind","Jacksonville Jaguars":"jax","Kansas City Chiefs":"kc","Las Vegas Raiders":"lv","Los Angeles Chargers":"lac","Los Angeles Rams":"lar","Miami Dolphins":"mia","Minnesota Vikings":"min","New England Patriots":"ne","New Orleans Saints":"no","New York Giants":"nyg","New York Jets":"nyj","Philadelphia Eagles":"phi","Pittsburgh Steelers":"pit","San Francisco 49ers":"sf","Seattle Seahawks":"sea","Tampa Bay Buccaneers":"tb","Tennessee Titans":"ten","Washington Commanders":"wsh"};
-  const quarterlyEvents = [
-    ["Wk 1: Bosch Mallon moonshot.", "Wk 2: Special Teams TD.", "Wk 3: Defensive clinic.", "Wk 4: 1st QTR Complete."],
-    ["Wk 5: Goal line stand.", "Wk 6: Sideline drama.", "Wk 7: HC loses mind.", "Wk 8: Mid-season form."],
-    ["Wk 10: Fumble at 1yd.", "Wk 11: Snow game chaos.", "Wk 12: Sideline brawl!", "Wk 13: Playoff push."],
-    ["Wk 14: Pick-six!", "Wk 15: Overtime thriller.", "Wk 16: Clutch drive.", "Wk 17: SEASON FINALE."]
-  ];
+  const teamThemes = { "Arizona Cardinals":["#97233f","#000000"],"Atlanta Falcons":["#a71930","#000000"],"Baltimore Ravens":["#241773","#000000"],"Buffalo Bills":["#00338d","#c60c30"],"Carolina Panthers":["#0085ca","#000000"],"Chicago Bears":["#0b162a","#c83803"],"Cincinnati Bengals":["#fb4f14","#000000"],"Cleveland Browns":["#311d00","#ff3c00"],"Dallas Cowboys":["#002244","#869397"],"Denver Broncos":["#fb4f14","#002244"],"Detroit Lions":["#0076b6","#b0b7bc"],"Green Bay Packers":["#203731","#ffb612"],"Houston Texans":["#03202f","#a71930"],"Indianapolis Colts":["#002c5f","#a5acaf"],"Jacksonville Jaguars":["#006778","#9f792c"],"Kansas City Chiefs":["#e31837","#ffb612"],"Las Vegas Raiders":["#a5acaf","#000000"],"Los Angeles Chargers":["#0073cf","#ffb612"],"Los Angeles Rams":["#002244","#b3995d"],"Miami Dolphins":["#008e97","#f26a24"],"Minnesota Vikings":["#4f2683","#ffc62f"],"New England Patriots":["#002244","#c60c30"],"New Orleans Saints":["#d3bc8d","#000000"],"New York Giants":["#0b2265","#a71930"],"New York Jets":["#003f2d","#ffffff"],"Philadelphia Eagles":["#004c54","#a5acaf"],"Pittsburgh Steelers":["#000000","#ffb612"],"San Francisco 49ers":["#aa0000","#b3995d"],"Seattle Seahawks":["#002244","#69be28"],"Tampa Bay Buccaneers":["#d50a0a","#000000"],"Tennessee Titans":["#4b92db","#0c2340"],"Washington Commanders":["#5a1414","#ffb612"] };
 
   function toggleMute() { isMuted = !isMuted; document.getElementById("mute-toggle").innerText = isMuted ? "OFF" : "ON"; }
   function playSound(f, d=0.05) { if(isMuted) return; if(!audioCtx) audioCtx = new AudioContext(); if(audioCtx.state==='suspended') audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.value=f; g.gain.value=0.01; o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+d); }
@@ -136,23 +146,18 @@
   }
 
   function loadRoster() { ["position-select","player-select","draft-btn"].forEach(id => document.getElementById(id).disabled=false); updateDropdown(); }
-  
   function updateDropdown() {
     const pos = document.getElementById("position-select").value, sel = document.getElementById("player-select"); sel.innerHTML="";
     let list = (pos==="Defense") ? [`${currentTeam} D/ST`] : (pos==="Coach") ? [rosterData[currentTeam]["Coach"]] : rosterData[currentTeam][pos];
-    // RIGID DUPLICATE PLAYER BLACKLIST
     list.forEach(p => { if(!draftedPlayers.includes(p)) { let o = document.createElement("option"); o.innerText=p; o.value=p; sel.appendChild(o); } });
-    if(sel.options.length === 0) { let o = document.createElement("option"); o.innerText="NO PLAYERS LEFT"; sel.appendChild(o); }
   }
 
   function draftPlayer() {
-    const pos = document.getElementById("position-select").value, p = document.getElementById("player-select").value;
-    if(p === "NO PLAYERS LEFT") return;
+    const pos = document.getElementById("position-select").value, p = document.getElementById("player-select").value, btn = document.getElementById("draft-btn");
+    if(p === "NO PLAYERS LEFT" || btn.disabled) return;
+    btn.disabled = true; // LOCK GUARD
     roster[pos] = p; draftedPlayers.push(p); if (p.includes("(ELITE)")) teamPower += 2.4;
-    const slot = document.getElementById(`roster-${pos}`);
-    slot.querySelector(".player-name").innerText = p;
-    slot.style.borderLeftColor = teamThemes[currentTeam][0];
-    slot.style.animation = "pulseColor 0.8s ease-in-out";
+    document.getElementById(`roster-${pos}`).querySelector(".player-name").innerText = p;
     draftedTeams.push(currentTeam); document.getElementById("position-select").remove(document.getElementById("position-select").selectedIndex);
     if(Object.values(roster).every(v => v!==null)) { document.getElementById("draft-section").style.display="none"; document.getElementById("sim-btn").style.display="block"; } 
     else { document.getElementById("start-btn").style.display = "flex"; document.getElementById("team-logo-img").style.display = "none"; }
@@ -160,16 +165,20 @@
 
   function triggerSimulation() {
     document.getElementById("sim-btn").style.display="none"; document.getElementById("animation-container").style.display="block";
-    finalWins = Math.floor(Math.random()*8) + 2 + Math.floor(teamPower); if(finalWins > 17) finalWins = 17;
+    finalWins = Math.floor(Math.random()*6) + 2 + Math.floor(teamPower); if(finalWins > 17) finalWins = 17;
+    const allTeams = Object.keys(rosterData);
     let step = 0; const ticker = document.getElementById("sim-event-ticker"), sprite = document.getElementById("main-sprite");
     const timer = setInterval(() => {
-      const q = Math.min(3, Math.floor(step));
-      ticker.innerText = quarterlyEvents[q][Math.floor(Math.random()*4)];
-      document.getElementById("sim-scoreboard").innerText = `RECORD: ${Math.floor((finalWins/6)*(step+1))}-${Math.floor(((17-finalWins)/6)*(step+1))}`;
+      const opp = allTeams[Math.floor(Math.random()*allTeams.length)];
+      const win = Math.random() < (finalWins/17);
+      const scoreU = win ? Math.floor(Math.random()*20)+21 : Math.floor(Math.random()*17);
+      const scoreO = win ? Math.floor(Math.random()*17) : Math.floor(Math.random()*20)+21;
+      ticker.innerText = `Wk ${step+1}: ${currentTeam.split(' ').pop()} ${scoreU} - ${opp.split(' ').pop()} ${scoreO}`;
+      document.getElementById("sim-scoreboard").innerText = `RECORD: ${Math.floor((finalWins/17)*(step+1))}-${(step+1) - Math.floor((finalWins/17)*(step+1))}`;
       sprite.style.left = Math.random() > 0.5 ? "35%" : "65%"; spawnDefender();
-      if(step === 2) { clearInterval(timer); setTimeout(() => { document.getElementById("animation-container").style.display="none"; document.getElementById("kicker-container").style.display="block"; startKickerMeter(); }, 1000); }
-      if(step++ >= 5) { clearInterval(timer); showFinal(); }
-    }, 2000);
+      if(step === 8) { clearInterval(timer); setTimeout(() => { document.getElementById("animation-container").style.display="none"; document.getElementById("kicker-container").style.display="block"; startKickerMeter(); }, 1200); }
+      if(step++ >= 16) { clearInterval(timer); showFinal(); }
+    }, 1800);
   }
 
   function spawnDefender() {
@@ -181,44 +190,60 @@
   function startKickerMeter() {
     kickStep = 1; meterPos = 0; meterDir = 1;
     meterInterval = setInterval(() => {
-      meterPos += meterDir * 3;
-      if(meterPos >= 100 || meterPos <= 0) meterDir *= -1;
-      document.getElementById("meter-cursor").style.left = meterPos + "%";
-      if(kickStep === 1) document.getElementById("p-fill").style.width = meterPos + "%";
+      if(kickStep === 1) {
+        meterPos += meterDir * 2; if(meterPos >= 100 || meterPos <= 0) meterDir *= -1;
+        document.getElementById("meter-cursor").style.left = meterPos + "%";
+        document.getElementById("p-fill").style.width = meterPos + "%";
+      } else if(kickStep === 2) {
+        aimAngle += aimDir * 2; if(aimAngle >= 40 || aimAngle <= -40) aimDir *= -1;
+        document.getElementById("aim-arrow").style.transform = `translateX(-50%) rotate(${aimAngle}deg)`;
+      }
     }, 20);
   }
 
   function handleKickInput() {
-    const btn = document.getElementById("kick-action-btn"), msg = document.getElementById("kick-msg");
-    if(kickStep === 1) { 
-      kickStep = 2; powerVal = meterPos; btn.innerText = "LOCK ACCURACY";
-    } else {
-      clearInterval(meterInterval); accuracyVal = meterPos;
-      let isGood = (accuracyVal > 8 && accuracyVal < 25);
-      msg.innerText = (powerVal < 60) ? "TOO WEAK!" : (!isGood ? (accuracyVal < 8 ? "WIDE LEFT!" : "WIDE RIGHT!") : "IT'S GOOD!");
-      executeKick(isGood && powerVal > 60);
-    }
+    const btn = document.getElementById("kick-action-btn");
+    if(kickStep === 1) { kickStep = 2; btn.innerText = "KICK!"; document.getElementById("kicker-meter-ui").style.display="none"; document.getElementById("aim-arrow").style.display="block"; }
+    else { clearInterval(meterInterval); executePhysicsKick(); }
   }
 
-  function executeKick(isGood) {
-    const ball = document.getElementById("kicking-ball"); document.getElementById("kick-action-btn").disabled = true;
-    const curve = (accuracyVal - 15) * 1.8; document.documentElement.style.setProperty('--kickX', `${curve}px`);
-    ball.style.display = "block"; ball.style.animation = "ballFlight 1s forwards ease-out";
-    setTimeout(() => { bonusWins = isGood ? 2 : -1; document.getElementById("kicker-container").style.display="none"; showFinal(); }, 1100);
+  function executePhysicsKick() {
+    const ball = document.getElementById("ball-physics"), posts = document.getElementById("upright-posts");
+    ball.style.display = "block"; let x = 50, y = 10, vy = (powerVal / 8) + 4, vx = (aimAngle / 12), grav = 0.35;
+    const pInt = setInterval(() => {
+      x += vx; y += vy; vy -= grav;
+      ball.style.left = x + "%"; ball.style.bottom = y + "px";
+      if(y > 80 && Math.abs(x - 50) < 8) { // Upright collision check
+        if(Math.abs(x - 42) < 2 || Math.abs(x - 58) < 2) posts.classList.add('shake');
+        clearInterval(pInt); const isGood = (x > 42 && x < 58 && y > 70);
+        document.getElementById("kick-msg").innerText = isGood ? "IT'S GOOD!" : "WIDE!";
+        bonusWins = isGood ? 2 : -1;
+        setTimeout(() => { posts.classList.remove('shake'); document.getElementById("kicker-container").style.display="none"; showFinal(); }, 1200);
+      } else if(y < 0) { clearInterval(pInt); bonusWins = -1; showFinal(); }
+    }, 30);
   }
 
   function showFinal() {
     document.getElementById("animation-container").style.display = "none";
     const r = document.getElementById("results"), total = Math.max(0, Math.min(17, finalWins + bonusWins));
-    r.innerHTML = `<h2>FINAL: ${total}-${17-total}</h2><p>${total >= 14 ? "GM DEITY. Statues are already being built." : (total >= 9 ? "PLAYOFF LOCK. Solid roster building." : "WAR CRIME. Fans are burning your jersey.")}</p>`;
+    r.innerHTML = `<h2>FINAL: ${total}-${17-total}</h2><p>${total >= 14 ? "GM DEITY." : "PLAYOFF FLOP."}</p>`;
     r.style.display="block"; document.getElementById("reset-btn").style.display="block"; document.getElementById("challenge-btn").style.display="block"; if(total>=14) confetti();
   }
 
   async function handleChallengeAction() {
     const total = Math.max(0, Math.min(17, finalWins + bonusWins));
-    navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?w=${total}&t=${encodeURIComponent(Object.values(roster).join(','))}`).then(() => alert("Link Copied!"));
+    const url = `${window.location.origin}${window.location.pathname}?w=${total}&t=${encodeURIComponent(Object.values(roster).join(','))}`;
+    navigator.clipboard.writeText(url).then(() => alert("Link Copied!"));
   }
-  window.onload = async () => { const res = await fetch('rosters.json'); rosterData = await res.json(); };
+
+  window.onload = async () => { 
+    const res = await fetch('rosters.json'); rosterData = await res.json();
+    const params = new URLSearchParams(window.location.search);
+    if(params.has('t')) {
+      document.getElementById('opponent-squad').style.display = 'block';
+      document.getElementById('opp-players-list').innerHTML = params.get('t').split(',').map(p => `• ${p}`).join('<br>');
+    }
+  };
 </script>
 </body>
 </html>
