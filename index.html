@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>17-0 NFL Roster Builder: Underground Pro</title>
+<title>17-0 NFL Roster Builder: SNES Pro-Arcade</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -12,50 +12,50 @@
   body { font-family: 'Inter', sans-serif; background-color: #2e7d32; background-image: linear-gradient(90deg, transparent 49%, rgba(255,255,255,0.2) 49%, rgba(255,255,255,0.2) 51%, transparent 51%), repeating-linear-gradient(0deg, #2e7d32, #2e7d32 100px, #388e3c 100px, #388e3c 200px); color: #fff; margin: 0; padding: 0; display: flex; justify-content: center; overflow-x: hidden; }
   .main-container { width: 100%; max-width: 540px; min-height: 100vh; padding: 20px; box-sizing: border-box; position: relative; z-index: 5; }
   body::before { content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02)); background-size: 100% 3px, 3px 100%; pointer-events: none; z-index: 1000; }
-  .glass-card { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 25px; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9); margin-bottom: 20px; text-align: center; border-top: 6px solid var(--primary); }
-  h2 { font-family: 'Press Start 2P', cursive; font-size: 12px; text-shadow: 2px 2px 0 var(--primary); margin-bottom: 25px; line-height: 1.6; }
   
-  /* ROUND SPIN BUTTON */
-  #start-btn { 
-    width: 90px; height: 90px; border-radius: 50%; padding: 0; font-size: 14px; 
-    border: 4px solid #fff; box-shadow: 0 0 15px var(--glow);
-    background: radial-gradient(circle, var(--primary) 40%, #800 100%);
-    display: flex; align-items: center; justify-content: center; margin: 15px auto;
-    cursor: pointer; color: white; font-family: 'Press Start 2P'; transition: transform 0.1s;
-  }
+  .glass-card { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 25px; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9); margin-bottom: 20px; text-align: center; border-top: 6px solid var(--primary); }
+  h2 { font-family: 'Press Start 2P', cursive; font-size: 14px; text-shadow: 3px 3px 0 var(--primary); margin-bottom: 25px; line-height: 1.6; }
+  
+  #start-btn { width: 90px; height: 90px; border-radius: 50%; padding: 0; font-size: 16px; border: 4px solid #fff; box-shadow: 0 0 15px var(--glow); background: radial-gradient(circle, var(--primary) 40%, #800 100%); display: flex; align-items: center; justify-content: center; margin: 15px auto; cursor: pointer; color: white; font-family: 'Press Start 2P'; transition: transform 0.1s; }
   #start-btn:active { transform: scale(0.9); }
+  #mute-toggle { width: auto !important; position: absolute; top: 15px; right: 15px; padding: 6px 10px !important; font-size: 9px !important; background: #333 !important; z-index: 1100; border-radius: 4px; font-family: 'Press Start 2P'; border: 1px solid #555; color: white; cursor: pointer; }
 
-  #mute-toggle { 
-    width: auto !important; position: absolute; top: 15px; right: 15px; 
-    padding: 6px 10px !important; font-size: 9px !important; 
-    background: #333 !important; z-index: 1100; border-radius: 4px;
-    font-family: 'Press Start 2P'; border: 1px solid #555; color: white;
-  }
-
-  select, .std-btn { width: 100%; padding: 18px; margin: 8px 0; font-size: 22px; border-radius: 10px; box-sizing: border-box; font-family: 'Bebas Neue'; text-transform: uppercase; border: none; cursor: pointer; }
+  select, .std-btn { width: 100%; padding: 18px; margin: 10px 0; font-size: 22px; border-radius: 10px; box-sizing: border-box; font-family: 'Bebas Neue'; text-transform: uppercase; border: none; cursor: pointer; }
   select { background: #111 !important; color: #fff !important; border: 3px solid var(--primary) !important; text-align-last: center; appearance: none; }
   .std-btn { background: var(--primary); color: white; }
 
-  .team-logo-container { height: 160px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 15px; margin-bottom: 10px; position: relative; }
+  .team-logo-container { height: 160px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 15px; margin-bottom: 10px; position: relative; overflow: hidden; }
   #team-logo-img { max-height: 130px; filter: drop-shadow(0 0 15px var(--glow)); display: none; }
 
   .roster-slot { background: rgba(0,0,0,0.6); padding: 12px; margin: 6px 0; border-radius: 10px; border-left: 5px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
-  .slot-label { font-family: 'Press Start 2P', cursive; font-size: 8px; color: #888; }
+  .slot-label { font-family: 'Press Start 2P', cursive; font-size: 9px; color: #888; }
   .player-name { font-weight: bold; font-size: 18px; color: #fff; }
 
+  /* KICKER ENGINE */
   #kicker-container { display: none; background: #000; padding: 20px; border-radius: 15px; border: 3px solid #ffb300; position: relative; }
   .goal-posts { width: 50%; margin-left: 25%; height: 120px; border-left: 8px solid yellow; border-right: 8px solid yellow; border-bottom: 8px solid yellow; margin-bottom: 40px; position: relative; }
-  #kicking-ball { width: 20px; height: 30px; background: #8b4513; border-radius: 50%; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; display: none; }
+  #kicking-ball { width: 20px; height: 30px; background: #8b4513; border-radius: 50%; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; display: none; z-index: 10; }
   @keyframes ballFlight { 0% { bottom: -20px; transform: translateX(-50%) scale(1); opacity: 1; } 100% { bottom: 140px; transform: translateX(calc(-50% + var(--kickX))) scale(0.3); opacity: 0.7; } }
   .swing-meter { width: 100%; height: 40px; background: #222; border: 2px solid #555; position: relative; overflow: hidden; margin: 10px 0; }
-  .impact-zone { width: 25px; height: 100%; background: #0f0; position: absolute; right: 10%; box-shadow: 0 0 10px #0f0; z-index: 2; }
+  .impact-zone { width: 25px; height: 100%; background: #fff; position: absolute; left: 50%; transform: translateX(-50%); box-shadow: 0 0 10px #fff; z-index: 2; }
   .power-fill { height: 100%; background: linear-gradient(90deg, #f00, #ff0, #0f0); width: 0%; position: absolute; left: 0; }
-  #meter-cursor { width: 6px; height: 100%; background: #0ff; position: absolute; right: 0; z-index: 3; box-shadow: 0 0 8px #0ff; }
+  #meter-cursor { width: 6px; height: 100%; background: #0ff; position: absolute; left: 0; z-index: 3; box-shadow: 0 0 8px #0ff; }
 
+  /* SIM ANIMATION ENGINE */
   #animation-container { display: none; margin: 25px 0; }
   #tecmo-screen { width: 100%; height: 160px; background-color: #2e7d32; position: relative; overflow: hidden; border: 4px solid #fff; border-radius: 10px; }
-  .yard-line { width: 100%; height: 3px; background: rgba(255,255,255,0.4); position: absolute; animation: scrollField 0.8s linear infinite; }
+  .yard-line { width: 100%; height: 3px; background: rgba(255,255,255,0.4); position: absolute; width: 100%; left: 0; animation: scrollField 0.8s linear infinite; }
   @keyframes scrollField { 0% { top: -10%; } 100% { top: 110%; } }
+
+  .pixel-player { width: 30px; height: 45px; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); animation: runBob 0.3s infinite alternate; }
+  .pixel-helmet { width: 22px; height: 18px; background: var(--primary); margin: 0 auto; border-radius: 5px 5px 0 0; position: relative; border: 2px solid rgba(0,0,0,0.3); }
+  .pixel-visor { width: 16px; height: 4px; background: #111; position: absolute; top: 6px; left: 3px; }
+  .pixel-jersey { width: 28px; height: 22px; background: var(--accent); margin: -2px auto 0; border-radius: 3px; border: 2px solid rgba(0,0,0,0.3); }
+  @keyframes runBob { from { transform: translateX(-50%) translateY(0); } to { transform: translateX(-50%) translateY(-5px); } }
+
+  #sim-scoreboard { font-family: 'Press Start 2P', cursive; font-size: 14px; color: #0f0; margin-bottom: 12px; }
+  #sim-event-ticker { color: #ffb300; font-family: 'Press Start 2P', cursive; font-size: 10px; margin-top: 15px; line-height: 1.4; height: 40px; }
+  #results { display: none; padding: 25px; border-radius: 16px; border: 4px solid var(--primary); background: #111; font-size: 18px; }
 </style>
 </head>
 <body>
@@ -84,15 +84,22 @@
     </div>
     <div style="display:flex; justify-content:center;"><button id="sim-btn" class="std-btn" onclick="triggerSimulation()" style="display:none; background: #28a745;">SIMULATE SEASON</button></div>
     <div id="kicker-container">
-      <h3 style="font-family:'Press Start 2P'; font-size:9px; color:#ffb300;">PRO-SWING KICK</h3>
+      <h3 style="font-family:'Press Start 2P'; font-size:10px; color:#ffb300;">PRO-SWING 3-CLICK</h3>
       <div class="goal-posts"><div id="kicking-ball"></div></div>
-      <div class="swing-meter"><div class="power-fill" id="p-fill"></div><div class="impact-zone"></div><div id="meter-cursor"></div></div>
+      <div class="swing-meter">
+        <div class="power-fill" id="p-fill"></div>
+        <div class="impact-zone"></div>
+        <div id="meter-cursor"></div>
+      </div>
       <button id="kick-action-btn" class="std-btn" onclick="handleKickInput()">START SWING</button>
     </div>
     <div id="animation-container">
       <div id="sim-scoreboard">RECORD: 0-0</div>
-      <div id="tecmo-screen"><div class="yard-line" style="top:25%"></div><div class="yard-line" style="top:50%"></div><div class="yard-line" style="top:75%"></div><div style="width:24px; height:34px; background:var(--accent); position:absolute; bottom:20px; left:50%; border-top:8px solid var(--primary);"></div></div>
-      <div id="sim-event-ticker" style="color:#ffb300; font-family:'Press Start 2P'; font-size:9px; margin-top:15px; line-height:1.4;">READY...</div>
+      <div id="tecmo-screen">
+        <div class="yard-line" style="top:25%"></div><div class="yard-line" style="top:50%"></div><div class="yard-line" style="top:75%"></div>
+        <div class="pixel-player"><div class="pixel-helmet"><div class="pixel-visor"></div></div><div class="pixel-jersey"></div></div>
+      </div>
+      <div id="sim-event-ticker">READY...</div>
     </div>
     <div id="results"></div>
     <button id="reset-btn" class="std-btn" onclick="location.reload()" style="display:none; background: #444;">NEW DRAFT</button>
@@ -100,25 +107,18 @@
 </div>
 <script>
   let isMuted = false, audioCtx = null, rosterData = null, draftedTeams = [], draftedPlayers = [], roster = {QB:null,RB:null,WR:null,TE:null,Defense:null,Coach:null}, currentTeam = null, finalWins = 0, bonusWins = 0, teamPower = 0;
-  let kickStep = 0, meterPos = 0, meterDir = -1, meterInterval = null, powerVal = 0;
+  let kickStep = 0, meterPos = 0, meterDir = 1, meterInterval = null, powerVal = 0;
   const logoMap = {"Arizona Cardinals":"ari","Atlanta Falcons":"atl","Baltimore Ravens":"bal","Buffalo Bills":"buf","Carolina Panthers":"car","Chicago Bears":"chi","Cincinnati Bengals":"cin","Cleveland Browns":"cle","Dallas Cowboys":"dal","Denver Broncos":"den","Detroit Lions":"det","Green Bay Packers":"gb","Houston Texans":"hou","Indianapolis Colts":"ind","Jacksonville Jaguars":"jax","Kansas City Chiefs":"kc","Las Vegas Raiders":"lv","Los Angeles Chargers":"lac","Los Angeles Rams":"lar","Miami Dolphins":"mia","Minnesota Vikings":"min","New England Patriots":"ne","New Orleans Saints":"no","New York Giants":"nyg","New York Jets":"nyj","Philadelphia Eagles":"phi","Pittsburgh Steelers":"pit","San Francisco 49ers":"sf","Seattle Seahawks":"sea","Tampa Bay Buccaneers":"tb","Tennessee Titans":"ten","Washington Commanders":"wsh"};
 
   function toggleMute() { isMuted = !isMuted; document.getElementById("mute-toggle").innerText = isMuted ? "OFF" : "ON"; }
   function playSound(f, d=0.05) { if(isMuted) return; if(!audioCtx) audioCtx = new AudioContext(); if(audioCtx.state==='suspended') audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.value=f; g.gain.value=0.01; o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+d); }
-
-  async function initGame() {
-    const res = await fetch('rosters.json');
-    rosterData = await res.json();
-    document.getElementById("start-btn").disabled = false;
-  }
 
   function spinTeam() {
     const btn = document.getElementById("start-btn"), img = document.getElementById("team-logo-img");
     btn.style.display = "none"; img.style.display = "block";
     const available = Object.keys(rosterData).filter(t => !draftedTeams.includes(t));
     let count = 0; function perform() {
-      const name = available[Math.floor(Math.random()*available.length)]; 
-      img.src = `https://a.espncdn.com/i/teamlogos/nfl/500/${logoMap[name]||'nfl'}.png`;
+      const name = available[Math.floor(Math.random()*available.length)]; img.src = `https://a.espncdn.com/i/teamlogos/nfl/500/${logoMap[name]||'nfl'}.png`;
       playSound(300 + count*15); if(count++ < 15) setTimeout(perform, 80); else { currentTeam = name; loadRoster(); }
     } perform();
   }
@@ -151,13 +151,28 @@
 
   function handleKickInput() {
     const cur = document.getElementById("meter-cursor"), fill = document.getElementById("p-fill"), btn = document.getElementById("kick-action-btn");
-    if(kickStep === 0) { kickStep = 1; btn.innerText = "POWER"; meterInterval = setInterval(() => { meterPos += meterDir * 5; if(meterPos <= -95) meterDir = 1; cur.style.transform = `translateX(${meterPos}%)`; }, 20); } 
-    else if(kickStep === 1) { kickStep = 2; powerVal = Math.abs(meterPos); fill.style.width = `${powerVal}%`; meterDir = 1; btn.innerText = "ACCURACY"; } 
-    else if(kickStep === 2) { clearInterval(meterInterval); executeKick(Math.abs(meterPos) < 20); }
+    if(kickStep === 0) { 
+      kickStep = 1; btn.innerText = "POWER"; 
+      meterInterval = setInterval(() => { 
+        meterPos += meterDir * 4; 
+        if(meterPos >= 100 || meterPos <= 0) meterDir *= -1; 
+        cur.style.left = `${meterPos}%`; 
+      }, 20); 
+    } 
+    else if(kickStep === 1) { 
+      kickStep = 2; powerVal = meterPos; 
+      fill.style.width = `${powerVal}%`; 
+      btn.innerText = "ACCURACY"; 
+    } 
+    else if(kickStep === 2) { 
+      clearInterval(meterInterval); 
+      executeKick(Math.abs(meterPos - 50) < 15); 
+    }
   }
 
   function executeKick(isGood) {
     const ball = document.getElementById("kicking-ball"); document.getElementById("kick-action-btn").disabled = true;
+    const offset = (meterPos - 50) * 1.5; document.documentElement.style.setProperty('--kickX', `${offset}px`);
     ball.style.display = "block"; ball.style.animation = "ballFlight 1s forwards ease-out";
     setTimeout(() => { bonusWins = (isGood && powerVal > 60) ? 2 : -1; document.getElementById("kicker-container").style.display="none"; showFinal(); }, 1100);
   }
@@ -169,7 +184,7 @@
     r.style.display="block"; document.getElementById("reset-btn").style.display="block"; if(total>=13) confetti();
   }
 
-  window.onload = initGame;
+  window.onload = async () => { const res = await fetch('rosters.json'); rosterData = await res.json(); };
 </script>
 </body>
 </html>
