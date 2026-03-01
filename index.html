@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Football Team Picker: Interactive Arcade</title>
+<title>Football Team Picker: Versus Arcade</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -11,7 +11,8 @@
   :root { --primary: #d50a0a; --accent: #013369; --glow: rgba(213, 10, 10, 0.4); }
   body { font-family: 'Inter', sans-serif; background-color: #1a472a; background-image: linear-gradient(90deg, transparent 49%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.1) 51%, transparent 51%), repeating-linear-gradient(0deg, #1a472a, #1a472a 100px, #245c38 100px, #245c38 200px); color: #fff; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
   
-  .audio-dashboard { position: fixed; top: 20px; right: 20px; display: flex; flex-direction: column; align-items: center; gap: 15px; background: rgba(0,0,0,0.85); padding: 15px 10px; border-radius: 30px; border: 2px solid var(--primary); z-index: 2000; }
+  /* AUDIO DASHBOARD */
+  .audio-dashboard { position: fixed; top: 20px; right: 20px; display: flex; flex-direction: column; align-items: center; gap: 15px; background: rgba(0,0,0,0.85); padding: 15px 10px; border-radius: 30px; border: 2px solid var(--primary); z-index: 2000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
   #mute-toggle { background: none; border: none; font-size: 20px; cursor: pointer; color: white; }
   #volume-slider { appearance: none; width: 80px; height: 4px; background: #444; transform: rotate(-90deg); margin: 40px 0; border-radius: 2px; }
   #volume-slider::-webkit-slider-thumb { appearance: none; width: 14px; height: 14px; background: var(--primary); border-radius: 50%; cursor: pointer; }
@@ -21,7 +22,7 @@
   h1 { font-family: 'Bebas Neue', cursive; font-size: 50px; text-shadow: 4px 4px 0 var(--primary); margin: 0 0 20px 0; letter-spacing: 1px; }
 
   .team-logo-container { height: 180px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 15px; margin-bottom: 15px; position: relative; }
-  #team-logo-img { max-height: 150px; display: none; }
+  #team-logo-img { max-height: 150px; display: none; filter: drop-shadow(0 0 15px white); }
   #start-btn { position: absolute; width: 100px; height: 100px; border-radius: 50%; border: 4px solid #fff; background: radial-gradient(circle, var(--primary) 40%, #800 100%); color: white; font-family: 'Press Start 2P'; font-size: 14px; cursor: pointer; }
 
   select, .std-btn { width: 100%; padding: 18px; margin: 10px 0; font-size: 22px; border-radius: 12px; box-sizing: border-box; font-family: 'Bebas Neue'; text-transform: uppercase; cursor: pointer; border: none; }
@@ -29,26 +30,28 @@
   .std-btn { background: var(--primary); color: white; box-shadow: 0 4px 0 #800; }
   .std-btn:disabled { background: #333 !important; opacity: 0.5; box-shadow: none; }
 
-  /* ROSTER SLOTS WITH AVATARS */
-  .roster-slot { background: rgba(0,0,0,0.7); padding: 10px; margin: 8px 0; border-radius: 14px; border: 2px solid rgba(255,255,255,0.1); border-left: 8px solid var(--primary); display: flex; align-items: center; gap: 15px; transition: 0.3s; text-align: left; }
-  .avatar-box { width: 40px; height: 40px; background: #333; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 24px; border: 2px solid rgba(255,255,255,0.2); }
+  /* ROSTER SLOTS + PORTRAITS */
+  .roster-slot { background: rgba(0,0,0,0.7); padding: 10px; margin: 8px 0; border-radius: 14px; border: 2px solid rgba(255,255,255,0.1); border-left: 8px solid var(--primary); display: flex; align-items: center; gap: 15px; transition: 0.4s; text-align: left; }
+  .avatar-box { width: 45px; height: 45px; background: #222; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 26px; border: 2px solid rgba(255,255,255,0.1); }
   .player-info { flex-grow: 1; }
-  .slot-label { font-family: 'Press Start 2P'; font-size: 8px; color: #fff; opacity: 0.5; display: block; margin-bottom: 2px; }
+  .slot-label { font-family: 'Press Start 2P'; font-size: 8px; color: #fff; opacity: 0.5; display: block; }
   .player-name { font-weight: bold; font-size: 18px; color: #fff; }
 
-  /* INTERACTIVE MINI-GAME */
+  /* VERSUS UI */
+  #opponent-squad { display: none; background: rgba(1, 51, 105, 0.5); border: 2px solid #ffb300; border-radius: 18px; padding: 15px; margin-bottom: 20px; text-align: left; }
+
+  /* MINI-GAME */
   #animation-container { display: none; margin: 25px 0; }
   #tecmo-screen { height: 220px; width: 100%; position: relative; overflow: hidden; background: #2e7d32; border: 4px solid #fff; border-radius: 12px; touch-action: none; }
-  #main-sprite { width: 42px; height: 32px; position: absolute; left: 40px; top: 50%; transform: translateY(-50%); z-index: 20; border-radius: 4px; }
+  #main-sprite { width: 42px; height: 32px; position: absolute; left: 40px; top: 50%; transform: translateY(-50%); z-index: 20; border-radius: 4px; border-right: 10px solid gold; }
   .defender-h { width: 35px; height: 30px; position: absolute; background: #555; border: 2px solid #000; border-radius: 4px; z-index: 15; right: -50px; }
-  #game-instructions { font-family: 'Press Start 2P'; font-size: 8px; color: #fff; margin-top: 10px; animation: blink 1s infinite; }
-  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-  /* FGMG FIX */
+  /* FGMG */
   #kicker-container, #results { display: none; }
   .goal-field { width: 100%; height: 280px; background: linear-gradient(#1b5e20, #2e7d32); position: relative; border: 2px solid #fff; overflow: hidden; border-radius: 10px; }
-  .uprights { position: absolute; top: 30px; left: 50%; transform: translateX(-50%); width: 14%; height: 110px; border-left: 6px solid yellow; border-right: 6px solid yellow; border-bottom: 6px solid yellow; z-index: 5; pointer-events: none; }
-  #ball-physics { width: 20px; height: 28px; background: #8b4513; border-radius: 50%; position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; z-index: 10; display: none; box-shadow: 0 40px 10px rgba(0,0,0,0.3); }
+  .uprights { position: absolute; top: 30px; left: 50%; transform: translateX(-50%); width: 14%; height: 110px; border-left: 6px solid yellow; border-right: 6px solid yellow; border-bottom: 6px solid yellow; z-index: 5; }
+  #ball-physics { width: 20px; height: 28px; background: #8b4513; border-radius: 50%; position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; z-index: 10; display: none; }
+  #ball-shadow { width: 20px; height: 8px; background: rgba(0,0,0,0.3); border-radius: 50%; position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); z-index: 9; display: none; }
 </style>
 </head>
 <body>
@@ -61,6 +64,12 @@
 <div class="main-container">
   <div class="glass-card" id="draft-section">
     <h1>FOOTBALL TEAM PICKER</h1>
+    
+    <div id="opponent-squad">
+      <strong style="color: #ffb300; font-family:'Press Start 2P'; font-size: 8px;">VS CHALLENGER:</strong><br>
+      <div id="opp-players-list" style="margin-top: 10px; opacity: 0.9; font-size: 11px;"></div>
+    </div>
+
     <div class="team-logo-container">
       <img id="team-logo-img" src="">
       <button id="start-btn" onclick="spinTeam()">SPIN</button>
@@ -79,23 +88,26 @@
       <div id="roster-Defense" class="roster-slot"><div class="avatar-box">🛡️</div><div class="player-info"><span class="slot-label">DEF</span><div class="player-name">---</div></div></div>
       <div id="roster-Coach" class="roster-slot"><div class="avatar-box">📋</div><div class="player-info"><span class="slot-label">HC</span><div class="player-name">---</div></div></div>
     </div>
-    <button id="sim-btn" class="std-btn" onclick="triggerSimulation()" style="margin-top:40px; background:#28a745; display:none;">START SEASON SIM</button>
+    
+    <div style="display:flex; justify-content:center;"><button id="sim-btn" class="std-btn" onclick="triggerSimulation()" style="margin-top: 50px; background: #28a745; display:none;">START SEASON SIM</button></div>
     
     <div id="kicker-container">
       <div id="kick-msg" style="color:#0f0; font-family:'Press Start 2P'; font-size:12px; height:20px; margin-bottom:10px;"></div>
-      <div class="goal-field"><div class="uprights"></div><div id="aim-arrow" style="width:4px; height:90px; background:#0f0; position:absolute; bottom:10px; left:50%; transform-origin:bottom center; display:none; box-shadow:0 0 15px #0f0; z-index:4;"></div><div id="ball-physics"></div></div>
+      <div class="goal-field"><div class="uprights"></div><div id="aim-arrow" style="width:4px; height:90px; background:#0f0; position:absolute; bottom:10px; left:50%; transform-origin:bottom center; display:none; box-shadow:0 0 15px #0f0; z-index:4;"></div><div id="ball-shadow"></div><div id="ball-physics"></div></div>
       <div id="kicker-meter-ui" style="width:100%; height:40px; background:#222; position:relative; margin:15px 0; overflow:hidden;"><div id="p-fill" style="height:100%; background:linear-gradient(90deg,#333,#ff0,#f00); width:0%;"></div><div id="meter-cursor" style="width:8px; height:100%; background:#fff; position:absolute; left:0;"></div></div>
       <button id="kick-action-btn" class="std-btn" onclick="handleKickInput()">STOP POWER</button>
     </div>
 
     <div id="animation-container">
-      <div id="sim-scoreboard" style="font-family:'Press Start 2P'; font-size:10px; color:#0f0; margin-bottom:12px;">DODGES: 0 | HYPE: +0 WINS</div>
+      <div id="sim-scoreboard" style="font-family:'Press Start 2P'; font-size:10px; color:#0f0; margin-bottom:12px; line-height:1.6;">RECORD: 0-0</div>
       <div id="tecmo-screen"><div id="main-sprite"></div></div>
-      <div id="game-instructions">USE ARROW KEYS UP/DOWN TO DODGE!</div>
-      <div id="sim-event-ticker" style="color:#ffb300; font-family:'Press Start 2P'; font-size:12px; line-height:1.5; margin-top:15px;"></div>
+      <div id="sim-event-ticker" style="color:#ffb300; font-family:'Press Start 2P'; font-size:14px; margin-top:20px; min-height:80px;">READY...</div>
     </div>
     <div id="results"></div>
-    <button id="reset-btn" class="std-btn" onclick="location.reload()" style="display:none; background:#444;">NEW DRAFT</button>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:20px;">
+      <button id="challenge-btn" class="std-btn" onclick="handleChallengeAction()" style="background:#013369; display:none;">SHARE CHALLENGE</button>
+      <button id="reset-btn" class="std-btn" onclick="location.reload()" style="display:none; background:#444;">NEW DRAFT</button>
+    </div>
   </div>
 </div>
 
@@ -103,14 +115,14 @@
   const logoMap = {"Arizona Cardinals":"ari","Atlanta Falcons":"atl","Baltimore Ravens":"bal","Buffalo Bills":"buf","Carolina Panthers":"car","Chicago Bears":"chi","Cincinnati Bengals":"cin","Cleveland Browns":"cle","Dallas Cowboys":"dal","Denver Broncos":"den","Detroit Lions":"det","Green Bay Packers":"gb","Houston Texans":"hou","Indianapolis Colts":"ind","Jacksonville Jaguars":"jax","Kansas City Chiefs":"kc","Las Vegas Raiders":"lv","Los Angeles Chargers":"lac","Los Angeles Rams":"lar","Miami Dolphins":"mia","Minnesota Vikings":"min","New England Patriots":"ne","New Orleans Saints":"no","New York Giants":"nyg","New York Jets":"nyj","Philadelphia Eagles":"phi","Pittsburgh Steelers":"pit","San Francisco 49ers":"sf","Seattle Seahawks":"sea","Tampa Bay Buccaneers":"tb","Tennessee Titans":"ten","Washington Commanders":"wsh"};
   const teamThemes = { "Arizona Cardinals":["#97233f","#000000"],"Atlanta Falcons":["#a71930","#000000"],"Baltimore Ravens":["#241773","#000000"],"Buffalo Bills":["#00338d","#c60c30"],"Carolina Panthers":["#0085ca","#000000"],"Chicago Bears":["#0b162a","#c83803"],"Cincinnati Bengals":["#fb4f14","#000000"],"Cleveland Browns":["#311d00","#ff3c00"],"Dallas Cowboys":["#002244","#869397"],"Denver Broncos":["#fb4f14","#002244"],"Detroit Lions":["#0076b6","#b0b7bc"],"Green Bay Packers":["#203731","#ffb612"],"Houston Texans":["#03202f","#a71930"],"Indianapolis Colts":["#002c5f","#a5acaf"],"Jacksonville Jaguars":["#006778","#9f792c"],"Kansas City Chiefs":["#e31837","#ffb612"],"Las Vegas Raiders":["#a5acaf","#000000"],"Los Angeles Chargers":["#0073cf","#ffb612"],"Los Angeles Rams":["#002244","#b3995d"],"Miami Dolphins":["#008e97","#f26a24"],"Minnesota Vikings":["#4f2683","#ffc62f"],"New England Patriots":["#002244","#c60c30"],"New Orleans Saints":["#d3bc8d","#000000"],"New York Giants":["#0b2265","#a71930"],"New York Jets":["#003f2d","#ffffff"],"Philadelphia Eagles":["#004c54","#a5acaf"],"Pittsburgh Steelers":["#000000","#ffb612"],"San Francisco 49ers":["#aa0000","#b3995d"],"Seattle Seahawks":["#002244","#69be28"],"Tampa Bay Buccaneers":["#d50a0a","#000000"],"Tennessee Titans":["#4b92db","#0c2340"],"Washington Commanders":["#5a1414","#ffb612"] };
 
-  let isMuted = false, audioCtx = null, gainNode = null, rosterData = null, draftedTeams = [], draftedPlayers = [], roster = {QB:null,RB:null,WR:null,TE:null,Defense:null,Coach:null}, currentTeam = null, finalWins = 0, bonusWins = 0, eliteCount = 0, vol = 0.5;
-  let kickStep = 1, meterPos = 0, meterDir = 1, meterInterval = null, powerVal = 0, aimAngle = 0, aimDir = 1;
+  let audioCtx, gainNode, rosterData, draftedTeams = [], draftedPlayers = [], roster = {QB:null,RB:null,WR:null,TE:null,Defense:null,Coach:null}, currentTeam, finalWins, challengerWins = 0, bonusWins = 0, eliteCount = 0, vol = 0.5, isMuted = false;
+  let kickStep = 1, meterPos = 0, meterDir = 1, meterInterval, powerVal, aimAngle = 0, aimDir = 1;
   let playerTop = 50, dodges = 0, gameActive = false, hypeWins = 0;
 
   function initAudio() { if(!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); gainNode = audioCtx.createGain(); gainNode.connect(audioCtx.destination); updateVolume(); } if(audioCtx.state === 'suspended') audioCtx.resume(); }
   function toggleMute() { isMuted = !isMuted; document.getElementById("mute-toggle").innerText = isMuted ? "🔇" : "🔊"; if(gainNode) gainNode.gain.value = isMuted ? 0 : vol * 0.1; }
   function updateVolume() { vol = document.getElementById("volume-slider").value; if(gainNode) gainNode.gain.value = isMuted ? 0 : vol * 0.1; }
-  function playNESNote(freq, duration = 0.1) { initAudio(); if(isMuted) return; const osc = audioCtx.createOscillator(); const g = audioCtx.createGain(); osc.type = 'square'; osc.frequency.value = freq; g.gain.setValueAtTime(gainNode.gain.value, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration); osc.connect(g); g.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration); }
+  function playNESNote(freq, d = 0.1) { initAudio(); if(isMuted) return; const osc = audioCtx.createOscillator(); const g = audioCtx.createGain(); osc.type = 'square'; osc.frequency.value = freq; g.gain.setValueAtTime(gainNode.gain.value, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + d); osc.connect(g); g.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + d); }
 
   function spinTeam() {
     initAudio(); const btn = document.getElementById("start-btn"), img = document.getElementById("team-logo-img");
@@ -139,12 +151,12 @@
     else { document.getElementById("start-btn").style.display = "block"; document.getElementById("team-logo-img").style.display = "none"; }
   }
 
-  // INTERACTIVE MINI-GAME ENGINE
+  // RUNNER MINI-GAME
   function triggerSimulation() {
     document.getElementById("sim-btn").style.display="none"; document.getElementById("animation-container").style.display="block";
-    const sprite = document.getElementById("main-sprite");
-    sprite.style.background = teamThemes[draftedTeams[0]][0]; sprite.style.borderRight = `12px solid ${teamThemes[draftedTeams[0]][1]}`;
-    gameActive = true; dodges = 0; playerTop = 50;
+    const sprite = document.getElementById("main-sprite"), params = new URLSearchParams(window.location.search);
+    challengerWins = params.has('w') ? parseInt(params.get('w')) : 0;
+    sprite.style.background = teamThemes[draftedTeams[0]][0]; gameActive = true;
     
     document.addEventListener("keydown", (e) => {
       if(!gameActive) return;
@@ -153,13 +165,16 @@
       sprite.style.top = playerTop + "%";
     });
 
-    let frame = 0; const gameLoop = setInterval(() => {
+    let frame = 0, userWins = 0; const ticker = document.getElementById("sim-event-ticker");
+    const gameLoop = setInterval(() => {
       if(frame % 35 === 0) spawnDefender();
-      checkCollision();
-      document.getElementById("sim-scoreboard").innerText = `DODGES: ${dodges} | HYPE: +${Math.floor(dodges/5)} WINS`;
+      const win = Math.random() < 0.5; if(frame % 25 === 0) {
+        if(win) userWins++;
+        ticker.innerText = `WEEK ${Math.ceil(frame/25)}: ${win ? 'WON' : 'LOST'} VS OPPONENT`;
+      }
+      document.getElementById("sim-scoreboard").innerHTML = `YOU: ${userWins}-${Math.max(0, Math.ceil(frame/25)-userWins)}<br>HYPE BONUS: +${Math.floor(dodges/5)} WINS`;
       if(frame++ > 400) { 
-        clearInterval(gameLoop); gameActive = false; 
-        hypeWins = Math.floor(dodges/5);
+        clearInterval(gameLoop); gameActive = false; hypeWins = Math.floor(dodges/5); finalWins = userWins;
         setTimeout(() => { document.getElementById("animation-container").style.display="none"; document.getElementById("kicker-container").style.display="block"; startKickerMeter(); }, 1000);
       }
     }, 40);
@@ -175,9 +190,7 @@
     }, 30);
   }
 
-  function checkCollision() {} // Simplified for this logic
-
-  // FGMG CALIBRATED
+  // FGMG SYNCED
   function startKickerMeter() {
     meterInterval = setInterval(() => {
       if(kickStep === 1) { meterPos += meterDir * 2.2; if(meterPos >= 100 || meterPos <= 0) meterDir *= -1; document.getElementById("meter-cursor").style.left = meterPos + "%"; document.getElementById("p-fill").style.width = meterPos + "%"; }
@@ -191,18 +204,18 @@
   }
 
   function executePhysicsKick() {
-    const ball = document.getElementById("ball-physics"); ball.style.display = "block";
+    const ball = document.getElementById("ball-physics"), shadow = document.getElementById("ball-shadow");
+    ball.style.display = shadow.style.display = "block";
     let x = 50, y = 10, z = 0, vy = (powerVal / 4) + 12, vx = (aimAngle / 10), grav = 0.38;
     const pInt = setInterval(() => {
       z += 2.2; y += vy; vy -= grav; x += vx;
-      ball.style.left = x + "%"; ball.style.bottom = y + "px";
+      ball.style.left = shadow.style.left = x + "%"; 
+      ball.style.bottom = y + "px";
       ball.style.transform = `translateX(-50%) scale(${Math.max(0.15, 1 - (z/200))})`;
+      shadow.style.transform = `translateX(-50%) scale(${Math.max(0.1, 1 - (z/200))})`;
       if(z >= 185) { 
-        clearInterval(pInt); 
-        // VISUAL SYNC: Uprights are 14% wide (43 to 57)
-        const isGood = (x >= 43 && x <= 57 && y > 70);
+        clearInterval(pInt); const isGood = (x > 43 && x < 57 && y > 70);
         document.getElementById("kick-msg").innerText = isGood ? "IT'S GOOD!" : "MISS!";
-        if(isGood) ball.style.zIndex = "4"; // Fly behind posts
         bonusWins = isGood ? 2 : -1; 
         setTimeout(() => { document.getElementById("kicker-container").style.display="none"; showFinal(); }, 1200);
       }
@@ -210,13 +223,26 @@
   }
 
   function showFinal() {
-    const r = document.getElementById("results"), base = Math.floor(Math.random()*6) + 3 + (eliteCount*1.5);
-    finalWins = Math.max(0, Math.min(17, Math.floor(base + hypeWins + bonusWins)));
-    r.innerHTML = `<h2>FINAL: ${finalWins}-${17-finalWins}</h2><p>Hype Bonus: +${hypeWins} Wins</p>`;
-    r.style.display="block"; document.getElementById("reset-btn").style.display="block"; if(finalWins>=14) confetti();
+    const r = document.getElementById("results"), total = Math.max(0, Math.min(17, finalWins + hypeWins + bonusWins));
+    const winVersus = challengerWins > 0 && total > challengerWins;
+    r.innerHTML = `<h2>FINAL: ${total}-${17-total}</h2><p>Hype Bonus: +${hypeWins} Wins</p><span>${challengerWins > 0 ? (winVersus ? '🏆 CHALLENGER BEATEN!' : '❌ CHALLENGER WON') : ''}</span>`;
+    r.style.display="block"; document.getElementById("reset-btn").style.display="block"; document.getElementById("challenge-btn").style.display="block"; if(total>=14) confetti();
   }
 
-  window.onload = async () => { const res = await fetch('rosters.json'); rosterData = await res.json(); };
+  async function handleChallengeAction() {
+    const total = Math.max(0, Math.min(17, finalWins + hypeWins + bonusWins));
+    const url = `${window.location.origin}${window.location.pathname}?w=${total}&t=${encodeURIComponent(Object.values(roster).join(','))}`;
+    navigator.clipboard.writeText(url).then(() => alert("Versus Link Copied!"));
+  }
+
+  window.onload = async () => { 
+    const res = await fetch('rosters.json'); rosterData = await res.json();
+    const params = new URLSearchParams(window.location.search);
+    if(params.has('t')) {
+      document.getElementById('opponent-squad').style.display = 'block';
+      document.getElementById('opp-players-list').innerHTML = params.get('t').split(',').map(p => `• ${p}`).join('<br>');
+    }
+  };
 </script>
 </body>
 </html>
