@@ -30,7 +30,7 @@
   .slot-label { font-family: 'Press Start 2P'; font-size: 8px; color: #fff; opacity: 0.6; }
   .player-name { font-weight: bold; font-size: 19px; color: #fff; text-shadow: 1px 1px 2px #000; }
 
-  #sim-btn { margin-top: 40px; background: #28a745; box-shadow: 0 4px 0 #1e7e34; display: none; }
+  #sim-btn { margin-top: 45px; background: #28a745; box-shadow: 0 4px 0 #1e7e34; display: none; }
 
   /* FGMG */
   #kicker-container { display: none; background: #000; padding: 20px; border-radius: 20px; border: 4px solid #ffb300; }
@@ -39,8 +39,11 @@
   .shake { animation: shakePosts 0.1s ease-in-out infinite; }
   @keyframes shakePosts { 0%, 100% { transform: translateX(-50.5%); } 50% { transform: translateX(-49.5%); } }
   #ball-physics { width: 22px; height: 30px; background: #8b4513; border-radius: 50%; position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; z-index: 10; display: none; }
-  
-  /* SIMULATION ANIMATION */
+  .swing-meter { width: 100%; height: 35px; background: #222; border: 2px solid #555; position: relative; overflow: hidden; margin: 15px 0; border-radius: 8px; }
+  .power-fill { height: 100%; background: linear-gradient(90deg, #333, #ff0, #f00); width: 0%; position: absolute; left: 0; }
+  #meter-cursor { width: 8px; height: 100%; background: #fff; position: absolute; left: 0; z-index: 3; box-shadow: 0 0 10px #fff; }
+
+  /* SIMULATION */
   #animation-container { display: none; margin: 25px 0; }
   #tecmo-screen { height: 200px; position: relative; overflow: hidden; background: #2e7d32; border: 4px solid #fff; border-radius: 12px; }
   .yard-line { width: 100%; height: 3px; background: rgba(255,255,255,0.2); position: absolute; top: 20%; animation: scrollField 0.8s linear infinite; }
@@ -48,8 +51,7 @@
   #main-sprite { width: 34px; height: 48px; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); transition: left 0.15s ease-in-out; z-index: 20; border-radius: 4px; }
   .defender { width: 30px; height: 42px; position: absolute; background: #444; border: 2px solid #222; border-radius: 4px; z-index: 15; }
 
-  /* WEEKLY EVENTS UI */
-  #sim-event-ticker { color: #ffb300; font-family: 'Press Start 2P', cursive; font-size: 15px; margin-top: 20px; line-height: 1.8; min-height: 80px; text-transform: uppercase; }
+  #sim-event-ticker { color: #ffb300; font-family: 'Press Start 2P', cursive; font-size: 15px; margin-top: 20px; line-height: 1.8; min-height: 80px; }
   #results { display: none; font-size: 18px; font-weight: bold; border: 4px solid var(--primary); padding: 20px; border-radius: 15px; background: #111; margin-top: 20px; }
 </style>
 </head>
@@ -61,7 +63,7 @@
     <h1>FOOTBALL TEAM PICKER</h1>
     <div id="opponent-squad" style="display:none; background:rgba(1,51,105,0.4); border:2px solid #ffb300; border-radius:18px; padding:15px; margin-bottom:20px; text-align:left;">
       <strong style="color:#ffb300; font-family:'Press Start 2P'; font-size:9px;">VS CHALLENGER:</strong><br>
-      <div id="opp-players-list" style="margin-top:10px; opacity:0.9; font-size:11px; font-weight:bold;"></div>
+      <div id="opp-players-list" style="margin-top:10px; opacity:0.9; font-size:11px;"></div>
     </div>
     <div class="team-logo-container">
       <img id="team-logo-img" src="">
@@ -87,19 +89,16 @@
     <div style="display:flex; justify-content:center;"><button id="sim-btn" class="std-btn" onclick="triggerSimulation()">SIMULATE SEASON</button></div>
     
     <div id="kicker-container">
-      <h3 style="font-family:'Press Start 2P'; font-size:9px; color:#ffb300;">FGMG: PHYSICS VERSUS</h3>
+      <h3 style="font-family:'Press Start 2P'; font-size:9px; color:#ffb300;">FGMG: VERSUS PRO</h3>
       <div id="kick-msg" style="color:#0f0; font-family:'Press Start 2P'; font-size:11px; height:15px; margin-bottom:5px;"></div>
-      <div class="goal-field"><div class="uprights" id="upright-posts"></div><div id="aim-arrow" style="width:4px; height:80px; background:#0f0; position:absolute; bottom:10px; left:50%; transform-origin:bottom center; display:none;"></div><div id="ball-physics"></div></div>
-      <div class="swing-meter" id="kicker-meter-ui"><div class="power-fill" id="p-fill" style="height:100%; background:linear-gradient(90deg,#333,#ff0,#f00); width:0%;"></div><div id="meter-cursor" style="width:8px; height:100%; background:#fff; position:absolute; left:0; z-index:3;"></div></div>
+      <div class="goal-field"><div class="uprights" id="upright-posts"></div><div id="aim-arrow" style="width:4px; height:80px; background:#0f0; position:absolute; bottom:10px; left:50%; transform-origin:bottom center; display:none; box-shadow:0 0 15px #0f0;"></div><div id="ball-physics"></div></div>
+      <div class="swing-meter" id="kicker-meter-ui"><div class="power-fill" id="p-fill"></div><div id="meter-cursor"></div></div>
       <button id="kick-action-btn" class="std-btn" onclick="handleKickInput()">STOP POWER</button>
     </div>
 
     <div id="animation-container">
       <div id="sim-scoreboard" style="font-family:'Press Start 2P'; font-size:10px; color:#0f0; margin-bottom:12px; line-height:1.6;">RECORD: 0-0</div>
-      <div id="tecmo-screen">
-        <div class="yard-line"></div>
-        <div id="main-sprite"></div>
-      </div>
+      <div id="tecmo-screen"><div class="yard-line"></div><div id="main-sprite"></div></div>
       <div id="sim-event-ticker">READY...</div>
     </div>
     
@@ -144,14 +143,11 @@
     const pos = document.getElementById("position-select").value, p = document.getElementById("player-select").value, btn = document.getElementById("draft-btn");
     if(p === "NO PLAYERS LEFT" || btn.disabled) return;
     btn.disabled = true; roster[pos] = p; draftedPlayers.push(p); if (p.includes("(ELITE)")) eliteCount++;
-    
-    // FRANKENSTEIN UPDATE
     const slot = document.getElementById(`roster-${pos}`);
     slot.querySelector(".player-name").innerText = p;
     slot.style.background = teamThemes[currentTeam][0];
     slot.style.borderColor = teamThemes[currentTeam][1];
     slot.style.borderLeftWidth = "12px";
-
     draftedTeams.push(currentTeam); document.getElementById("position-select").remove(document.getElementById("position-select").selectedIndex);
     if(Object.values(roster).every(v => v!==null)) { document.getElementById("draft-section").style.display="none"; document.getElementById("sim-btn").style.display="block"; } 
     else { document.getElementById("start-btn").style.display = "flex"; document.getElementById("team-logo-img").style.display = "none"; }
@@ -172,12 +168,11 @@
       const win = Math.random() < (finalWins/17);
       if(win) { userWins++; currentStreak++; } else { currentStreak = 0; }
       
-      const difficultyBoost = (eliteCount * 3) + (currentStreak > 3 ? (currentStreak * 2) : 0);
+      const difficultyBoost = (eliteCount * 4) + (currentStreak > 3 ? (currentStreak * 3) : 0);
       const scoreU = win ? Math.floor(Math.random()*15)+24 : Math.floor(Math.random()*17);
       const scoreO = (win ? Math.floor(Math.random()*17) : Math.floor(Math.random()*15)+24) + difficultyBoost;
       
       ticker.innerText = `Wk ${step+1}: ${currentTeam.split(' ').pop()} ${scoreU} - ${opp.split(' ').pop()} ${scoreO}`;
-      
       document.getElementById("sim-scoreboard").innerHTML = `YOU: ${userWins}-${(step+1)-userWins}<br>${params.has('w') ? 'THEM: ' + Math.floor((challengerWins/17)*(step+1)) + '-' + ((step+1)-Math.floor((challengerWins/17)*(step+1))) : ''}`;
       
       sprite.style.background = teamThemes[currentTeam][0];
@@ -187,45 +182,49 @@
 
       if(step === 8) { clearInterval(timer); setTimeout(() => { document.getElementById("animation-container").style.display="none"; document.getElementById("kicker-container").style.display="block"; startKickerMeter(); }, 1200); }
       if(step++ >= 16) { clearInterval(timer); finalWins = userWins; showFinal(); }
-    }, 2200); // SLOWER FOR READABILITY
+    }, 2200);
   }
 
   function spawnDefender() {
     const d = document.createElement("div"); d.className = "defender"; d.style.left = Math.random()*80 + 10 + "%"; d.style.top = "-50px";
     document.getElementById("tecmo-screen").appendChild(d);
-    let top = -50; const dInt = setInterval(() => { top += 8; d.style.top = top + "px"; if(top > 250) { clearInterval(dInt); d.remove(); } }, 20);
+    let top = -50; const dInt = setInterval(() => { top += 10; d.style.top = top + "px"; if(top > 250) { clearInterval(dInt); d.remove(); } }, 20);
   }
 
   function startKickerMeter() {
     kickStep = 1; meterPos = 0; meterDir = 1;
     meterInterval = setInterval(() => {
       if(kickStep === 1) {
-        meterPos += meterDir * 2.5; if(meterPos >= 100 || meterPos <= 0) meterDir *= -1;
+        meterPos += meterDir * 2.2; if(meterPos >= 100 || meterPos <= 0) meterDir *= -1;
         document.getElementById("meter-cursor").style.left = meterPos + "%";
         document.getElementById("p-fill").style.width = meterPos + "%";
       } else if(kickStep === 2) {
-        aimAngle += aimDir * 2.5; if(aimAngle >= 45 || aimAngle <= -45) aimDir *= -1;
+        aimAngle += aimDir * 2.2; if(aimAngle >= 45 || aimAngle <= -45) aimDir *= -1;
         document.getElementById("aim-arrow").style.transform = `translateX(-50%) rotate(${aimAngle}deg)`;
       }
     }, 20);
   }
 
   function handleKickInput() {
-    if(kickStep === 1) { kickStep = 2; powerVal = meterPos; document.getElementById("kicker-meter-ui").style.display="none"; document.getElementById("aim-arrow").style.display="block"; document.getElementById("kick-action-btn").innerText = "KICK!"; }
-    else { clearInterval(meterInterval); executePhysicsKick(); }
+    if(kickStep === 1) { 
+      kickStep = 2; powerVal = meterPos; 
+      document.getElementById("kick-action-btn").innerText = "KICK!";
+      document.getElementById("kicker-meter-ui").style.display="none"; 
+      document.getElementById("aim-arrow").style.display="block"; 
+    } else { clearInterval(meterInterval); executePhysicsKick(); }
   }
 
   function executePhysicsKick() {
     const ball = document.getElementById("ball-physics"), posts = document.getElementById("upright-posts"), btn = document.getElementById("kick-action-btn");
     btn.disabled = true; ball.style.display = "block";
-    let x = 50, y = 10, z = 0, vy = (powerVal / 5) + 10, vx = (aimAngle / 10), grav = 0.4;
+    let x = 50, y = 10, z = 0, vy = (powerVal / 4) + 12, vx = (aimAngle / 10), grav = 0.42;
     const pInt = setInterval(() => {
-      z += 2.5; y += vy; vy -= grav; x += vx;
+      z += 2.2; y += vy; vy -= grav; x += vx;
       ball.style.left = x + "%"; ball.style.bottom = y + "px";
       ball.style.transform = `translateX(-50%) scale(${Math.max(0.15, 1 - (z/200))})`;
       if(z >= 185) { 
         clearInterval(pInt);
-        const isGood = (x > 43.5 && x < 56.5 && y > 100);
+        const isGood = (x > 43.5 && x < 56.5 && y > 75);
         if(Math.abs(x - 43.5) < 1.5 || Math.abs(x - 56.5) < 1.5) posts.classList.add('shake');
         document.getElementById("kick-msg").innerText = isGood ? "IT'S GOOD!" : "MISS!";
         bonusWins = isGood ? 2 : -1;
@@ -236,14 +235,15 @@
 
   function showFinal() {
     const r = document.getElementById("results"), total = Math.max(0, Math.min(17, finalWins + bonusWins));
-    const wonV = challengerWins > 0 && total > challengerWins;
-    r.innerHTML = `FINAL: ${total}-${17-total}<br><span style="font-size:12px; color:#ffb300;">${wonV ? '🏆 CHALLENGER BEATEN!' : (challengerWins > 0 ? '❌ CHALLENGER WON.' : 'RECORD LOCKED.')}</span>`;
+    const winV = challengerWins > 0 && total > challengerWins;
+    r.innerHTML = `FINAL: ${total}-${17-total}<br><span style="font-size:12px; color:#ffb300;">${winV ? '🏆 CHALLENGER DEFEATED!' : (challengerWins > 0 ? '❌ CHALLENGER WON.' : 'RECORD LOCKED.')}</span>`;
     r.style.display="block"; document.getElementById("reset-btn").style.display="block"; document.getElementById("challenge-btn").style.display="block"; if(total>=14) confetti();
   }
 
   async function handleChallengeAction() {
     const total = Math.max(0, Math.min(17, finalWins + bonusWins));
-    navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?w=${total}&t=${encodeURIComponent(Object.values(roster).join(','))}`).then(() => alert("Link Copied!"));
+    const url = `${window.location.origin}${window.location.pathname}?w=${total}&t=${encodeURIComponent(Object.values(roster).join(','))}`;
+    navigator.clipboard.writeText(url).then(() => alert("Link Copied!"));
   }
   window.onload = async () => { 
     const res = await fetch('rosters.json'); rosterData = await res.json();
