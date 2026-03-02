@@ -314,10 +314,60 @@
   function spawnDefender(color) { const d = document.createElement("div"); d.className = "defender-16 player-sprite"; d.innerText = "🛡️"; d.style.top = Math.random()*70 + 15 + "%"; d.style.filter = `drop-shadow(0 0 10px ${color})`; document.getElementById("tecmo-screen").appendChild(d); let left = 110; const p = document.getElementById("main-sprite"); const dInt = setInterval(() => { left -= (3.5 * teamHype); d.style.left = left + "%"; if(left < 80 && !d.hit && p) { const pRect = p.getBoundingClientRect(); const dRect = d.getBoundingClientRect(); if (pRect.width > 0 && dRect.width > 0) { const padX = 15; const padY = 20; const isHit = !(pRect.right - padX < dRect.left + padX || pRect.left + padX > dRect.right - padX || pRect.bottom - padY < dRect.top + padY || pRect.top + padY > dRect.bottom - padY); if(isHit) { d.hit = true; isStunned = true; dodges = Math.max(0, dodges-2); playNote(80, 0.4); p.classList.add("stunned"); setTimeout(() => { isStunned = false; p.classList.remove("stunned"); }, 1200); } else if (left < 5 && !d.hit) { d.hit = true; dodges++; } } } if(left < -20) { clearInterval(dInt); d.remove(); } }, 30); }
   function startFGMG() { document.getElementById("animation-container").style.setProperty('display', 'none', 'important'); document.getElementById("kicker-container").style.setProperty('display', 'block', 'important'); const ball = document.getElementById("ball-top"); const traj = document.getElementById("traj-line"); let isDragging = false, startX, startY; ball.style.left = "50%"; ball.style.bottom = "52px"; ball.style.transform = "translateX(-50%) scale(1)"; document.getElementById("kick-msg").innerText = `CLICK BALL, PULL BACK & RELEASE! PWR MULT: ${teamPower.toFixed(2)}x`; document.getElementById("kick-msg").style.color = "#0f0"; ball.style.pointerEvents = 'auto'; ball.onmousedown = (e) => { isDragging = true; startX = e.clientX; startY = e.clientY; traj.style.display = "block"; }; window.onmousemove = (e) => { if(!isDragging) return; const dx = startX - e.clientX, dy = startY - e.clientY; const angle = Math.atan2(-dy, -dx); const dist = Math.min(120, Math.sqrt(dx*dx + dy*dy)); traj.style.left = "50%"; traj.style.bottom = "64px"; traj.style.width = dist + "px"; traj.style.transform = `rotate(${angle * 180 / Math.PI}deg)`; }; window.onmouseup = (e) => { if(!isDragging) return; isDragging = false; traj.style.display = "none"; ball.style.pointerEvents = 'none'; launchBall((startX - e.clientX)/8, (startY - e.clientY)/8); }; }
   function launchBall(vx, vy) { const ball = document.getElementById("ball-top"); let bx = 0, by = 52, scale = 1; const modifiedVx = vx * teamPower, modifiedVy = vy * teamPower; const bLoop = setInterval(() => { bx += modifiedVx; by -= modifiedVy; scale -= 0.012; ball.style.left = `calc(50% + ${bx}px)`; ball.style.bottom = by + "px"; ball.style.transform = `translateX(-50%) scale(${Math.max(0.3, scale)})`; if(by >= 280 || Math.abs(bx) > 200) { clearInterval(bLoop); const hit = by >= 280 && Math.abs(bx) < 45; document.getElementById("kick-msg").innerText = hit ? "IT'S GOOD!" : "NO GOOD!"; document.getElementById("kick-msg").style.color = hit ? "#0f0" : "#f00"; setTimeout(() => { if(isPlayoffMode) handlePlayoffResult(hit); else { bonusWins += hit ? 3 : -1; showFinal(); } }, 1200); } }, 20); }
-  function showFinal() { document.getElementById("kicker-container").style.display = "none"; document.getElementById("roster-slots").style.display = "none"; const r = document.getElementById("results"), totalWins = Math.max(0, Math.min(17, (Math.floor(Math.random()*6) + 4) + bonusWins)), allT = Object.keys(rosterData); let table = `<table id="results-table"><thead><tr><th>WK</th><th>OPP</th><th>SCORE</th><th>RES</th></tr></thead><tbody>`; for(let i=1; i<=17; i++) { const isW = i <= totalWins, opp = seasonSchedule[i-1].split(' ').pop().toUpperCase(); const s1 = isW ? Math.floor(Math.random()*17)+21 : Math.floor(Math.random()*21), s2 = isW ? Math.floor(Math.random()*s1) : Math.floor(Math.random()*17)+24; table += `<tr><td>${i}</td><td>${opp}</td><td>${s1}-${s2}</td><td>${isW?'W':'L'}</td></tr>`; } regularSeasonWins = totalWins; r.innerHTML = `<h2>RECORD: ${totalWins}-${17-totalWins}</h2>${table}</tbody></table>`; r.style.display = "block"; document.getElementById("reset-btn").style.display = "block"; if(totalWins >= 10) document.getElementById("playoff-start-btn").style.display = "block"; if(totalWins >= 14) confetti(); }
+  function showFinal() {
+    document.getElementById("kicker-container").style.display = "none";
+    document.getElementById("roster-slots").style.display = "none";
+    
+    const totalWins = Math.max(0, Math.min(17, (Math.floor(Math.random()*6) + 4) + bonusWins));
+    regularSeasonWins = totalWins;
+    const r = document.getElementById("results");
+
+    if (isMultiplayer) {
+      // 1. Push local score to Firebase
+      db.ref(`rooms/${currentRoomId}/${localPlayerId}`).update({ wins: totalWins });
+      
+      // 2. Lock UI into waiting state
+      r.innerHTML = `<h2 style="color: #ffb300; text-align: center;">WAITING FOR OPPONENT...</h2>`;
+      r.style.display = "block";
+      
+      // 3. Listen for both scores to resolve the match
+      db.ref(`rooms/${currentRoomId}`).on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data && data[localPlayerId]?.wins !== undefined && data[opponentId]?.wins !== undefined) {
+          const myWins = data[localPlayerId].wins;
+          const oppWins = data[opponentId].wins;
+          
+          let outcome = myWins > oppWins ? "VICTORY!" : myWins < oppWins ? "DEFEAT!" : "TIE GAME!";
+          let outcomeColor = myWins > oppWins ? "#0f0" : myWins < oppWins ? "#f00" : "#ffb300";
+          
+          r.innerHTML = `
+            <h1 style="color: ${outcomeColor}; text-align: center; font-size: 36px;">${outcome}</h1>
+            <h2 style="text-align: center;">YOUR WINS: ${myWins}</h2>
+            <h2 style="text-align: center; color: #888;">OPPONENT WINS: ${oppWins}</h2>
+          `;
+          document.getElementById("reset-btn").style.display = "block";
+          if(myWins > oppWins) confetti();
+        }
+      });
+    } else {
+      // standard solo mode logic
+      const allT = Object.keys(rosterData);
+      let table = `<table id="results-table"><thead><tr><th>WK</th><th>OPP</th><th>SCORE</th><th>RES</th></tr></thead><tbody>`;
+      for(let i=1; i<=17; i++) {
+        const isW = i <= totalWins, opp = seasonSchedule[i-1].split(' ').pop().toUpperCase();
+        const s1 = isW ? Math.floor(Math.random()*17)+21 : Math.floor(Math.random()*21), s2 = isW ? Math.floor(Math.random()*s1) : Math.floor(Math.random()*17)+24;
+        table += `<tr><td>${i}</td><td>${opp}</td><td>${s1}-${s2}</td><td>${isW?'W':'L'}</td></tr>`;
+      }
+      r.innerHTML = `<h2>RECORD: ${totalWins}-${17-totalWins}</h2>${table}</tbody></table>`;
+      r.style.display = "block"; document.getElementById("reset-btn").style.display = "block";
+      if(totalWins >= 10) document.getElementById("playoff-start-btn").style.display = "block";
+      if(totalWins >= 14) confetti();
+    }
+  }
   function startPlayoffGame() { isPlayoffMode = true; document.getElementById("results").style.display = "none"; document.getElementById("playoff-start-btn").style.display = "none"; document.getElementById("playoff-banner").style.setProperty('display', 'block', 'important'); document.getElementById("playoff-banner").innerText = playoffRound === 1 ? "SEMI-FINAL" : "SUPER BOWL"; startFGMG(); }
   function handlePlayoffResult(won) { if(won) { if(playoffRound === 1) { playoffRound = 2; setTimeout(startPlayoffGame, 1500); } else { showTrophy(); } } else { alert("Eliminated!"); location.reload(); } }
   function showTrophy() { document.getElementById("kicker-container").style.display = "none"; document.getElementById("roster-slots").style.display = "none"; document.getElementById("results").style.display = "block"; document.getElementById("results").innerHTML = "<h1>CHAMPIONS</h1>"; confetti(); }
 
   window.onload = async () => { try { const res = await fetch('rosters.json'); rosterData = await res.json(); } catch(e) {} };
 </script></body></html>
+
