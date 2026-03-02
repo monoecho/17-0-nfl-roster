@@ -3,62 +3,65 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Football Picker: 16-Bit Pro</title>
+<title>Football Picker: Championship Edition</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
   :root { --primary: #d50a0a; --accent: #013369; --glow: rgba(213, 10, 10, 0.4); }
-  body { font-family: 'Inter', sans-serif; background-color: #1a472a; background-image: linear-gradient(90deg, transparent 49%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.1) 51%, transparent 51%), repeating-linear-gradient(0deg, #1a472a, #1a472a 100px, #245c38 100px, #245c38 200px); color: #fff; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
+  body { font-family: 'Inter', sans-serif; background-color: #1a472a; background-image: linear-gradient(90deg, transparent 49%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.1) 51%, transparent 51%), repeating-linear-gradient(0deg, #1a472a, #1a472a 100px, #245c38 100px, #245c38 200px); color: #fff; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; touch-action: none; }
   
-  /* MENU */
-  #main-menu { position: fixed; inset: 0; background: #000; z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-  .menu-input { background: #111; border: 3px solid var(--primary); color: white; padding: 15px; font-family: 'Press Start 2P'; font-size: 12px; width: 280px; margin: 20px 0; text-align: center; }
-  .mode-btn { width: 280px; margin: 8px; padding: 18px; font-family: 'Bebas Neue'; font-size: 22px; color: white; background: #222; border: 2px solid #444; cursor: pointer; border-radius: 8px; }
-  .mode-btn.active { background: var(--primary); border-color: white; box-shadow: 0 0 15px var(--glow); }
+  #main-menu { position: fixed; inset: 0; background: #000; z-index: 5000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
+  .menu-input { background: #111; border: 3px solid var(--primary); color: white; padding: 15px; font-family: 'Press Start 2P'; font-size: 12px; width: 260px; margin-bottom: 20px; border-radius: 8px; text-align: center; }
+  .mode-btn { width: 260px; margin: 5px; padding: 15px; font-family: 'Bebas Neue'; font-size: 22px; color: white; background: #222; border: 2px solid #444; border-radius: 10px; cursor: pointer; }
+  .mode-btn.active { background: var(--primary); border-color: #fff; box-shadow: 0 0 15px var(--glow); }
 
-  .audio-dashboard { position: fixed; top: 10px; right: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px; background: rgba(0,0,0,0.85); padding: 10px; border-radius: 20px; border: 2px solid var(--primary); z-index: 2000; }
-  #mute-toggle { background: none; border: none; font-size: 18px; cursor: pointer; color: white; }
+  .audio-dashboard { position: fixed; top: 10px; right: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px; background: rgba(0,0,0,0.85); padding: 10px; border-radius: 20px; border: 2px solid var(--primary); z-index: 4000; }
+  #mute-toggle { background: none; border: none; font-size: 20px; cursor: pointer; color: white; }
   #volume-slider { appearance: none; width: 60px; height: 3px; background: #444; transform: rotate(-90deg); margin: 30px 0; cursor: pointer; }
 
-  .main-container { width: 100%; max-width: 460px; padding: 10px; box-sizing: border-box; display: none; }
-  .glass-card { background: rgba(0, 0, 0, 0.96); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 15px; box-shadow: 0 10px 40px rgba(0, 0, 0, 1); margin-bottom: 12px; text-align: center; border-top: 4px solid var(--primary); }
+  .main-container { width: 100%; max-width: 440px; padding: 15px; box-sizing: border-box; display: none; margin-top: 10px; }
+  .glass-card { background: rgba(0, 0, 0, 0.96); border-radius: 20px; padding: 15px; box-shadow: 0 10px 40px #000; margin-bottom: 15px; border-top: 5px solid var(--primary); position: relative; }
   
-  /* 16-BIT SPRITE STYLE */
-  .player-sprite { width: 32px; height: 44px; position: absolute; z-index: 20; transition: top 0.1s linear; }
-  .s-head { width: 14px; height: 14px; background: #ffdbac; margin: 0 auto; border-radius: 2px; position: relative; }
-  .s-body { width: 24px; height: 20px; background: var(--primary); margin: -2px auto 0; border-radius: 3px; border-right: 4px solid rgba(0,0,0,0.2); }
-  .s-legs { width: 18px; height: 12px; background: #333; margin: -2px auto 0; display: flex; justify-content: space-between; }
-  .leg { width: 6px; height: 10px; background: #333; animation: run 0.2s infinite alternate; }
+  .team-logo-container { height: 120px; width: 100%; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 12px; position: relative; overflow: hidden; }
+  #team-logo-img { max-height: 90px; width: auto; display: none; filter: drop-shadow(0 0 10px #fff); z-index: 5; }
+  #start-btn { position: absolute; width: 80px; height: 80px; border-radius: 50%; border: 4px solid #fff; background: radial-gradient(circle, var(--primary) 40%, #800 100%); color: #fff; font-family: 'Press Start 2P'; font-size: 10px; cursor: pointer; z-index: 100; }
+
+  .std-btn { width: 100%; padding: 15px; margin: 8px 0; font-size: 20px; border-radius: 10px; font-family: 'Bebas Neue'; cursor: pointer; border: none; background: var(--primary); color: #fff; box-shadow: 0 4px 0 #800; }
+  .std-btn:disabled { background: #333 !important; opacity: 0.5; pointer-events: none; }
+
+  .player-sprite { width: 30px; height: 42px; position: absolute; z-index: 20; transition: top 0.1s linear; }
+  .s-head { width: 12px; height: 12px; background: #ffdbac; margin: 0 auto; border-radius: 2px; }
+  .s-body { width: 22px; height: 18px; background: var(--primary); margin: -1px auto 0; border-radius: 3px; }
+  .s-legs { width: 18px; height: 10px; margin: -1px auto 0; display: flex; justify-content: space-between; }
+  .leg { width: 6px; height: 10px; background: #333; animation: runAnim 0.2s infinite alternate; }
   .leg:nth-child(2) { animation-delay: 0.1s; }
-  @keyframes run { from { height: 6px; } to { height: 12px; } }
+  @keyframes runAnim { from { height: 6px; } to { height: 12px; } }
 
-  /* SMG FIELD */
-  #tecmo-screen { height: 180px; width: 100%; position: relative; overflow: hidden; background: #2e7d32; border: 3px solid #fff; border-radius: 10px; cursor: crosshair; }
-  .defender-16 { width: 32px; height: 44px; position: absolute; right: -50px; z-index: 15; }
+  #animation-container, #kicker-container, #playoff-banner { display: none !important; }
+  #tecmo-screen { height: 170px; width: 100%; position: relative; overflow: hidden; background: #2e7d32; border: 3px solid #fff; border-radius: 12px; }
 
-  /* FGMG TOP-DOWN */
-  #kicker-container { display: none; user-select: none; }
-  .goal-field-top { width: 100%; height: 320px; background: #1b5e20; position: relative; border: 3px solid #fff; border-radius: 12px; overflow: hidden; }
-  .field-lines { position: absolute; width: 100%; height: 100%; background-image: repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.1) 40px); }
-  .top-uprights { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 80px; height: 10px; border-bottom: 5px solid yellow; display: flex; justify-content: space-between; }
-  .post-top { width: 8px; height: 20px; background: yellow; margin-top: -10px; }
-  #ball-top { width: 16px; height: 20px; background: #8b4513; border-radius: 50%; position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; z-index: 10; cursor: grab; }
-  #traj-line { position: absolute; height: 2px; background: rgba(255,255,255,0.5); transform-origin: left center; display: none; pointer-events: none; }
+  .goal-field-top { width: 100%; height: 300px; background: #1b5e20; position: relative; border: 3px solid #fff; border-radius: 15px; overflow: hidden; }
+  .top-uprights { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 90px; height: 10px; border-bottom: 5px solid yellow; display: flex; justify-content: space-between; transition: width 0.5s ease; }
+  .post-tip { width: 8px; height: 20px; background: yellow; margin-top: -10px; }
+  #ball-top { width: 18px; height: 22px; background: #8b4513; border-radius: 50%; position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; z-index: 100; cursor: grab; }
+  #traj-line { position: absolute; height: 3px; background: rgba(255,255,255,0.6); transform-origin: left center; display: none; pointer-events: none; z-index: 90; }
 
-  /* ROSTER */
-  .roster-slot { background: rgba(0,0,0,0.7); padding: 8px; margin: 4px 0; border-radius: 8px; display: flex; align-items: center; gap: 10px; text-align: left; transition: 0.3s; border-left: 5px solid #333; }
-  .avatar-box { width: 32px; height: 32px; background: #222; display: flex; align-items: center; justify-content: center; font-size: 18px; border-radius: 4px; }
+  #results-table { font-family: 'Press Start 2P'; font-size: 7px; width: 100%; margin-top: 10px; border-collapse: collapse; background: #000; }
+  #results-table th { background: #222; color: #ffb300; padding: 6px; text-align: left; }
+  #results-table td { padding: 6px; border-bottom: 1px solid #333; }
+
+  #playoff-banner { background: #ffb300; color: #000; font-family: 'Press Start 2P'; font-size: 14px; padding: 15px; border-radius: 10px; margin-bottom: 10px; text-align: center; border: 4px solid #fff; }
 </style>
 </head>
 <body>
 
 <div id="main-menu">
-  <h1 style="font-family:'Bebas Neue'; font-size: 50px; color: var(--primary);">VERSUS ARCADE</h1>
-  <input type="text" id="team-name-input" class="menu-input" placeholder="TEAM NAME..." maxlength="12">
+  <h1 style="font-family:'Bebas Neue'; font-size: 45px; color: var(--primary);">FOOTBALL ARCADE</h1>
+  <input type="text" id="team-name-input" class="menu-input" placeholder="ENTER TEAM NAME" maxlength="12">
   <button class="mode-btn active" id="solo-btn" onclick="setMode('solo')">SOLO CAREER</button>
-  <button class="mode-btn" id="vs-btn" onclick="setMode('vs')">VERSUS CHALLENGE</button>
-  <button class="std-btn" style="width: 280px; margin-top: 20px; font-size: 28px;" onclick="startGame()">KICKOFF</button>
+  <button class="mode-btn" id="vs-btn" onclick="setMode('vs')">VERSUS MODE</button>
+  <button class="std-btn" style="width: 260px; margin-top: 20px; font-size: 26px;" onclick="startGame()">KICKOFF</button>
 </div>
 
 <div class="audio-dashboard">
@@ -67,60 +70,53 @@
 </div>
 
 <div class="main-container" id="game-ui">
+  <div id="playoff-banner">PLAYOFFS</div>
   <div class="glass-card">
     <h1 id="ui-team-name">NAME</h1>
-    <div id="opponent-squad" style="display:none; color: #ffb300; font-family:'Press Start 2P'; font-size:8px; margin: 10px 0;">CHALLENGER SQUAD ACTIVE</div>
-    
     <div class="team-logo-container">
       <img id="team-logo-img" src="">
       <button id="start-btn" onclick="spinTeam()">SPIN</button>
     </div>
-    <select id="position-select" onchange="updateDropdown()" disabled><option value="QB">QB</option><option value="RB">RB</option><option value="WR">WR</option><option value="TE">TE</option><option value="Defense">DEF</option><option value="Coach">HC</option></select>
-    <select id="player-select" disabled><option>...</option></select>
+    <select id="position-select" onchange="updateDropdown()" disabled style="width:100%; padding:15px; margin:8px 0; background:#111; color:#fff; border:2px solid var(--primary); font-family:'Bebas Neue';"><option value="QB">QB</option><option value="RB">RB</option><option value="WR">WR</option><option value="TE">TE</option><option value="Defense">DEF</option><option value="Coach">HC</option></select>
+    <select id="player-select" disabled style="width:100%; padding:15px; margin:8px 0; background:#111; color:#fff; border:2px solid var(--primary); font-family:'Bebas Neue';"><option>...</option></select>
     <button id="draft-btn" class="std-btn" onclick="draftPlayer()" disabled>LOCK PICK</button>
   </div>
 
   <div class="glass-card">
     <div id="roster-slots">
-      <div id="roster-QB" class="roster-slot"><div class="avatar-box">🏈</div><div class="player-name">---</div></div>
-      <div id="roster-RB" class="roster-slot"><div class="avatar-box">🏃</div><div class="player-name">---</div></div>
-      <div id="roster-WR" class="roster-slot"><div class="avatar-box">👐</div><div class="player-name">---</div></div>
-      <div id="roster-TE" class="roster-slot"><div class="avatar-box">💪</div><div class="player-name">---</div></div>
-      <div id="roster-Defense" class="roster-slot"><div class="avatar-box">🛡️</div><div class="player-name">---</div></div>
-      <div id="roster-Coach" class="roster-slot"><div class="avatar-box">📋</div><div class="player-name">---</div></div>
+      <div id="roster-QB" class="roster-slot" style="background:rgba(0,0,0,0.7); padding:8px; margin:5px 0; border-radius:10px; display:flex; align-items:center; gap:10px; text-align:left; border-left:6px solid #333;"><div class="avatar-box">🏈</div><div class="player-name">---</div></div>
+      <div id="roster-RB" class="roster-slot" style="background:rgba(0,0,0,0.7); padding:8px; margin:5px 0; border-radius:10px; display:flex; align-items:center; gap:10px; text-align:left; border-left:6px solid #333;"><div class="avatar-box">🏃</div><div class="player-name">---</div></div>
+      <div id="roster-WR" class="roster-slot" style="background:rgba(0,0,0,0.7); padding:8px; margin:5px 0; border-radius:10px; display:flex; align-items:center; gap:10px; text-align:left; border-left:6px solid #333;"><div class="avatar-box">👐</div><div class="player-name">---</div></div>
+      <div id="roster-TE" class="roster-slot" style="background:rgba(0,0,0,0.7); padding:8px; margin:5px 0; border-radius:10px; display:flex; align-items:center; gap:10px; text-align:left; border-left:6px solid #333;"><div class="avatar-box">💪</div><div class="player-name">---</div></div>
+      <div id="roster-Defense" class="roster-slot" style="background:rgba(0,0,0,0.7); padding:8px; margin:5px 0; border-radius:10px; display:flex; align-items:center; gap:10px; text-align:left; border-left:6px solid #333;"><div class="avatar-box">🛡️</div><div class="player-name">---</div></div>
+      <div id="roster-Coach" class="roster-slot" style="background:rgba(0,0,0,0.7); padding:8px; margin:5px 0; border-radius:10px; display:flex; align-items:center; gap:10px; text-align:left; border-left:6px solid #333;"><div class="avatar-box">📋</div><div class="player-name">---</div></div>
     </div>
-    <button id="sim-btn" class="std-btn" onclick="triggerSMG()" style="margin-top: 15px; background: #28a745; display:none;">START SMG</button>
     
+    <button id="sim-btn" class="std-btn" onclick="triggerSMG()" style="margin-top: 15px; background: #28a745; display:none;">START SEASON SIM</button>
+    <button id="playoff-start-btn" class="std-btn" onclick="startPlayoffGame()" style="margin-top: 15px; background: #ffb300; color:#000; display:none;">START PLAYOFF GAME</button>
+
     <div id="kicker-container">
-      <div id="kick-msg" style="color:#0f0; font-family:'Press Start 2P'; font-size:10px; height:15px; margin-bottom:5px;">PULL BACK TO AIM!</div>
+      <div id="kick-msg" style="color:#0f0; font-family:'Press Start 2P'; font-size:10px; height:15px; margin-bottom:8px;">PULL BACK & RELEASE!</div>
       <div class="goal-field-top" id="fg-field">
-        <div class="field-lines"></div>
-        <div class="top-uprights">
-          <div class="post-top"></div>
-          <div class="post-top"></div>
-        </div>
+        <div class="top-uprights" id="uprights-ui"><div class="post-tip"></div><div class="post-tip"></div></div>
         <div id="traj-line"></div>
         <div id="ball-top"></div>
       </div>
     </div>
 
     <div id="animation-container">
-      <div id="sim-scoreboard" style="font-family:'Press Start 2P'; font-size:8px; color:#0f0; margin-bottom:8px;">HYPE: +0 WINS</div>
-      <div id="tecmo-screen">
-        <div id="main-sprite" class="player-sprite">
-          <div class="s-head"></div><div class="s-body"></div><div class="s-legs"><div class="leg"></div><div class="leg"></div></div>
-        </div>
-      </div>
+      <div id="sim-scoreboard" style="font-family:'Press Start 2P'; font-size:8px; color:#0f0; margin-bottom:10px;">HYPE: +0 WINS</div>
+      <div id="tecmo-screen"><div id="main-sprite" class="player-sprite"><div class="s-head"></div><div class="s-body"></div><div class="s-legs"><div class="leg"></div><div class="leg"></div></div></div></div>
     </div>
     
-    <div id="results" style="font-weight:bold; background:#111; border-radius:10px; padding:12px; margin-top:10px; display:none;"></div>
+    <div id="results" style="background:#111; border-radius:10px; padding:15px; margin-top:10px; display:none;"></div>
     <button id="reset-btn" class="std-btn" onclick="location.reload()" style="display:none; background:#444;">NEW DRAFT</button>
   </div>
 </div>
 
 <script>
   let rosterData, draftedTeams = [], draftedPlayers = [], roster = {QB:null,RB:null,WR:null,TE:null,Defense:null,Coach:null}, currentTeam;
-  let audioCtx, gainNode, vol = 0.5, isMuted = false, gameMode = 'solo', challengerWins = 0;
+  let audioCtx, gainNode, vol = 0.5, isMuted = false, gameMode = 'solo', regularSeasonWins = 0, isPlayoffMode = false, playoffRound = 1;
   let playerTop = 50, dodges = 0, bonusWins = 0, gameActive = false, isStunned = false;
 
   const logoMap = {"Arizona Cardinals":"ari","Atlanta Falcons":"atl","Baltimore Ravens":"bal","Buffalo Bills":"buf","Carolina Panthers":"car","Chicago Bears":"chi","Cincinnati Bengals":"cin","Cleveland Browns":"cle","Dallas Cowboys":"dal","Denver Broncos":"den","Detroit Lions":"det","Green Bay Packers":"gb","Houston Texans":"hou","Indianapolis Colts":"ind","Jacksonville Jaguars":"jax","Kansas City Chiefs":"kc","Las Vegas Raiders":"lv","Los Angeles Chargers":"lac","Los Angeles Rams":"lar","Miami Dolphins":"mia","Minnesota Vikings":"min","New England Patriots":"ne","New Orleans Saints":"no","New York Giants":"nyg","New York Jets":"nyj","Philadelphia Eagles":"phi","Pittsburgh Steelers":"pit","San Francisco 49ers":"sf","Seattle Seahawks":"sea","Tampa Bay Buccaneers":"tb","Tennessee Titans":"ten","Washington Commanders":"wsh"};
@@ -128,10 +124,9 @@
 
   function setMode(m) { gameMode = m; document.getElementById('solo-btn').classList.toggle('active', m==='solo'); document.getElementById('vs-btn').classList.toggle('active', m==='vs'); }
   function startGame() { 
-    const name = document.getElementById('team-name-input').value; if(!name) return alert("Enter Team Name");
-    document.getElementById('ui-team-name').innerText = name.toUpperCase();
+    const n = document.getElementById('team-name-input').value; if(!n) return alert("ENTER NAME");
+    document.getElementById('ui-team-name').innerText = n.toUpperCase();
     document.getElementById('main-menu').style.display = 'none'; document.getElementById('game-ui').style.display = 'block';
-    if(gameMode === 'solo') { document.getElementById('opponent-squad').style.display = 'none'; challengerWins = 0; }
     initAudio(); 
   }
 
@@ -168,13 +163,13 @@
     else { document.getElementById("start-btn").style.display = "block"; document.getElementById("team-logo-img").style.display = "none"; }
   }
 
-  // SMG (Simulation Mini-Game)
   function triggerSMG() {
-    document.getElementById("sim-btn").style.display="none"; document.getElementById("animation-container").style.display="block";
+    document.getElementById("sim-btn").style.display="none"; 
+    document.getElementById("animation-container").style.setProperty('display', 'block', 'important');
     const sprite = document.getElementById("main-sprite"), screen = document.getElementById("tecmo-screen");
     sprite.querySelector('.s-body').style.backgroundColor = teamThemes[draftedTeams[0]][0]; gameActive = true;
-    const move = (e) => { if(!gameActive || isStunned) return; const rect = screen.getBoundingClientRect(); const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top; playerTop = Math.max(10, Math.min(90, (y / rect.height) * 100)); sprite.style.top = playerTop + "%"; };
-    screen.addEventListener("mousemove", move); screen.addEventListener("touchmove", (e) => { e.preventDefault(); move(e); }, {passive: false});
+    const move = (e) => { if(!gameActive || isStunned) return; const rect = screen.getBoundingClientRect(); const y = (e.touches ? e.touches[0].clientY : e.clientX) - rect.top; playerTop = Math.max(10, Math.min(90, (y / rect.height) * 100)); sprite.style.top = playerTop + "%"; };
+    screen.addEventListener("mousemove", move); 
     let frame = 0; const loop = setInterval(() => {
       if(frame % 35 === 0) spawnDefender();
       document.getElementById("sim-scoreboard").innerText = `HYPE: +${Math.floor(dodges/6)} WINS`;
@@ -187,66 +182,78 @@
     d.innerHTML = `<div class="s-head" style="background:#555"></div><div class="s-body" style="background:#333"></div><div class="s-legs"><div class="leg"></div><div class="leg"></div></div>`;
     d.style.top = Math.random()*70 + 15 + "%"; document.getElementById("tecmo-screen").appendChild(d);
     let left = 110; const dInt = setInterval(() => { left -= 3.5; d.style.left = left + "%"; 
-      if(left < 15 && !d.hit && Math.abs(parseFloat(d.style.top) - playerTop) < 15) { 
-        d.hit = true; isStunned = true; dodges = Math.max(0, dodges-2); d.classList.add("stunned"); playNote(80, 0.4);
-        setTimeout(() => { isStunned = false; }, 1200);
-      } else if (left < 5 && !d.hit) { d.hit = true; dodges++; playNote(600, 0.05); }
+      if(left < 15 && !d.hit && Math.abs(parseFloat(d.style.top) - playerTop) < 15) { d.hit = true; isStunned = true; dodges = Math.max(0, dodges-2); playNote(80, 0.4); setTimeout(() => { isStunned = false; }, 1200); }
+      else if (left < 5 && !d.hit) { d.hit = true; dodges++; playNote(600, 0.05); }
       if(left < -20) { clearInterval(dInt); d.remove(); }
     }, 30);
   }
 
-  // FGMG (Billiard Slingshot)
   function startFGMG() {
-    document.getElementById("animation-container").style.display = "none";
-    document.getElementById("kicker-container").style.display = "block";
-    const ball = document.getElementById("ball-top"), field = document.getElementById("fg-field"), traj = document.getElementById("traj-line");
-    let isDragging = false, startX, startY, launchX, launchY;
-
-    ball.addEventListener("mousedown", (e) => { isDragging = true; startX = e.clientX; startY = e.clientY; traj.style.display = "block"; });
-    window.addEventListener("mousemove", (e) => {
-      if(!isDragging) return;
-      const dx = startX - e.clientX, dy = startY - e.clientY;
-      const angle = Math.atan2(dy, dx);
-      traj.style.left = "50%"; traj.style.bottom = "50px"; traj.style.width = Math.min(100, Math.sqrt(dx*dx + dy*dy)) + "px";
-      traj.style.transform = `translateX(-50%) rotate(${angle * 180 / Math.PI}deg)`;
-      launchX = dx / 10; launchY = dy / 10;
-    });
-    window.addEventListener("mouseup", () => {
-      if(!isDragging) return; isDragging = false; traj.style.display = "none"; launchBall(launchX, launchY);
-    }, {once: true});
+    document.getElementById("animation-container").style.setProperty('display', 'none', 'important');
+    document.getElementById("kicker-container").style.setProperty('display', 'block', 'important');
+    const ball = document.getElementById("ball-top"), traj = document.getElementById("traj-line");
+    ball.style.left = "50%"; ball.style.bottom = (isPlayoffMode ? "20px" : "40px");
+    if(isPlayoffMode) document.getElementById("uprights-ui").style.width = "60px";
+    
+    let isDragging = false, startX, startY;
+    const onStart = (e) => { isDragging = true; startX = e.clientX; startY = e.clientY; traj.style.display = "block"; };
+    const onMove = (e) => {
+      if(!isDragging) return; const dx = startX - e.clientX, dy = startY - e.clientY, angle = Math.atan2(dy, dx), dist = Math.min(120, Math.sqrt(dx*dx + dy*dy));
+      traj.style.left = "50%"; traj.style.bottom = ball.style.bottom; traj.style.width = dist + "px"; traj.style.transform = `rotate(${angle * 180 / Math.PI}deg)`;
+    };
+    const onEnd = (e) => { if(!isDragging) return; isDragging = false; traj.style.display = "none"; launchBall((startX - e.clientX)/8, (startY - e.clientY)/8); };
+    ball.addEventListener("mousedown", onStart); window.addEventListener("mousemove", onMove); window.addEventListener("mouseup", onEnd, {once:true});
   }
 
   function launchBall(vx, vy) {
-    const ball = document.getElementById("ball-top");
-    let bx = 50, by = 30; // Percentage
-    const bLoop = setInterval(() => {
-      bx += vx / 4; by += vy / 2;
-      ball.style.left = bx + "%"; ball.style.bottom = by + "px";
-      if(by > 300 || bx < 0 || bx > 100) {
-        clearInterval(bLoop);
-        const isGood = by > 280 && bx > 40 && bx < 60;
-        document.getElementById("kick-msg").innerText = isGood ? "IT'S GOOD!" : "MISS!";
-        bonusWins += isGood ? 3 : -1; setTimeout(showFinal, 1500);
-      }
+    const ball = document.getElementById("ball-top"); let bx = 0, by = parseInt(ball.style.bottom);
+    const bLoop = setInterval(() => { bx += vx; by += vy; ball.style.left = `calc(50% + ${bx}px)`; ball.style.bottom = by + "px";
+      if(by > 320 || Math.abs(bx) > 200) { clearInterval(bLoop); const hit = by > 280 && Math.abs(bx) < (isPlayoffMode ? 30 : 45); 
+      document.getElementById("kick-msg").innerText = hit ? "IT'S GOOD!" : "MISS!"; 
+      if(isPlayoffMode) handlePlayoffResult(hit); else { bonusWins += hit ? 3 : -1; setTimeout(showFinal, 1500); } }
     }, 20);
   }
 
   function showFinal() {
-    document.getElementById("kicker-container").style.display = "none";
-    const r = document.getElementById("results");
-    const baseWins = Math.floor(Math.random()*6) + 4;
-    const total = Math.max(0, Math.min(17, baseWins + bonusWins));
-    const winV = challengerWins > 0 && total > challengerWins;
-    const roast = total >= 14 ? "GM DEITY. UNBEATABLE." : (total < 9 ? "GARBAGE. YOU DRAFTED A LEMON." : "MID. ENJOY THE OFFSEASON.");
-    r.innerHTML = `<h2>FINAL: ${total}-${17-total}</h2><p style="color:#ffb300">${roast}</p><span>${challengerWins > 0 ? (winV ? '🏆 BEAT CHALLENGER!' : '❌ LOST VS CHALLENGER') : ''}</span>`;
-    r.style.display = "block"; document.getElementById("reset-btn").style.display = "block"; if(total>=14) confetti();
+    document.getElementById("kicker-container").style.setProperty('display', 'none', 'important');
+    const r = document.getElementById("results"), base = Math.floor(Math.random()*6) + 4;
+    regularSeasonWins = Math.max(0, Math.min(17, base + bonusWins));
+    let table = `<table id="results-table"><thead><tr><th>WK</th><th>OPP</th><th>SCORE</th><th>RES</th></tr></thead><tbody>`;
+    for(let i=1; i<=17; i++) {
+      const isW = i <= regularSeasonWins, opp = Object.keys(rosterData)[Math.floor(Math.random()*32)].split(' ').pop().toUpperCase();
+      const s1 = isW ? Math.floor(Math.random()*17)+21 : Math.floor(Math.random()*21), s2 = isW ? Math.floor(Math.random()*s1) : Math.floor(Math.random()*17)+24;
+      table += `<tr><td>${i}</td><td>${opp}</td><td>${s1}-${s2}</td><td>${isW?'W':'L'}</td></tr>`;
+    }
+    r.innerHTML = `<h2>RECORD: ${regularSeasonWins}-${17-regularSeasonWins}</h2>${table}</tbody></table>`;
+    r.style.display = "block"; document.getElementById("reset-btn").style.display = "block";
+    if(regularSeasonWins >= 10) { document.getElementById("playoff-start-btn").style.display = "block"; }
   }
 
-  window.onload = async () => { 
-    const res = await fetch('rosters.json'); rosterData = await res.json();
-    const p = new URLSearchParams(window.location.search);
-    if(p.has('t')) { document.getElementById('opponent-squad').style.display='block'; challengerWins = parseInt(p.get('w')); setMode('vs'); }
-  };
+  function startPlayoffGame() {
+    isPlayoffMode = true; document.getElementById("results").style.display = "none";
+    document.getElementById("playoff-start-btn").style.display = "none";
+    document.getElementById("playoff-banner").style.setProperty('display', 'block', 'important');
+    document.getElementById("playoff-banner").innerText = playoffRound === 1 ? "SEMI-FINAL" : "SUPER BOWL";
+    startFGMG();
+  }
+
+  function handlePlayoffResult(won) {
+    if(won) {
+      if(playoffRound === 1) { playoffRound = 2; setTimeout(() => { document.getElementById("kick-msg").innerText = "ADVANCING..."; setTimeout(startPlayoffGame, 1500); }, 1500); }
+      else { setTimeout(showTrophy, 1500); }
+    } else { setTimeout(() => { document.getElementById("playoff-banner").innerText = "ELIMINATED"; document.getElementById("kicker-container").style.display="none"; document.getElementById("results").style.display="block"; }, 1500); }
+  }
+
+  function showTrophy() {
+    document.getElementById("kicker-container").style.display = "none";
+    document.getElementById("playoff-banner").style.background = "#fff";
+    document.getElementById("playoff-banner").innerText = "🏆 CHAMPIONS 🏆";
+    const r = document.getElementById("results");
+    r.innerHTML = `<h1 style="color:#ffb300">SUPER BOWL WINNER</h1><p>GM DEITY STATUS ACHIEVED.</p>`;
+    r.style.display = "block"; confetti({ particleCount: 200, spread: 70, origin: { y: 0.6 } });
+  }
+
+  window.onload = async () => { const res = await fetch('rosters.json'); rosterData = await res.json(); };
 </script>
 </body>
 </html>
