@@ -21,7 +21,8 @@
   .std-btn { width: 100%; padding: 15px; margin: 8px 0; font-size: 20px; border-radius: 10px; font-family: 'Bebas Neue'; cursor: pointer; border: none; background: var(--primary); color: #fff; box-shadow: 0 4px 0 #800; }
   .std-btn:disabled { background: #333 !important; opacity: 0.5; pointer-events: none; box-shadow: none; }
 
-  .player-sprite { width: 45px; height: 60px; position: absolute; background-image: url('16-bit pixel art spr.jpg'); background-size: 400% 300%; background-position-y: 100%; image-rendering: pixelated; animation: runAnim 0.4s steps(4) infinite; z-index: 20; mix-blend-mode: screen; }
+  .player-sprite { width: 45px; height: 60px; position: absolute; background-color: rgba(255,255,255,0.1); border-radius: 4px; background-image: url('16-bit pixel art spr.jpg'); background-size: 400% 300%; background-position-y: 100%; image-rendering: pixelated; animation: runAnim 0.4s steps(4) infinite; z-index: 20; mix-blend-mode: screen; }
+  #main-sprite { left: 10%; top: 50%; transform: translateY(-50%); }
   @keyframes runAnim { from { background-position-x: 0%; } to { background-position-x: 133.33%; } }
   .stunned { animation: flashStun 0.1s infinite; filter: grayscale(1) brightness(2) !important; }
   @keyframes flashStun { 0% { opacity: 1; } 100% { opacity: 0.3; } }
@@ -29,10 +30,10 @@
   #animation-container, #kicker-container, #playoff-banner { display: none !important; }
   #tecmo-screen { height: 180px; width: 100%; position: relative; overflow: hidden; background: #2e7d32; border: 3px solid #fff; border-radius: 12px; }
 
-  .goal-field-top { width: 100%; height: 320px; background: #1b5e20; background-image: repeating-linear-gradient(0deg, #1b5e20, #1b5e20 40px, #246b28 40px, #246b28 80px); position: relative; border: 4px solid #fff; border-radius: 15px; overflow: hidden; }
+  .goal-field-top { width: 100%; height: 320px; background: #1b5e20; background-image: repeating-linear-gradient(0deg, #1b5e20, #1b5e20 40px, #246b28 40px, #246b28 80px); position: relative; border: 4px solid #fff; border-radius: 15px; overflow: hidden; cursor: crosshair; }
   .top-uprights { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 100px; height: 12px; border-bottom: 6px solid #ffd700; display: flex; justify-content: space-between; }
   .post-tip { width: 10px; height: 25px; background: #ffd700; margin-top: -15px; border-radius: 2px; }
-  #ball-top { width: 20px; height: 24px; background: #8b4513; border-radius: 50%; position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; z-index: 100; cursor: grab; }
+  #ball-top { width: 20px; height: 24px; background: #8b4513; border-radius: 50%; position: absolute; border: 2px solid #fff; z-index: 100; pointer-events: none; }
   #traj-line { position: absolute; height: 4px; background: rgba(255,255,255,0.7); border: 1px dashed #fff; transform-origin: left center; display: none; pointer-events: none; z-index: 90; }
 
   .roster-slot { background: rgba(0,0,0,0.7); padding: 8px; margin: 5px 0; border-radius: 10px; display: flex; align-items: center; gap: 10px; text-align: left; border-left: 6px solid #333; transition: all 0.4s ease; }
@@ -75,7 +76,7 @@
     <button id="sim-btn" class="std-btn" onclick="triggerSMG()" style="margin-top: 15px; background: #28a745; display:none;">START SEASON SIM</button>
     <button id="playoff-start-btn" class="std-btn" onclick="startPlayoffGame()" style="margin-top: 15px; background: #ffb300; color:#000; display:none;">START PLAYOFF GAME</button>
     <div id="kicker-container">
-      <div id="kick-msg" style="color:#0f0; font-family:'Press Start 2P'; font-size:10px; height:15px; margin-bottom:8px;">PULL BACK & RELEASE!</div>
+      <div id="kick-msg" style="color:#0f0; font-family:'Press Start 2P'; font-size:10px; height:15px; margin-bottom:8px; text-align: center;">...</div>
       <div class="goal-field-top" id="fg-field">
         <div class="top-uprights" id="uprights-ui"><div class="post-tip"></div><div class="post-tip"></div></div>
         <div id="traj-line"></div>
@@ -134,7 +135,6 @@
     const slot = document.getElementById(`roster-${pos}`); slot.querySelector(".player-name").innerText = p;
     slot.style.background = teamThemes[currentTeam][0]; slot.style.borderLeft = `8px solid ${teamThemes[currentTeam][1]}`;
     
-    // FIX: Lock the drafted position and jump to the next available one
     posSelect.querySelector(`option[value="${pos}"]`).disabled = true;
     const nextOpt = Array.from(posSelect.options).find(opt => !opt.disabled);
     if(nextOpt) posSelect.value = nextOpt.value;
@@ -161,11 +161,8 @@
     screen.onmousemove = (e) => { if(!gameActive || isStunned) return; const rect = screen.getBoundingClientRect(); playerTop = Math.max(10, Math.min(90, ((e.clientY - rect.top) / rect.height) * 100)); sprite.style.top = playerTop + "%"; };
     let frame = 0; const loop = setInterval(() => {
       const idx = Math.min(16, Math.floor(frame / 24));
-      document.getElementById("sim-scoreboard").innerText = `WK ${idx+1} vs ${seasonSchedule[idx].split(' ').pop().toUpperCase()} | HYPE MULT: ${teamHype.toFixed(2)}x`;
-      
-      // Speed up spawn rate slightly based on Hype
+      document.getElementById("sim-scoreboard").innerText = `WK ${idx+1} vs ${seasonSchedule[idx].split(' ').pop().toUpperCase()} | HYPE: ${teamHype.toFixed(2)}x`;
       if(frame % Math.floor(35 / teamHype) === 0) spawnDefender(teamThemes[seasonSchedule[idx]][0]);
-      
       if(frame++ > 400) { clearInterval(loop); gameActive = false; bonusWins = Math.floor(dodges/6); startFGMG(); }
     }, 40);
   }
@@ -179,29 +176,24 @@
     const p = document.getElementById("main-sprite");
 
     const dInt = setInterval(() => { 
-      left -= (3.5 * teamHype); // Defenders move faster but are spaced differently based on Hype
+      left -= (3.5 * teamHype); 
       d.style.left = left + "%"; 
       
-      // NEW AABB COLLISION PHYSICS
-      if(left < 80 && !d.hit) {
+      if(left < 80 && !d.hit && p) {
         const pRect = p.getBoundingClientRect();
         const dRect = d.getBoundingClientRect();
         
-        // Slight inner padding (-8px) prevents cheap clipping edge deaths
-        const isHit = !(pRect.right < dRect.left + 8 || 
-                        pRect.left > dRect.right - 8 || 
-                        pRect.bottom < dRect.top + 8 || 
-                        pRect.top > dRect.bottom - 8);
-        
-        if(isHit) {
-          d.hit = true; isStunned = true; dodges = Math.max(0, dodges-2); playNote(80, 0.4); 
-          p.classList.add("stunned");
-          setTimeout(() => { isStunned = false; p.classList.remove("stunned"); }, 1200); 
-        } else if (left < 5 && !d.hit) {
-          d.hit = true; dodges++;
+        if (pRect.width > 0 && dRect.width > 0) {
+          const isHit = !(pRect.right < dRect.left + 8 || pRect.left > dRect.right - 8 || pRect.bottom < dRect.top + 8 || pRect.top > dRect.bottom - 8);
+          if(isHit) {
+            d.hit = true; isStunned = true; dodges = Math.max(0, dodges-2); playNote(80, 0.4); 
+            p.classList.add("stunned");
+            setTimeout(() => { isStunned = false; p.classList.remove("stunned"); }, 1200); 
+          } else if (left < 5 && !d.hit) {
+            d.hit = true; dodges++;
+          }
         }
       }
-
       if(left < -20) { clearInterval(dInt); d.remove(); }
     }, 30);
   }
@@ -209,26 +201,72 @@
   function startFGMG() {
     document.getElementById("animation-container").style.setProperty('display', 'none', 'important');
     document.getElementById("kicker-container").style.setProperty('display', 'block', 'important');
-    const ball = document.getElementById("ball-top"), traj = document.getElementById("traj-line");
-    let isDragging = false, startX, startY;
     
-    document.getElementById("kick-msg").innerText = `PULL BACK! PWR MULT: ${teamPower.toFixed(2)}x`;
+    const field = document.getElementById("fg-field");
+    const ball = document.getElementById("ball-top");
+    const traj = document.getElementById("traj-line");
+    
+    let fgState = 'placing'; // placing -> ready -> aiming
+    let ballX = field.getBoundingClientRect().width / 2, ballY = 40; 
+    let startX, startY;
+    
+    document.getElementById("kick-msg").innerText = `CLICK TO PLACE BALL. PWR MULT: ${teamPower.toFixed(2)}x`;
+    
+    field.onmousemove = (e) => {
+      const rect = field.getBoundingClientRect();
+      if (fgState === 'placing') {
+        ballX = Math.max(10, Math.min(rect.width - 10, e.clientX - rect.left));
+        ballY = Math.max(10, Math.min(rect.height / 2, rect.bottom - e.clientY));
+        ball.style.left = ballX + "px";
+        ball.style.bottom = ballY + "px";
+        ball.style.transform = "translate(-50%, 50%)"; 
+      } else if (fgState === 'aiming') {
+        const dx = startX - e.clientX, dy = startY - e.clientY;
+        const angle = Math.atan2(-dy, -dx);
+        const dist = Math.min(120, Math.sqrt(dx*dx + dy*dy));
+        
+        traj.style.left = ballX + "px";
+        traj.style.bottom = ballY + "px";
+        traj.style.width = dist + "px";
+        traj.style.transform = `translateY(50%) rotate(${angle * 180 / Math.PI}deg)`; 
+      }
+    };
 
-    ball.onmousedown = (e) => { isDragging = true; startX = e.clientX; startY = e.clientY; traj.style.display = "block"; };
-    window.onmousemove = (e) => { if(!isDragging) return; const dx = startX - e.clientX, dy = startY - e.clientY, angle = Math.atan2(-dy, -dx), dist = Math.min(120, Math.sqrt(dx*dx + dy*dy)); traj.style.left = "50%"; traj.style.bottom = ball.style.bottom; traj.style.width = dist + "px"; traj.style.transform = `rotate(${angle * 180 / Math.PI}deg)`; };
-    window.onmouseup = (e) => { if(!isDragging) return; isDragging = false; traj.style.display = "none"; launchBall((startX - e.clientX)/8, (startY - e.clientY)/8); };
+    field.onmousedown = (e) => {
+      if (fgState === 'placing') {
+        fgState = 'ready';
+        document.getElementById("kick-msg").innerText = `CLICK AND PULL BACK!`;
+      } else if (fgState === 'ready') {
+        fgState = 'aiming';
+        startX = e.clientX; startY = e.clientY;
+        traj.style.display = "block";
+      }
+    };
+
+    window.onmouseup = (e) => {
+      if (fgState === 'aiming') {
+        fgState = 'kicked';
+        traj.style.display = "none";
+        launchBall((startX - e.clientX)/8, (startY - e.clientY)/8, ballX, ballY, field.getBoundingClientRect().width);
+      }
+    };
   }
 
-  function launchBall(vx, vy) {
-    const ball = document.getElementById("ball-top"); let bx = 0, by = 40;
-    
-    // Apply Team Power Modifier to velocity
-    const modifiedVx = vx * teamPower;
-    const modifiedVy = vy * teamPower;
+  function launchBall(vx, vy, startX, startY, fieldWidth) {
+    const ball = document.getElementById("ball-top"); 
+    let bx = startX, by = startY;
+    const modifiedVx = vx * teamPower, modifiedVy = vy * teamPower;
 
-    const bLoop = setInterval(() => { bx += modifiedVx; by -= modifiedVy; ball.style.left = `calc(50% + ${bx}px)`; ball.style.bottom = by + "px";
-      if(by > 320 || Math.abs(bx) > 200) { clearInterval(bLoop); const hit = by > 280 && Math.abs(bx) < 45; 
-      if(isPlayoffMode) handlePlayoffResult(hit); else { bonusWins += hit ? 3 : -1; setTimeout(showFinal, 1500); } }
+    const bLoop = setInterval(() => { 
+      bx += modifiedVx; by -= modifiedVy; 
+      ball.style.left = bx + "px"; ball.style.bottom = by + "px";
+      
+      if(by > 320 || bx < 0 || bx > fieldWidth) { 
+        clearInterval(bLoop); 
+        const centerPos = fieldWidth / 2;
+        const hit = by > 280 && Math.abs(bx - centerPos) < 45; 
+        if(isPlayoffMode) handlePlayoffResult(hit); else { bonusWins += hit ? 3 : -1; setTimeout(showFinal, 1500); } 
+      }
     }, 20);
   }
 
