@@ -147,6 +147,7 @@
   let localPlayerId = null; 
   let opponentId = null;
   let globallyDraftedPlayers = []; 
+  let opponentConnected = false;
 
   let rosterData, draftedTeams = [], draftedPlayers = [], roster = {QB:null,RB:null,WR:null,TE:null,Defense:null,Coach:null}, currentTeam;
   let audioCtx, gainNode, vol = 0.5, isMuted = false, lockedCount = 0, bonusWins = 0, playerTop = 50, dodges = 0, gameActive = false, isStunned = false, isPlayoffMode = false, playoffRound = 1, regularSeasonWins = 0;
@@ -236,7 +237,23 @@
   function listenToRoom() {
     db.ref('rooms/' + currentRoomId).on('value', (snapshot) => {
       const data = snapshot.val();
-      if(!data) return;
+      
+      if (!data && opponentConnected) {
+        alert("ROOM CLOSED: Host disconnected. Returning to Main Menu.");
+        location.reload();
+        return;
+      }
+      if (!data) return;
+
+      if (data[opponentId]) {
+        opponentConnected = true;
+      }
+
+      if (opponentConnected && !data[opponentId]) {
+        alert("OPPONENT DISCONNECTED: Match voided. Returning to Main Menu.");
+        location.reload();
+        return;
+      }
 
       globallyDraftedPlayers = [];
 
