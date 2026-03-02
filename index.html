@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Football Picker: Championship Edition</title>
+<title>Football Picker: Elite Sprite Edition</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -23,42 +23,56 @@
   .main-container { width: 100%; max-width: 440px; padding: 15px; box-sizing: border-box; display: none; margin-top: 10px; }
   .glass-card { background: rgba(0, 0, 0, 0.96); border-radius: 20px; padding: 15px; box-shadow: 0 10px 40px #000; margin-bottom: 15px; border-top: 5px solid var(--primary); position: relative; }
   
-  .team-logo-container { height: 120px; width: 100%; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 12px; position: relative; overflow: hidden; }
-  #team-logo-img { max-height: 90px; width: auto; display: none; filter: drop-shadow(0 0 10px #fff); z-index: 5; }
-  #start-btn { position: absolute; width: 80px; height: 80px; border-radius: 50%; border: 4px solid #fff; background: radial-gradient(circle, var(--primary) 40%, #800 100%); color: #fff; font-family: 'Press Start 2P'; font-size: 10px; cursor: pointer; z-index: 100; }
+  /* SPRITE ANIMATION - ROW 3 RUN CYCLE */
+  .player-sprite { 
+    width: 45px; 
+    height: 60px; 
+    position: absolute; 
+    background-image: url('16-bit pixel art spr.jpg'); 
+    background-size: 400% 300%; 
+    background-position-y: 100%; 
+    image-rendering: pixelated;
+    animation: runAnim 0.4s steps(4) infinite; 
+    z-index: 20; 
+    filter: drop-shadow(0 0 8px var(--primary)); 
+  }
 
-  .std-btn { width: 100%; padding: 15px; margin: 8px 0; font-size: 20px; border-radius: 10px; font-family: 'Bebas Neue'; cursor: pointer; border: none; background: var(--primary); color: #fff; box-shadow: 0 4px 0 #800; }
-  .std-btn:disabled { background: #333 !important; opacity: 0.5; pointer-events: none; }
+  @keyframes runAnim {
+    from { background-position-x: 0%; }
+    to { background-position-x: 133.33%; }
+  }
 
-  .player-sprite { width: 30px; height: 42px; position: absolute; z-index: 20; transition: top 0.1s linear; }
-  .s-head { width: 12px; height: 12px; background: #ffdbac; margin: 0 auto; border-radius: 2px; }
-  .s-body { width: 22px; height: 18px; background: var(--primary); margin: -1px auto 0; border-radius: 3px; }
-  .s-legs { width: 18px; height: 10px; margin: -1px auto 0; display: flex; justify-content: space-between; }
-  .leg { width: 6px; height: 10px; background: #333; animation: runAnim 0.2s infinite alternate; }
-  .leg:nth-child(2) { animation-delay: 0.1s; }
-  @keyframes runAnim { from { height: 6px; } to { height: 12px; } }
+  .stunned { animation: flashStun 0.1s infinite; filter: grayscale(1) brightness(2) !important; }
+  @keyframes flashStun { 0% { opacity: 1; } 100% { opacity: 0.3; } }
+
+  .defender-16 { filter: drop-shadow(0 0 5px #fff) !important; background-position-y: 0%; } /* Defenders use Row 1 */
 
   #animation-container, #kicker-container, #playoff-banner { display: none !important; }
-  #tecmo-screen { height: 170px; width: 100%; position: relative; overflow: hidden; background: #2e7d32; border: 3px solid #fff; border-radius: 12px; }
+  #tecmo-screen { height: 180px; width: 100%; position: relative; overflow: hidden; background: #2e7d32; border: 3px solid #fff; border-radius: 12px; }
 
+  /* SLINGSHOT FGMG */
   .goal-field-top { width: 100%; height: 300px; background: #1b5e20; position: relative; border: 3px solid #fff; border-radius: 15px; overflow: hidden; }
-  .top-uprights { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 90px; height: 10px; border-bottom: 5px solid yellow; display: flex; justify-content: space-between; transition: width 0.5s ease; }
+  .top-uprights { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 90px; height: 10px; border-bottom: 5px solid yellow; display: flex; justify-content: space-between; }
   .post-tip { width: 8px; height: 20px; background: yellow; margin-top: -10px; }
   #ball-top { width: 18px; height: 22px; background: #8b4513; border-radius: 50%; position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; z-index: 100; cursor: grab; }
   #traj-line { position: absolute; height: 3px; background: rgba(255,255,255,0.6); transform-origin: left center; display: none; pointer-events: none; z-index: 90; }
 
+  /* RESULTS TABLE */
   #results-table { font-family: 'Press Start 2P'; font-size: 7px; width: 100%; margin-top: 10px; border-collapse: collapse; background: #000; }
   #results-table th { background: #222; color: #ffb300; padding: 6px; text-align: left; }
   #results-table td { padding: 6px; border-bottom: 1px solid #333; }
 
+  .roster-slot { background: rgba(0,0,0,0.7); padding: 8px; margin: 5px 0; border-radius: 10px; display: flex; align-items: center; gap: 10px; text-align: left; border-left: 6px solid #333; transition: background 0.3s; }
+  .avatar-box { width: 35px; height: 35px; background: #222; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 6px; }
+  
   #playoff-banner { background: #ffb300; color: #000; font-family: 'Press Start 2P'; font-size: 14px; padding: 15px; border-radius: 10px; margin-bottom: 10px; text-align: center; border: 4px solid #fff; }
 </style>
 </head>
 <body>
 
 <div id="main-menu">
-  <h1 style="font-family:'Bebas Neue'; font-size: 45px; color: var(--primary);">FOOTBALL ARCADE</h1>
-  <input type="text" id="team-name-input" class="menu-input" placeholder="ENTER TEAM NAME" maxlength="12">
+  <h1 style="font-family:'Bebas Neue'; font-size: 50px; color: var(--primary);">FOOTBALL ARCADE</h1>
+  <input type="text" id="team-name-input" class="menu-input" placeholder="TEAM NAME..." maxlength="12">
   <button class="mode-btn active" id="solo-btn" onclick="setMode('solo')">SOLO CAREER</button>
   <button class="mode-btn" id="vs-btn" onclick="setMode('vs')">VERSUS MODE</button>
   <button class="std-btn" style="width: 260px; margin-top: 20px; font-size: 26px;" onclick="startGame()">KICKOFF</button>
@@ -84,12 +98,12 @@
 
   <div class="glass-card">
     <div id="roster-slots">
-      <div id="roster-QB" class="roster-slot" style="background:rgba(0,0,0,0.7); padding:8px; margin:5px 0; border-radius:10px; display:flex; align-items:center; gap:10px; text-align:left; border-left:6px solid #333;"><div class="avatar-box">🏈</div><div class="player-name">---</div></div>
-      <div id="roster-RB" class="roster-slot" style="background:rgba(0,0,0,0.7); padding:8px; margin:5px 0; border-radius:10px; display:flex; align-items:center; gap:10px; text-align:left; border-left:6px solid #333;"><div class="avatar-box">🏃</div><div class="player-name">---</div></div>
-      <div id="roster-WR" class="roster-slot" style="background:rgba(0,0,0,0.7); padding:8px; margin:5px 0; border-radius:10px; display:flex; align-items:center; gap:10px; text-align:left; border-left:6px solid #333;"><div class="avatar-box">👐</div><div class="player-name">---</div></div>
-      <div id="roster-TE" class="roster-slot" style="background:rgba(0,0,0,0.7); padding:8px; margin:5px 0; border-radius:10px; display:flex; align-items:center; gap:10px; text-align:left; border-left:6px solid #333;"><div class="avatar-box">💪</div><div class="player-name">---</div></div>
-      <div id="roster-Defense" class="roster-slot" style="background:rgba(0,0,0,0.7); padding:8px; margin:5px 0; border-radius:10px; display:flex; align-items:center; gap:10px; text-align:left; border-left:6px solid #333;"><div class="avatar-box">🛡️</div><div class="player-name">---</div></div>
-      <div id="roster-Coach" class="roster-slot" style="background:rgba(0,0,0,0.7); padding:8px; margin:5px 0; border-radius:10px; display:flex; align-items:center; gap:10px; text-align:left; border-left:6px solid #333;"><div class="avatar-box">📋</div><div class="player-name">---</div></div>
+      <div id="roster-QB" class="roster-slot"><div class="avatar-box">🏈</div><div class="player-name">---</div></div>
+      <div id="roster-RB" class="roster-slot"><div class="avatar-box">🏃</div><div class="player-name">---</div></div>
+      <div id="roster-WR" class="roster-slot"><div class="avatar-box">👐</div><div class="player-name">---</div></div>
+      <div id="roster-TE" class="roster-slot"><div class="avatar-box">💪</div><div class="player-name">---</div></div>
+      <div id="roster-Defense" class="roster-slot"><div class="avatar-box">🛡️</div><div class="player-name">---</div></div>
+      <div id="roster-Coach" class="roster-slot"><div class="avatar-box">📋</div><div class="player-name">---</div></div>
     </div>
     
     <button id="sim-btn" class="std-btn" onclick="triggerSMG()" style="margin-top: 15px; background: #28a745; display:none;">START SEASON SIM</button>
@@ -106,10 +120,10 @@
 
     <div id="animation-container">
       <div id="sim-scoreboard" style="font-family:'Press Start 2P'; font-size:8px; color:#0f0; margin-bottom:10px;">HYPE: +0 WINS</div>
-      <div id="tecmo-screen"><div id="main-sprite" class="player-sprite"><div class="s-head"></div><div class="s-body"></div><div class="s-legs"><div class="leg"></div><div class="leg"></div></div></div></div>
+      <div id="tecmo-screen"><div id="main-sprite" class="player-sprite"></div></div>
     </div>
     
-    <div id="results" style="background:#111; border-radius:10px; padding:15px; margin-top:10px; display:none;"></div>
+    <div id="results" style="background:#111; border-radius:10px; padding:15px; margin-top:10px; display:none; max-height: 380px; overflow-y: auto;"></div>
     <button id="reset-btn" class="std-btn" onclick="location.reload()" style="display:none; background:#444;">NEW DRAFT</button>
   </div>
 </div>
@@ -131,7 +145,7 @@
   }
 
   function initAudio() { if(!audioCtx) { audioCtx = new AudioContext(); gainNode = audioCtx.createGain(); gainNode.connect(audioCtx.destination); updateVolume(); } }
-  function toggleMute() { isMuted = !isMuted; document.getElementById("mute-toggle").innerText = isMuted ? "🔇" : "🔊"; if(gainNode) gainNode.gain.value = isMuted ? 0 : vol * 0.1; }
+  function toggleMute() { isMuted = !isMuted; document.getElementById("mute-toggle").innerText = isMuted ? "MUTE" : "🔊"; if(gainNode) gainNode.gain.value = isMuted ? 0 : vol * 0.1; }
   function updateVolume() { vol = document.getElementById("volume-slider").value; if(gainNode) gainNode.gain.value = isMuted ? 0 : vol * 0.1; }
   function playNote(f, d = 0.1) { initAudio(); if(isMuted) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'square'; o.frequency.value = f; g.gain.setValueAtTime(gainNode.gain.value, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + d); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + d); }
 
@@ -167,8 +181,8 @@
     document.getElementById("sim-btn").style.display="none"; 
     document.getElementById("animation-container").style.setProperty('display', 'block', 'important');
     const sprite = document.getElementById("main-sprite"), screen = document.getElementById("tecmo-screen");
-    sprite.querySelector('.s-body').style.backgroundColor = teamThemes[draftedTeams[0]][0]; gameActive = true;
-    const move = (e) => { if(!gameActive || isStunned) return; const rect = screen.getBoundingClientRect(); const y = (e.touches ? e.touches[0].clientY : e.clientX) - rect.top; playerTop = Math.max(10, Math.min(90, (y / rect.height) * 100)); sprite.style.top = playerTop + "%"; };
+    document.documentElement.style.setProperty('--primary', teamThemes[draftedTeams[0]][0]); gameActive = true;
+    const move = (e) => { if(!gameActive || isStunned) return; const rect = screen.getBoundingClientRect(); const x = (e.touches ? e.touches[0].clientX : e.clientX); const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top; playerTop = Math.max(10, Math.min(90, (y / rect.height) * 100)); sprite.style.top = playerTop + "%"; };
     screen.addEventListener("mousemove", move); 
     let frame = 0; const loop = setInterval(() => {
       if(frame % 35 === 0) spawnDefender();
@@ -179,10 +193,9 @@
 
   function spawnDefender() {
     const d = document.createElement("div"); d.className = "defender-16 player-sprite";
-    d.innerHTML = `<div class="s-head" style="background:#555"></div><div class="s-body" style="background:#333"></div><div class="s-legs"><div class="leg"></div><div class="leg"></div></div>`;
     d.style.top = Math.random()*70 + 15 + "%"; document.getElementById("tecmo-screen").appendChild(d);
     let left = 110; const dInt = setInterval(() => { left -= 3.5; d.style.left = left + "%"; 
-      if(left < 15 && !d.hit && Math.abs(parseFloat(d.style.top) - playerTop) < 15) { d.hit = true; isStunned = true; dodges = Math.max(0, dodges-2); playNote(80, 0.4); setTimeout(() => { isStunned = false; }, 1200); }
+      if(left < 15 && !d.hit && Math.abs(parseFloat(d.style.top) - playerTop) < 15) { d.hit = true; isStunned = true; dodges = Math.max(0, dodges-2); d.classList.add("stunned"); playNote(80, 0.4); setTimeout(() => { isStunned = false; }, 1200); }
       else if (left < 5 && !d.hit) { d.hit = true; dodges++; playNote(600, 0.05); }
       if(left < -20) { clearInterval(dInt); d.remove(); }
     }, 30);
@@ -191,17 +204,18 @@
   function startFGMG() {
     document.getElementById("animation-container").style.setProperty('display', 'none', 'important');
     document.getElementById("kicker-container").style.setProperty('display', 'block', 'important');
-    const ball = document.getElementById("ball-top"), traj = document.getElementById("traj-line");
+    const ball = document.getElementById("ball-top"), traj = document.getElementById("traj-line"), field = document.getElementById("fg-field");
     ball.style.left = "50%"; ball.style.bottom = (isPlayoffMode ? "20px" : "40px");
     if(isPlayoffMode) document.getElementById("uprights-ui").style.width = "60px";
     
     let isDragging = false, startX, startY;
-    const onStart = (e) => { isDragging = true; startX = e.clientX; startY = e.clientY; traj.style.display = "block"; };
+    const onStart = (e) => { isDragging = true; const touch = e.touches ? e.touches[0] : e; startX = touch.clientX; startY = touch.clientY; traj.style.display = "block"; };
     const onMove = (e) => {
-      if(!isDragging) return; const dx = startX - e.clientX, dy = startY - e.clientY, angle = Math.atan2(dy, dx), dist = Math.min(120, Math.sqrt(dx*dx + dy*dy));
+      if(!isDragging) return; const touch = e.touches ? e.touches[0] : e;
+      const dx = startX - touch.clientX, dy = startY - touch.clientY, angle = Math.atan2(dy, dx), dist = Math.min(120, Math.sqrt(dx*dx + dy*dy));
       traj.style.left = "50%"; traj.style.bottom = ball.style.bottom; traj.style.width = dist + "px"; traj.style.transform = `rotate(${angle * 180 / Math.PI}deg)`;
     };
-    const onEnd = (e) => { if(!isDragging) return; isDragging = false; traj.style.display = "none"; launchBall((startX - e.clientX)/8, (startY - e.clientY)/8); };
+    const onEnd = (e) => { if(!isDragging) return; isDragging = false; traj.style.display = "none"; const touch = e.changedTouches ? e.changedTouches[0] : e; launchBall((startX - touch.clientX)/8, (startY - touch.clientY)/8); };
     ball.addEventListener("mousedown", onStart); window.addEventListener("mousemove", onMove); window.addEventListener("mouseup", onEnd, {once:true});
   }
 
@@ -218,9 +232,10 @@
     document.getElementById("kicker-container").style.setProperty('display', 'none', 'important');
     const r = document.getElementById("results"), base = Math.floor(Math.random()*6) + 4;
     regularSeasonWins = Math.max(0, Math.min(17, base + bonusWins));
+    const allT = Object.keys(rosterData);
     let table = `<table id="results-table"><thead><tr><th>WK</th><th>OPP</th><th>SCORE</th><th>RES</th></tr></thead><tbody>`;
     for(let i=1; i<=17; i++) {
-      const isW = i <= regularSeasonWins, opp = Object.keys(rosterData)[Math.floor(Math.random()*32)].split(' ').pop().toUpperCase();
+      const isW = i <= regularSeasonWins, opp = allT[Math.floor(Math.random()*32)].split(' ').pop().toUpperCase();
       const s1 = isW ? Math.floor(Math.random()*17)+21 : Math.floor(Math.random()*21), s2 = isW ? Math.floor(Math.random()*s1) : Math.floor(Math.random()*17)+24;
       table += `<tr><td>${i}</td><td>${opp}</td><td>${s1}-${s2}</td><td>${isW?'W':'L'}</td></tr>`;
     }
@@ -253,7 +268,7 @@
     r.style.display = "block"; confetti({ particleCount: 200, spread: 70, origin: { y: 0.6 } });
   }
 
-  window.onload = async () => { const res = await fetch('rosters.json'); rosterData = await res.json(); };
+  window.onload = async () => { try { const res = await fetch('rosters.json'); rosterData = await res.json(); } catch(e) {} };
 </script>
 </body>
 </html>
