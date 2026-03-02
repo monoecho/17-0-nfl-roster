@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Football Picker: Elite Sprite Edition</title>
+<title>Football Picker: Ultra-Stability Edition</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -11,60 +11,52 @@
   :root { --primary: #d50a0a; --accent: #013369; --glow: rgba(213, 10, 10, 0.4); }
   body { font-family: 'Inter', sans-serif; background-color: #1a472a; background-image: linear-gradient(90deg, transparent 49%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.1) 51%, transparent 51%), repeating-linear-gradient(0deg, #1a472a, #1a472a 100px, #245c38 100px, #245c38 200px); color: #fff; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; touch-action: none; }
   
-  #main-menu { position: fixed; inset: 0; background: #000; z-index: 5000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
+  #main-menu { position: fixed; inset: 0; background: #000; z-index: 9000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
   .menu-input { background: #111; border: 3px solid var(--primary); color: white; padding: 15px; font-family: 'Press Start 2P'; font-size: 12px; width: 260px; margin-bottom: 20px; border-radius: 8px; text-align: center; }
   .mode-btn { width: 260px; margin: 5px; padding: 15px; font-family: 'Bebas Neue'; font-size: 22px; color: white; background: #222; border: 2px solid #444; border-radius: 10px; cursor: pointer; }
   .mode-btn.active { background: var(--primary); border-color: #fff; box-shadow: 0 0 15px var(--glow); }
 
-  .audio-dashboard { position: fixed; top: 10px; right: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px; background: rgba(0,0,0,0.85); padding: 10px; border-radius: 20px; border: 2px solid var(--primary); z-index: 4000; }
+  .audio-dashboard { position: fixed; top: 10px; right: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px; background: rgba(0,0,0,0.85); padding: 10px; border-radius: 20px; border: 2px solid var(--primary); z-index: 8000; }
   #mute-toggle { background: none; border: none; font-size: 20px; cursor: pointer; color: white; }
   #volume-slider { appearance: none; width: 60px; height: 3px; background: #444; transform: rotate(-90deg); margin: 30px 0; cursor: pointer; }
 
   .main-container { width: 100%; max-width: 440px; padding: 15px; box-sizing: border-box; display: none; margin-top: 10px; }
   .glass-card { background: rgba(0, 0, 0, 0.96); border-radius: 20px; padding: 15px; box-shadow: 0 10px 40px #000; margin-bottom: 15px; border-top: 5px solid var(--primary); position: relative; }
   
-  /* SPRITE ANIMATION - ROW 3 RUN CYCLE */
-  .player-sprite { 
-    width: 45px; 
-    height: 60px; 
-    position: absolute; 
-    background-image: url('16-bit pixel art spr.jpg'); 
-    background-size: 400% 300%; 
-    background-position-y: 100%; 
-    image-rendering: pixelated;
-    animation: runAnim 0.4s steps(4) infinite; 
-    z-index: 20; 
-    filter: drop-shadow(0 0 8px var(--primary)); 
-  }
+  /* FIXED SPINNER UI */
+  .team-logo-container { height: 130px; width: 100%; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 15px; position: relative; overflow: hidden; border: 2px solid rgba(255,255,255,0.1); }
+  #team-logo-img { height: 90px !important; width: auto !important; max-width: 90% !important; display: none; object-fit: contain; filter: drop-shadow(0 0 10px #fff); z-index: 10; }
+  #start-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85px; height: 85px; border-radius: 50%; border: 4px solid #fff; background: radial-gradient(circle, var(--primary) 40%, #800 100%); color: #fff; font-family: 'Press Start 2P'; font-size: 10px; cursor: pointer; z-index: 5000 !important; box-shadow: 0 0 20px var(--glow); }
 
-  @keyframes runAnim {
-    from { background-position-x: 0%; }
-    to { background-position-x: 133.33%; }
-  }
+  .std-btn { width: 100%; padding: 15px; margin: 8px 0; font-size: 20px; border-radius: 10px; font-family: 'Bebas Neue'; cursor: pointer; border: none; background: var(--primary); color: #fff; box-shadow: 0 4px 0 #800; }
+  .std-btn:disabled { background: #333 !important; opacity: 0.5; pointer-events: none; box-shadow: none; }
 
+  /* SPRITE ENGINE */
+  .player-sprite { width: 45px; height: 60px; position: absolute; background-image: url('16-bit pixel art spr.jpg'); background-size: 400% 300%; background-position-y: 100%; image-rendering: pixelated; animation: runAnim 0.4s steps(4) infinite; z-index: 20; filter: drop-shadow(0 0 8px var(--primary)); mix-blend-mode: screen; }
+  @keyframes runAnim { from { background-position-x: 0%; } to { background-position-x: 133.33%; } }
   .stunned { animation: flashStun 0.1s infinite; filter: grayscale(1) brightness(2) !important; }
   @keyframes flashStun { 0% { opacity: 1; } 100% { opacity: 0.3; } }
+  .defender-16 { filter: drop-shadow(0 0 5px #fff) !important; background-position-y: 0%; }
 
-  .defender-16 { filter: drop-shadow(0 0 5px #fff) !important; background-position-y: 0%; } /* Defenders use Row 1 */
-
+  /* STATE ISOLATION */
   #animation-container, #kicker-container, #playoff-banner { display: none !important; }
   #tecmo-screen { height: 180px; width: 100%; position: relative; overflow: hidden; background: #2e7d32; border: 3px solid #fff; border-radius: 12px; }
 
-  /* SLINGSHOT FGMG */
+  /* FGMG SYSTEM */
   .goal-field-top { width: 100%; height: 300px; background: #1b5e20; position: relative; border: 3px solid #fff; border-radius: 15px; overflow: hidden; }
   .top-uprights { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 90px; height: 10px; border-bottom: 5px solid yellow; display: flex; justify-content: space-between; }
   .post-tip { width: 8px; height: 20px; background: yellow; margin-top: -10px; }
   #ball-top { width: 18px; height: 22px; background: #8b4513; border-radius: 50%; position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; z-index: 100; cursor: grab; }
   #traj-line { position: absolute; height: 3px; background: rgba(255,255,255,0.6); transform-origin: left center; display: none; pointer-events: none; z-index: 90; }
 
-  /* RESULTS TABLE */
+  /* FRANKENSTEIN ROSTER */
+  .roster-slot { background: rgba(0,0,0,0.7); padding: 8px; margin: 5px 0; border-radius: 10px; display: flex; align-items: center; gap: 10px; text-align: left; border-left: 6px solid #333; transition: all 0.4s ease; }
+  .avatar-box { width: 35px; height: 35px; background: #222; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); }
+  .player-name { font-weight: bold; font-size: 14px; color: #fff; flex-grow: 1; text-shadow: 1px 1px 2px #000; }
+  
   #results-table { font-family: 'Press Start 2P'; font-size: 7px; width: 100%; margin-top: 10px; border-collapse: collapse; background: #000; }
   #results-table th { background: #222; color: #ffb300; padding: 6px; text-align: left; }
   #results-table td { padding: 6px; border-bottom: 1px solid #333; }
-
-  .roster-slot { background: rgba(0,0,0,0.7); padding: 8px; margin: 5px 0; border-radius: 10px; display: flex; align-items: center; gap: 10px; text-align: left; border-left: 6px solid #333; transition: background 0.3s; }
-  .avatar-box { width: 35px; height: 35px; background: #222; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 6px; }
-  
   #playoff-banner { background: #ffb300; color: #000; font-family: 'Press Start 2P'; font-size: 14px; padding: 15px; border-radius: 10px; margin-bottom: 10px; text-align: center; border: 4px solid #fff; }
 </style>
 </head>
@@ -72,7 +64,7 @@
 
 <div id="main-menu">
   <h1 style="font-family:'Bebas Neue'; font-size: 50px; color: var(--primary);">FOOTBALL ARCADE</h1>
-  <input type="text" id="team-name-input" class="menu-input" placeholder="TEAM NAME..." maxlength="12">
+  <input type="text" id="team-name-input" class="menu-input" placeholder="ENTER TEAM NAME" maxlength="12">
   <button class="mode-btn active" id="solo-btn" onclick="setMode('solo')">SOLO CAREER</button>
   <button class="mode-btn" id="vs-btn" onclick="setMode('vs')">VERSUS MODE</button>
   <button class="std-btn" style="width: 260px; margin-top: 20px; font-size: 26px;" onclick="startGame()">KICKOFF</button>
@@ -123,7 +115,7 @@
       <div id="tecmo-screen"><div id="main-sprite" class="player-sprite"></div></div>
     </div>
     
-    <div id="results" style="background:#111; border-radius:10px; padding:15px; margin-top:10px; display:none; max-height: 380px; overflow-y: auto;"></div>
+    <div id="results" style="background:#111; border-radius:10px; padding:15px; margin-top:10px; display:none; max-height: 350px; overflow-y: auto;"></div>
     <button id="reset-btn" class="std-btn" onclick="location.reload()" style="display:none; background:#444;">NEW DRAFT</button>
   </div>
 </div>
@@ -155,7 +147,7 @@
     const available = Object.keys(rosterData).filter(t => !draftedTeams.includes(t));
     let count = 0; function perform() {
       const name = available[Math.floor(Math.random()*available.length)]; img.src = `https://a.espncdn.com/i/teamlogos/nfl/500/${logoMap[name]}.png`;
-      playNote(150 + count*20); if(count++ < 12) setTimeout(perform, 80); else { currentTeam = name; document.documentElement.style.setProperty('--primary', teamThemes[name][0]); loadRoster(); }
+      playNote(150 + count*20); if(count++ < 12) setTimeout(perform, 80); else { currentTeam = name; loadRoster(); }
     } perform();
   }
 
@@ -167,9 +159,8 @@
   }
 
   function draftPlayer() {
-    const pos = document.getElementById("position-select").value, p = document.getElementById("player-select").value, btn = document.getElementById("draft-btn");
-    btn.disabled = true; roster[pos] = p; draftedPlayers.push(p);
-    playNote(220); setTimeout(() => playNote(110, 0.2), 50);
+    const pos = document.getElementById("position-select").value, p = document.getElementById("player-select").value;
+    roster[pos] = p; draftedPlayers.push(p); playNote(220); setTimeout(() => playNote(110, 0.2), 50);
     const slot = document.getElementById(`roster-${pos}`); slot.querySelector(".player-name").innerText = p;
     slot.style.background = teamThemes[currentTeam][0]; slot.style.borderLeft = `8px solid ${teamThemes[currentTeam][1]}`;
     draftedTeams.push(currentTeam); document.getElementById("position-select").remove(document.getElementById("position-select").selectedIndex);
@@ -178,12 +169,11 @@
   }
 
   function triggerSMG() {
-    document.getElementById("sim-btn").style.display="none"; 
-    document.getElementById("animation-container").style.setProperty('display', 'block', 'important');
+    document.getElementById("sim-btn").style.display="none"; document.getElementById("animation-container").style.setProperty('display', 'block', 'important');
     const sprite = document.getElementById("main-sprite"), screen = document.getElementById("tecmo-screen");
     document.documentElement.style.setProperty('--primary', teamThemes[draftedTeams[0]][0]); gameActive = true;
-    const move = (e) => { if(!gameActive || isStunned) return; const rect = screen.getBoundingClientRect(); const x = (e.touches ? e.touches[0].clientX : e.clientX); const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top; playerTop = Math.max(10, Math.min(90, (y / rect.height) * 100)); sprite.style.top = playerTop + "%"; };
-    screen.addEventListener("mousemove", move); 
+    const move = (e) => { if(!gameActive || isStunned) return; const rect = screen.getBoundingClientRect(); const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top; playerTop = Math.max(10, Math.min(90, (y / rect.height) * 100)); sprite.style.top = playerTop + "%"; };
+    screen.addEventListener("mousemove", move);
     let frame = 0; const loop = setInterval(() => {
       if(frame % 35 === 0) spawnDefender();
       document.getElementById("sim-scoreboard").innerText = `HYPE: +${Math.floor(dodges/6)} WINS`;
@@ -195,7 +185,7 @@
     const d = document.createElement("div"); d.className = "defender-16 player-sprite";
     d.style.top = Math.random()*70 + 15 + "%"; document.getElementById("tecmo-screen").appendChild(d);
     let left = 110; const dInt = setInterval(() => { left -= 3.5; d.style.left = left + "%"; 
-      if(left < 15 && !d.hit && Math.abs(parseFloat(d.style.top) - playerTop) < 15) { d.hit = true; isStunned = true; dodges = Math.max(0, dodges-2); d.classList.add("stunned"); playNote(80, 0.4); setTimeout(() => { isStunned = false; }, 1200); }
+      if(left < 15 && !d.hit && Math.abs(parseFloat(d.style.top) - playerTop) < 15) { d.hit = true; isStunned = true; dodges = Math.max(0, dodges-2); d.classList.add("stunned"); playNote(80, 0.4); setTimeout(() => { isStunned = false; d.classList.remove("stunned"); }, 1200); }
       else if (left < 5 && !d.hit) { d.hit = true; dodges++; playNote(600, 0.05); }
       if(left < -20) { clearInterval(dInt); d.remove(); }
     }, 30);
@@ -204,25 +194,19 @@
   function startFGMG() {
     document.getElementById("animation-container").style.setProperty('display', 'none', 'important');
     document.getElementById("kicker-container").style.setProperty('display', 'block', 'important');
-    const ball = document.getElementById("ball-top"), traj = document.getElementById("traj-line"), field = document.getElementById("fg-field");
-    ball.style.left = "50%"; ball.style.bottom = (isPlayoffMode ? "20px" : "40px");
-    if(isPlayoffMode) document.getElementById("uprights-ui").style.width = "60px";
-    
+    const ball = document.getElementById("ball-top"), traj = document.getElementById("traj-line");
+    ball.style.left = "50%"; ball.style.bottom = isPlayoffMode ? "20px" : "40px";
+    if(isPlayoffMode) document.getElementById("uprights-ui").style.width = "65px";
     let isDragging = false, startX, startY;
-    const onStart = (e) => { isDragging = true; const touch = e.touches ? e.touches[0] : e; startX = touch.clientX; startY = touch.clientY; traj.style.display = "block"; };
-    const onMove = (e) => {
-      if(!isDragging) return; const touch = e.touches ? e.touches[0] : e;
-      const dx = startX - touch.clientX, dy = startY - touch.clientY, angle = Math.atan2(dy, dx), dist = Math.min(120, Math.sqrt(dx*dx + dy*dy));
-      traj.style.left = "50%"; traj.style.bottom = ball.style.bottom; traj.style.width = dist + "px"; traj.style.transform = `rotate(${angle * 180 / Math.PI}deg)`;
-    };
-    const onEnd = (e) => { if(!isDragging) return; isDragging = false; traj.style.display = "none"; const touch = e.changedTouches ? e.changedTouches[0] : e; launchBall((startX - touch.clientX)/8, (startY - touch.clientY)/8); };
-    ball.addEventListener("mousedown", onStart); window.addEventListener("mousemove", onMove); window.addEventListener("mouseup", onEnd, {once:true});
+    ball.onmousedown = (e) => { isDragging = true; startX = e.clientX; startY = e.clientY; traj.style.display = "block"; };
+    window.onmousemove = (e) => { if(!isDragging) return; const dx = startX - e.clientX, dy = startY - e.clientY, angle = Math.atan2(dy, dx), dist = Math.min(120, Math.sqrt(dx*dx + dy*dy)); traj.style.left = "50%"; traj.style.bottom = ball.style.bottom; traj.style.width = dist + "px"; traj.style.transform = `rotate(${angle * 180 / Math.PI}deg)`; };
+    window.onmouseup = (e) => { if(!isDragging) return; isDragging = false; traj.style.display = "none"; launchBall((startX - e.clientX)/8, (startY - e.clientY)/8); };
   }
 
   function launchBall(vx, vy) {
     const ball = document.getElementById("ball-top"); let bx = 0, by = parseInt(ball.style.bottom);
     const bLoop = setInterval(() => { bx += vx; by += vy; ball.style.left = `calc(50% + ${bx}px)`; ball.style.bottom = by + "px";
-      if(by > 320 || Math.abs(bx) > 200) { clearInterval(bLoop); const hit = by > 280 && Math.abs(bx) < (isPlayoffMode ? 30 : 45); 
+      if(by > 320 || Math.abs(bx) > 200) { clearInterval(bLoop); const hit = by > 280 && Math.abs(bx) < (isPlayoffMode ? 32 : 45); 
       document.getElementById("kick-msg").innerText = hit ? "IT'S GOOD!" : "MISS!"; 
       if(isPlayoffMode) handlePlayoffResult(hit); else { bonusWins += hit ? 3 : -1; setTimeout(showFinal, 1500); } }
     }, 20);
@@ -230,23 +214,21 @@
 
   function showFinal() {
     document.getElementById("kicker-container").style.setProperty('display', 'none', 'important');
-    const r = document.getElementById("results"), base = Math.floor(Math.random()*6) + 4;
-    regularSeasonWins = Math.max(0, Math.min(17, base + bonusWins));
-    const allT = Object.keys(rosterData);
-    let table = `<table id="results-table"><thead><tr><th>WK</th><th>OPP</th><th>SCORE</th><th>RES</th></tr></thead><tbody>`;
+    const r = document.getElementById("results"), totalWins = Math.max(0, Math.min(17, (Math.floor(Math.random()*6) + 4) + bonusWins)), allT = Object.keys(rosterData);
+    let pf = 0, pa = 0, tableHTML = `<table id="results-table"><thead><tr><th>WK</th><th>OPP</th><th>SCORE</th><th>RES</th></tr></thead><tbody>`;
     for(let i=1; i<=17; i++) {
-      const isW = i <= regularSeasonWins, opp = allT[Math.floor(Math.random()*32)].split(' ').pop().toUpperCase();
-      const s1 = isW ? Math.floor(Math.random()*17)+21 : Math.floor(Math.random()*21), s2 = isW ? Math.floor(Math.random()*s1) : Math.floor(Math.random()*17)+24;
-      table += `<tr><td>${i}</td><td>${opp}</td><td>${s1}-${s2}</td><td>${isW?'W':'L'}</td></tr>`;
+      const isWin = i <= totalWins, opp = allT[Math.floor(Math.random()*32)].split(' ').pop().toUpperCase();
+      const myS = isWin ? Math.floor(Math.random()*17)+21 : Math.floor(Math.random()*21), oppS = isWin ? Math.floor(Math.random()*myS) : Math.floor(Math.random()*17)+24;
+      pf += myS; pa += oppS; tableHTML += `<tr><td>${i}</td><td>${opp}</td><td>${myS}-${oppS}</td><td>${isWin?'W':'L'}</td></tr>`;
     }
-    r.innerHTML = `<h2>RECORD: ${regularSeasonWins}-${17-regularSeasonWins}</h2>${table}</tbody></table>`;
+    regularSeasonWins = totalWins;
+    r.innerHTML = `<h2>RECORD: ${totalWins}-${17-totalWins}</h2><div style="font-size:10px; color:#0f0; margin-bottom:10px;">SEASON PF: ${pf} | PA: ${pa}</div>${tableHTML}</tbody></table>`;
     r.style.display = "block"; document.getElementById("reset-btn").style.display = "block";
-    if(regularSeasonWins >= 10) { document.getElementById("playoff-start-btn").style.display = "block"; }
+    if(totalWins >= 10) document.getElementById("playoff-start-btn").style.display = "block";
   }
 
   function startPlayoffGame() {
-    isPlayoffMode = true; document.getElementById("results").style.display = "none";
-    document.getElementById("playoff-start-btn").style.display = "none";
+    isPlayoffMode = true; document.getElementById("results").style.display = "none"; document.getElementById("playoff-start-btn").style.display = "none";
     document.getElementById("playoff-banner").style.setProperty('display', 'block', 'important');
     document.getElementById("playoff-banner").innerText = playoffRound === 1 ? "SEMI-FINAL" : "SUPER BOWL";
     startFGMG();
@@ -260,15 +242,13 @@
   }
 
   function showTrophy() {
-    document.getElementById("kicker-container").style.display = "none";
-    document.getElementById("playoff-banner").style.background = "#fff";
+    document.getElementById("kicker-container").style.display = "none"; document.getElementById("playoff-banner").style.background = "#fff";
     document.getElementById("playoff-banner").innerText = "🏆 CHAMPIONS 🏆";
-    const r = document.getElementById("results");
-    r.innerHTML = `<h1 style="color:#ffb300">SUPER BOWL WINNER</h1><p>GM DEITY STATUS ACHIEVED.</p>`;
+    const r = document.getElementById("results"); r.innerHTML = `<h1 style="color:#ffb300">WORLD CHAMPIONS</h1><p>GM DEITY STATUS ACHIEVED.</p>`;
     r.style.display = "block"; confetti({ particleCount: 200, spread: 70, origin: { y: 0.6 } });
   }
 
-  window.onload = async () => { try { const res = await fetch('rosters.json'); rosterData = await res.json(); } catch(e) {} };
+  window.onload = async () => { const res = await fetch('rosters.json'); rosterData = await res.json(); };
 </script>
 </body>
 </html>
