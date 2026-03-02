@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Football Picker: Dynamic Jersey Pro</title>
+<title>Football Picker: Precision Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -30,22 +30,38 @@
   .std-btn { width: 100%; padding: 15px; margin: 8px 0; font-size: 20px; border-radius: 10px; font-family: 'Bebas Neue'; cursor: pointer; border: none; background: var(--primary); color: #fff; box-shadow: 0 4px 0 #800; }
   .std-btn:disabled { background: #333 !important; opacity: 0.5; pointer-events: none; box-shadow: none; }
 
-  .player-sprite { width: 45px; height: 60px; position: absolute; background-image: url('16-bit pixel art spr.jpg'); background-size: 400% 300%; background-position-y: 100%; image-rendering: pixelated; animation: runAnim 0.4s steps(4) infinite; z-index: 20; mix-blend-mode: screen; }
+  /* 16-BIT SPRITE ENGINE */
+  .player-sprite { 
+    width: 45px !important; 
+    height: 60px !important; 
+    position: absolute; 
+    background-image: url('16-bit pixel art spr.jpg') !important; 
+    background-size: 400% 300% !important; 
+    background-position-y: 100% !important; 
+    image-rendering: pixelated !important; 
+    animation: runAnim 0.4s steps(4) infinite; 
+    z-index: 20; 
+    mix-blend-mode: screen !important;
+  }
   @keyframes runAnim { from { background-position-x: 0%; } to { background-position-x: 133.33%; } }
+  
   .stunned { animation: flashStun 0.1s infinite; filter: grayscale(1) brightness(2) !important; }
   @keyframes flashStun { 0% { opacity: 1; } 100% { opacity: 0.3; } }
+  .defender-16 { background-position-y: 0% !important; filter: drop-shadow(0 0 10px #fff); }
 
   #animation-container, #kicker-container { display: none !important; }
   #tecmo-screen { height: 180px; width: 100%; position: relative; overflow: hidden; background: #2e7d32; border: 3px solid #fff; border-radius: 12px; }
 
-  .goal-field-top { width: 100%; height: 300px; background: #1b5e20; position: relative; border: 3px solid #fff; border-radius: 15px; overflow: hidden; }
-  .top-uprights { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 90px; height: 10px; border-bottom: 5px solid yellow; display: flex; justify-content: space-between; }
-  .post-tip { width: 8px; height: 20px; background: yellow; margin-top: -10px; }
-  #ball-top { width: 18px; height: 22px; background: #8b4513; border-radius: 50%; position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; z-index: 100; cursor: grab; }
-  #traj-line { position: absolute; height: 3px; background: rgba(255,255,255,0.6); transform-origin: left center; display: none; pointer-events: none; z-index: 90; }
+  /* 16-BIT FGMG FIELD */
+  .goal-field-top { width: 100%; height: 320px; background: #1b5e20; background-image: repeating-linear-gradient(0deg, #1b5e20, #1b5e20 40px, #246b28 40px, #246b28 80px); position: relative; border: 4px solid #fff; border-radius: 15px; overflow: hidden; }
+  .top-uprights { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 100px; height: 12px; border-bottom: 6px solid #ffd700; display: flex; justify-content: space-between; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+  .post-tip { width: 10px; height: 25px; background: #ffd700; margin-top: -15px; border-radius: 2px; }
+  #ball-top { width: 20px; height: 24px; background: #8b4513; border-radius: 50%; position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); border: 2px solid #fff; z-index: 100; cursor: grab; }
+  #traj-line { position: absolute; height: 4px; background: rgba(255,255,255,0.7); border: 1px dashed #fff; transform-origin: left center; display: none; pointer-events: none; z-index: 90; border-radius: 2px; }
 
   .roster-slot { background: rgba(0,0,0,0.7); padding: 8px; margin: 5px 0; border-radius: 10px; display: flex; align-items: center; gap: 10px; text-align: left; border-left: 6px solid #333; transition: all 0.4s ease; }
   .avatar-box { width: 35px; height: 35px; background: #222; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 6px; }
+  .player-name { font-weight: bold; font-size: 14px; color: #fff; flex-grow: 1; text-shadow: 1px 1px 2px #000; }
   
   #results { background:#111; border-radius:10px; padding:15px; margin-top:10px; display:none; max-height: 400px; overflow-y: auto; border: 2px solid var(--primary); }
   #results-table { font-family: 'Press Start 2P'; font-size: 7px; width: 100%; border-collapse: collapse; background: #000; }
@@ -55,7 +71,7 @@
 <body>
 
 <div id="main-menu">
-  <h1 style="font-family:'Bebas Neue'; font-size: 45px; color: var(--primary);">FOOTBALL ARCADE</h1>
+  <h1 style="font-family:'Bebas Neue'; font-size: 50px; color: var(--primary);">FOOTBALL ARCADE</h1>
   <input type="text" id="team-name-input" class="menu-input" placeholder="ENTER TEAM NAME" maxlength="12">
   <button class="mode-btn active" id="solo-btn" onclick="setMode('solo')">SOLO CAREER</button>
   <button class="mode-btn" id="vs-btn" onclick="setMode('vs')">VERSUS MODE</button>
@@ -167,7 +183,6 @@
     const sprite = document.getElementById("main-sprite"), screen = document.getElementById("tecmo-screen");
     document.documentElement.style.setProperty('--primary', teamThemes[draftedTeams[0]][0]); gameActive = true;
     
-    // Generate Schedule
     const allT = Object.keys(rosterData);
     for(let i=0; i<17; i++) seasonSchedule.push(allT[Math.floor(Math.random()*allT.length)]);
 
@@ -176,12 +191,8 @@
     let frame = 0; const loop = setInterval(() => {
       const currentWeekIdx = Math.min(16, Math.floor(frame / 24));
       const opp = seasonSchedule[currentWeekIdx];
-      const oppColor = teamThemes[opp][0];
-      
       document.getElementById("sim-scoreboard").innerText = `WEEK ${currentWeekIdx+1} vs ${opp.split(' ').pop().toUpperCase()} | HYPE: +${Math.floor(dodges/6)}`;
-      
-      if(frame % 35 === 0) spawnDefender(oppColor);
-      
+      if(frame % 35 === 0) spawnDefender(teamThemes[opp][0]);
       if(frame++ > 400) { clearInterval(loop); gameActive = false; bonusWins = Math.floor(dodges/6); startFGMG(); }
     }, 40);
   }
@@ -190,7 +201,6 @@
     const d = document.createElement("div"); d.className = "defender-16 player-sprite";
     d.style.top = Math.random()*70 + 15 + "%";
     d.style.filter = `drop-shadow(0 0 10px ${color})`;
-    d.style.backgroundPositionY = "0%"; // Uses Row 1
     document.getElementById("tecmo-screen").appendChild(d);
     let left = 110; const dInt = setInterval(() => { left -= 3.5; d.style.left = left + "%"; 
       if(left < 15 && !d.hit && Math.abs(parseFloat(d.style.top) - playerTop) < 15) { d.hit = true; isStunned = true; dodges = Math.max(0, dodges-2); d.classList.add("stunned"); playNote(80, 0.4); setTimeout(() => { isStunned = false; d.classList.remove("stunned"); }, 1200); }
@@ -202,30 +212,42 @@
   function startFGMG() {
     document.getElementById("animation-container").style.setProperty('display', 'none', 'important');
     document.getElementById("kicker-container").style.setProperty('display', 'block', 'important');
-    const ball = document.getElementById("ball-top"), traj = document.getElementById("traj-line");
+    const ball = document.getElementById("ball-top"), traj = document.getElementById("traj-line"), field = document.getElementById("fg-field");
     let isDragging = false, startX, startY;
     ball.onmousedown = (e) => { isDragging = true; startX = e.clientX; startY = e.clientY; traj.style.display = "block"; };
-    window.onmousemove = (e) => { if(!isDragging) return; const dx = startX - e.clientX, dy = startY - e.clientY, angle = Math.atan2(dy, dx), dist = Math.min(120, Math.sqrt(dx*dx + dy*dy)); traj.style.left = "50%"; traj.style.bottom = "40px"; traj.style.width = dist + "px"; traj.style.transform = `rotate(${angle * 180 / Math.PI}deg)`; };
-    window.onmouseup = (e) => { if(!isDragging) return; isDragging = false; traj.style.display = "none"; launchBall((startX - e.clientX)/8, (startY - e.clientY)/8); };
+    window.onmousemove = (e) => {
+      if(!isDragging) return;
+      const dx = startX - e.clientX, dy = startY - e.clientY;
+      const angle = Math.atan2(-dy, -dx); // Inverted direction for billiard feel
+      const dist = Math.min(120, Math.sqrt(dx*dx + dy*dy));
+      traj.style.left = "50%"; traj.style.bottom = "40px"; traj.style.width = dist + "px";
+      traj.style.transform = `rotate(${angle * 180 / Math.PI}deg)`;
+    };
+    window.onmouseup = (e) => { 
+      if(!isDragging) return; isDragging = false; traj.style.display = "none";
+      launchBall((startX - e.clientX)/8, (startY - e.clientY)/8);
+    };
   }
 
   function launchBall(vx, vy) {
     const ball = document.getElementById("ball-top"); let bx = 0, by = 40;
-    const bLoop = setInterval(() => { bx += vx; by += vy; ball.style.left = `calc(50% + ${bx}px)`; ball.style.bottom = by + "px";
-      if(by > 320 || Math.abs(bx) > 200) { clearInterval(bLoop); const hit = by > 280 && Math.abs(bx) < 45; document.getElementById("kick-msg").innerText = hit ? "IT'S GOOD!" : "MISS!"; bonusWins += hit ? 3 : -1; setTimeout(showFinal, 1500); }
+    const bLoop = setInterval(() => { 
+      bx += vx; by -= vy; // subtract vy because pulling down (positive vy) should move ball up
+      ball.style.left = `calc(50% + ${bx}px)`; ball.style.bottom = by + "px";
+      if(by > 320 || Math.abs(bx) > 200) { clearInterval(bLoop); const hit = by > 280 && Math.abs(bx) < 50; document.getElementById("kick-msg").innerText = hit ? "IT'S GOOD!" : "MISS!"; bonusWins += hit ? 3 : -1; setTimeout(showFinal, 1500); }
     }, 20);
   }
 
   function showFinal() {
     document.getElementById("kicker-container").style.display = "none";
-    const r = document.getElementById("results"), totalWins = Math.max(0, Math.min(17, (Math.floor(Math.random()*6) + 4) + bonusWins));
-    let pf = 0, pa = 0, tableHTML = `<table id="results-table"><thead><tr><th>WK</th><th>OPP</th><th>SCORE</th><th>RES</th></tr></thead><tbody>`;
+    const r = document.getElementById("results"), totalWins = Math.max(0, Math.min(17, (Math.floor(Math.random()*6) + 4) + bonusWins)), allT = Object.keys(rosterData);
+    let table = `<table id="results-table"><thead><tr><th>WK</th><th>OPP</th><th>SCORE</th><th>RES</th></tr></thead><tbody>`;
     for(let i=1; i<=17; i++) {
       const isW = i <= totalWins, opp = seasonSchedule[i-1].split(' ').pop().toUpperCase();
-      const myS = isW ? Math.floor(Math.random()*17)+21 : Math.floor(Math.random()*21), oppS = isW ? Math.floor(Math.random()*myS) : Math.floor(Math.random()*17)+24;
-      pf += myS; pa += oppS; tableHTML += `<tr><td>${i}</td><td>${opp}</td><td>${myS}-${oppS}</td><td>${isW?'W':'L'}</td></tr>`;
+      const s1 = isW ? Math.floor(Math.random()*17)+21 : Math.floor(Math.random()*21), s2 = isW ? Math.floor(Math.random()*s1) : Math.floor(Math.random()*17)+24;
+      table += `<tr><td>${i}</td><td>${opp}</td><td>${s1}-${s2}</td><td>${isW?'W':'L'}</td></tr>`;
     }
-    r.innerHTML = `<h2>FINAL: ${totalWins}-${17-totalWins}</h2>${tableHTML}</tbody></table>`;
+    r.innerHTML = `<h2>FINAL: ${totalWins}-${17-totalWins}</h2>${table}</tbody></table>`;
     r.style.display = "block"; document.getElementById("reset-btn").style.display = "block";
     if(totalWins >= 14) confetti();
   }
