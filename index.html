@@ -152,10 +152,10 @@
   const db = firebase.database();
 
   // ==========================================
-  // 2. GAME STATE & NETWORK VARIABLES
+  // 2. GAME STATE & VARIABLES
   // ==========================================
   let isMultiplayer = false, currentRoomId = null, localPlayerId = null, opponentId = null, globallyDraftedPlayers = [], opponentConnected = false;
-  let rosterData, draftedTeams = [], draftedPlayers = [], roster = {QB:null,RB:null,WR:null,TE:null,Defense:null,Coach:null}, currentTeam;
+  let rosterData = {}, draftedTeams = [], draftedPlayers = [], roster = {QB:null,RB:null,WR:null,TE:null,Defense:null,Coach:null}, currentTeam;
   let audioCtx, gainNode, vol = 0.5, isMuted = false, lockedCount = 0, bonusWins = 0, playerTop = 50, dodges = 0, gameActive = false, isStunned = false, isPlayoffMode = false, playoffRound = 1;
   let seasonSchedule = [], teamHype = 1.0, teamPower = 1.0, baseSimWins = 0, baseSimLosses = 0;
   
@@ -181,6 +181,10 @@
   function initiateGameFlow() { 
     const n = document.getElementById('team-name-input').value; 
     if(!n) return alert("ENTER TEAM NAME"); 
+    
+    // Ensure roster data loaded before allowing play
+    if (Object.keys(rosterData).length === 0) return alert("Roster data is still loading. Please wait a second and try again.");
+    
     document.getElementById('ui-team-name').innerText = n.toUpperCase(); 
     document.getElementById('main-menu').style.display = 'none'; 
     initAudio();
@@ -250,6 +254,7 @@
   // 4. MODIFIED DRAFT LOGIC WITH EMOJIS
   // ==========================================
   function spinTeam() {
+    if (!rosterData || Object.keys(rosterData).length === 0) return alert("Rosters haven't loaded yet!");
     initAudio(); const btn = document.getElementById("start-btn"), emojiDiv = document.getElementById("team-logo-emoji");
     btn.style.display = "none"; emojiDiv.style.display = "block";
     const available = Object.keys(rosterData).filter(t => !draftedTeams.includes(t));
@@ -374,5 +379,15 @@
   function handlePlayoffResult(won) { if(won) { if(playoffRound === 1) { playoffRound = 2; setTimeout(startPlayoffGame, 1500); } else { showTrophy(); } } else { alert("Eliminated!"); location.reload(); } }
   function showTrophy() { document.getElementById("kicker-container").style.display = "none"; document.getElementById("roster-slots").style.display = "none"; document.getElementById("results").style.display = "block"; document.getElementById("results").innerHTML = "<h1>CHAMPIONS</h1>"; confetti(); }
 
-  window.onload = async () => { try { const res = await fetch('rosters.json'); rosterData = await res.json(); } catch(e) {} };
+  // Restored Fetch Logic
+  window.onload = async () => { 
+    try { 
+      const res = await fetch('rosters.json'); 
+      if (!res.ok) throw new Error("File not found");
+      rosterData = await res.json(); 
+    } catch(e) { 
+      console.error("Fetch failed, check your repo structure:", e);
+      alert("Error loading rosters.json. Check the console.");
+    } 
+  };
 </script></body></html>
