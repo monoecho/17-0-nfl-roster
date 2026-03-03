@@ -19,7 +19,7 @@
   .glass-card { background: rgba(0, 0, 0, 0.96); border-radius: 20px; padding: 15px; box-shadow: 0 10px 40px #000; margin-bottom: 15px; border-top: 5px solid var(--primary); position: relative; }
   
   .team-logo-container { height: 120px !important; width: 100% !important; display: flex !important; align-items: center !important; justify-content: center !important; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 15px; position: relative !important; overflow: hidden !important; border: 2px solid rgba(255,255,255,0.1); }
-  #team-logo-img { height: 85px !important; width: auto !important; max-width: 85% !important; display: none; object-fit: contain !important; filter: drop-shadow(0 0 10px #fff); z-index: 10 !important; }
+  #team-logo-emoji { font-size: 65px; display: none; filter: drop-shadow(0 0 15px var(--glow)); z-index: 10; user-select: none; }
   #start-btn { position: absolute !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; width: 80px !important; height: 80px !important; border-radius: 50% !important; border: 4px solid #fff !important; background: radial-gradient(circle, var(--primary) 40%, #800 100%) !important; color: #fff !important; font-family: 'Press Start 2P' !important; font-size: 10px !important; cursor: pointer !important; z-index: 999 !important; box-shadow: 0 0 20px var(--glow) !important; }
 
   .std-btn { width: 100%; padding: 15px; margin: 8px 0; font-size: 20px; border-radius: 10px; font-family: 'Bebas Neue'; cursor: pointer; border: none; background: var(--primary); color: #fff; box-shadow: 0 4px 0 #800; }
@@ -31,7 +31,7 @@
   .avatar-box { width: 25px; height: 25px; background: #222; display: flex; align-items: center; justify-content: center; font-size: 14px; border-radius: 4px; }
   .opp-slot { opacity: 0.7; filter: grayscale(0.5); }
 
-  .player-sprite { width: 45px; height: 60px; position: absolute; background-image: url('16-bit pixel art spr.jpg'); background-size: 400% 300%; background-position-y: 100%; image-rendering: pixelated; animation: runAnim 0.4s steps(4) infinite; z-index: 20; mix-blend-mode: screen; border: 1px dashed rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .player-sprite { width: 45px; height: 60px; position: absolute; background-image: url('16-bit pixel art spr.jpg'); background-size: 400% 300%; background-position-y: 100%; image-rendering: pixelated; animation: runAnim 0.4s steps(4) infinite; z-index: 20; mix-blend-mode: screen; display: flex; align-items: center; justify-content: center; font-size: 24px; }
   #main-sprite { left: 10%; top: 50%; transform: translateY(-50%); }
   @keyframes runAnim { from { background-position-x: 0%; } to { background-position-x: 133.33%; } }
   .stunned { animation: flashStun 0.1s infinite; filter: grayscale(1) brightness(2) !important; }
@@ -39,6 +39,7 @@
 
   #animation-container, #kicker-container, #playoff-banner { display: none !important; }
   #tecmo-screen { height: 180px; width: 100%; position: relative; overflow: hidden; background: #2e7d32; border: 3px solid #fff; border-radius: 12px; }
+  #sim-scoreboard { font-family: 'Press Start 2P'; font-size: 14px; color: #0f0; margin-bottom: 5px; }
 
   .goal-field-top { width: 100%; height: 320px; background: #1b5e20; background-image: repeating-linear-gradient(0deg, #1b5e20, #1b5e20 40px, #246b28 40px, #246b28 80px); position: relative; border: 4px solid #fff; border-radius: 15px; overflow: hidden; }
   .endzone { position: absolute; top: 0; left: 0; width: 100%; height: 60px; background: #003366; border-bottom: 4px solid #fff; z-index: 5; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue'; font-size: 30px; color: rgba(255,255,255,0.3); letter-spacing: 5px; }
@@ -52,7 +53,14 @@
   #results-table td { padding: 8px; border-bottom: 1px solid #333; }
   #playoff-banner { background: #ffb300; color: #000; font-family: 'Press Start 2P'; font-size: 14px; padding: 15px; border-radius: 10px; margin-bottom: 10px; text-align: center; border: 4px solid #fff; }
   #room-code-display { font-family: 'Press Start 2P'; font-size: 12px; color: #ffb300; margin-bottom: 10px; text-align: center; }
+
+  #roast-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; flex-direction:column; justify-content:center; align-items:center; padding:20px; box-sizing:border-box; text-align:center; }
 </style></head><body>
+
+<div id="roast-modal">
+  <h2 style="font-family:'Bebas Neue'; font-size:45px; color:var(--primary); margin-bottom: 10px;">DRAFT ANALYSIS</h2>
+  <p id="roast-text" style="font-family:'Press Start 2P'; font-size:12px; line-height:1.6; color:#fff; max-width: 300px;"></p>
+</div>
 
 <div id="main-menu">
   <h1 style="font-family:'Bebas Neue'; font-size: 45px; color: var(--primary);">FOOTBALL ARCADE</h1>
@@ -81,7 +89,7 @@
   <div class="glass-card" id="draft-board-container">
     <h1 id="ui-team-name">NAME</h1>
     <div class="team-logo-container">
-      <img id="team-logo-img" src="">
+      <div id="team-logo-emoji">🏈</div>
       <button id="start-btn" onclick="spinTeam()">SPIN</button>
     </div>
     <div id="selection-controls">
@@ -112,12 +120,16 @@
         <div id="opp-Coach" class="roster-slot opp-slot"><div class="avatar-box">📋</div><div class="player-name">---</div></div>
       </div>
     </div>
-    <button id="sim-btn" class="std-btn" onclick="triggerSMG()" style="margin-top: 15px; background: #28a745; display:none;">START SEASON SIM</button>
+    <button id="sim-btn" class="std-btn" onclick="runRoastAndSim()" style="margin-top: 15px; background: #28a745; display:none;">START SEASON SIM</button>
   </div>
   
   <button id="playoff-start-btn" class="std-btn" onclick="startPlayoffGame()" style="margin-top: 15px; background: #ffb300; color:#000; display:none;">START PLAYOFF GAME</button>
   <div id="kicker-container"><div id="kick-msg" style="color:#0f0; font-family:'Press Start 2P'; font-size:10px; height:15px; margin-bottom:8px; text-align: center;">...</div><div class="goal-field-top" id="fg-field"><div class="endzone">TOUCHDOWN</div><div class="top-uprights" id="uprights-ui"><div class="post-tip"></div><div class="post-tip"></div></div><div id="traj-line"></div><div id="ball-top"></div></div></div>
-  <div id="animation-container"><div id="sim-scoreboard" style="font-family:'Press Start 2P'; font-size:8px; color:#0f0; margin-bottom:10px;">WEEK 1 vs ???</div><div id="tecmo-screen"><div id="main-sprite" class="player-sprite">🏈</div></div></div>
+  <div id="animation-container">
+    <div id="sim-scoreboard">WEEK 1 vs ???</div>
+    <div id="live-record" style="font-family:'Press Start 2P'; font-size:10px; color:#fff; margin-bottom:12px;">RECORD: 0-0</div>
+    <div id="tecmo-screen"><div id="main-sprite" class="player-sprite">🏈</div></div>
+  </div>
   <div id="results"></div>
   <button id="reset-btn" class="std-btn" onclick="location.reload()" style="display:none; background:#444;">NEW DRAFT</button>
 </div>
@@ -142,19 +154,18 @@
   // ==========================================
   // 2. GAME STATE & NETWORK VARIABLES
   // ==========================================
-  let isMultiplayer = false;
-  let currentRoomId = null;
-  let localPlayerId = null; 
-  let opponentId = null;
-  let globallyDraftedPlayers = []; 
-  let opponentConnected = false;
-
+  let isMultiplayer = false, currentRoomId = null, localPlayerId = null, opponentId = null, globallyDraftedPlayers = [], opponentConnected = false;
   let rosterData, draftedTeams = [], draftedPlayers = [], roster = {QB:null,RB:null,WR:null,TE:null,Defense:null,Coach:null}, currentTeam;
-  let audioCtx, gainNode, vol = 0.5, isMuted = false, lockedCount = 0, bonusWins = 0, playerTop = 50, dodges = 0, gameActive = false, isStunned = false, isPlayoffMode = false, playoffRound = 1, regularSeasonWins = 0;
-  let seasonSchedule = [], teamHype = 1.0, teamPower = 1.0;
+  let audioCtx, gainNode, vol = 0.5, isMuted = false, lockedCount = 0, bonusWins = 0, playerTop = 50, dodges = 0, gameActive = false, isStunned = false, isPlayoffMode = false, playoffRound = 1;
+  let seasonSchedule = [], teamHype = 1.0, teamPower = 1.0, baseSimWins = 0, baseSimLosses = 0;
   
-  const logoMap = {"Arizona Cardinals":"ari","Atlanta Falcons":"atl","Baltimore Ravens":"bal","Buffalo Bills":"buf","Carolina Panthers":"car","Chicago Bears":"chi","Cincinnati Bengals":"cin","Cleveland Browns":"cle","Dallas Cowboys":"dal","Denver Broncos":"den","Detroit Lions":"det","Green Bay Packers":"gb","Houston Texans":"hou","Indianapolis Colts":"ind","Jacksonville Jaguars":"jax","Kansas City Chiefs":"kc","Las Vegas Raiders":"lv","Los Angeles Chargers":"lac","Los Angeles Rams":"lar","Miami Dolphins":"mia","Minnesota Vikings":"min","New England Patriots":"ne","New Orleans Saints":"no","New York Giants":"nyg","New York Jets":"nyj","Philadelphia Eagles":"phi","Pittsburgh Steelers":"pit","San Francisco 49ers":"sf","Seattle Seahawks":"sea","Tampa Bay Buccaneers":"tb","Tennessee Titans":"ten","Washington Commanders":"wsh"};
-  const teamThemes = { "Arizona Cardinals":["#97233f","#000000"],"Atlanta Falcons":["#a71930","#000000"],"Baltimore Ravens":["#241773","#000000"],"Buffalo Bills":["#00338d","#c60c30"],"Carolina Panthers":["#0085ca","#000000"],"Chicago Bears":["#0b162a","#c83803"],"Cincinnati Bengals":["#fb4f14","#000000"],"Cleveland Browns":["#311d00","#ff3c00"],"Dallas Cowboys":["#002244","#869397"],"Denver Broncos":["#fb4f14","#002244"],"Detroit Lions":["#0076b6","#b0b7bc"],"Green Bay Packers":["#203731","#ffb612"],"Houston Texans":["#03202f","#a71930"],"Indianapolis Colts":["#002c5f","#a5acaf"],"Jacksonville Jaguars":["#006778","#9f792c"],"Kansas City Chiefs":["#e31837","#ffb612"],"Las Vegas Raiders":["#a5acaf","#000000"],"Los Angeles Chargers":["#0073cf","#ffb612"],"Los Angeles Rams":["#002244","#b3995d"],"Miami Dolphins":["#008e97","#f26a24"],"Minnesota Vikings":["#4f2683","#ffc62f"],"New England Patriots":["#002244","#c60c30"],"New Orleans Saints":["#d3bc8d","#000000"],"New York Giants":["#0b2265","#a71930"],"New York Jets":["#003f2d","#ffffff"],"Philadelphia Eagles":["#004c54","#a5acaf"],"Pittsburgh Steelers":["#000000","#ffb612"],"San Francisco 49ers":["#aa0000","#b3995d"],"Seattle Seahawks":["#002244","#69be28"],"Tampa Bay Buccaneers":["#d50a0a","#000000"],"Tennessee Titans":["#4b92db","#0c2340"],"Washington Commanders":["#5a1414","#ffb612"] };
+  const emojiMap = {
+    "Arizona Aviators":"🛩️", "Atlanta Raptors":"🦅", "Baltimore Crows":"🐦‍⬛", "Buffalo Stampede":"🦬", "Carolina Cougars":"🐆", "Chicago Grizzlies":"🐻", "Cincinnati Tigers":"🐅", "Cleveland Bulldogs":"🐶", "Dallas Deputies":"🤠", "Denver Stallions":"🐴", "Detroit Prowlers":"🦁", "Green Bay Grinders":"🧀", "Houston Outlaws":"🤠", "Indianapolis Cavalry":"🐎", "Jacksonville Wildcats":"🐆", "Kansas City Kings":"👑", "Las Vegas Bandits":"🦹", "LA Currents":"⚡", "LA Horns":"🐏", "Miami Sharks":"🦈", "Minnesota Norsemen":"🛡️", "New England Minutemen":"🇺🇸", "New Orleans Archangels":"⚜️", "NY Pilots":"✈️", "NY Titans":"🗽", "Philadelphia Hawks":"🦅", "Pittsburgh Ironmen":"🏗️", "SF Gold Rush":"⛏️", "Seattle Ospreys":"🦅", "Tampa Bay Corsairs":"🏴‍☠️", "Tennessee Spartans":"⚔️", "Washington Sentinels":"🏛️"
+  };
+  
+  const teamThemes = { 
+    "Arizona Aviators":["#97233f","#000000"], "Atlanta Raptors":["#a71930","#000000"], "Baltimore Crows":["#241773","#000000"], "Buffalo Stampede":["#00338d","#c60c30"], "Carolina Cougars":["#0085ca","#000000"], "Chicago Grizzlies":["#0b162a","#c83803"], "Cincinnati Tigers":["#fb4f14","#000000"], "Cleveland Bulldogs":["#311d00","#ff3c00"], "Dallas Deputies":["#002244","#869397"], "Denver Stallions":["#fb4f14","#002244"], "Detroit Prowlers":["#0076b6","#b0b7bc"], "Green Bay Grinders":["#203731","#ffb612"], "Houston Outlaws":["#03202f","#a71930"], "Indianapolis Cavalry":["#002c5f","#a5acaf"], "Jacksonville Wildcats":["#006778","#9f792c"], "Kansas City Kings":["#e31837","#ffb612"], "Las Vegas Bandits":["#a5acaf","#000000"], "LA Currents":["#0073cf","#ffb612"], "LA Horns":["#002244","#b3995d"], "Miami Sharks":["#008e97","#f26a24"], "Minnesota Norsemen":["#4f2683","#ffc62f"], "New England Minutemen":["#002244","#c60c30"], "New Orleans Archangels":["#d3bc8d","#000000"], "NY Pilots":["#003f2d","#ffffff"], "NY Titans":["#0b2265","#a71930"], "Philadelphia Hawks":["#004c54","#a5acaf"], "Pittsburgh Ironmen":["#000000","#ffb612"], "SF Gold Rush":["#aa0000","#b3995d"], "Seattle Ospreys":["#002244","#69be28"], "Tampa Bay Corsairs":["#d50a0a","#000000"], "Tennessee Spartans":["#4b92db","#0c2340"], "Washington Sentinels":["#5a1414","#ffb612"] 
+  };
 
   function initAudio() { if(!audioCtx) { audioCtx = new AudioContext(); gainNode = audioCtx.createGain(); gainNode.connect(audioCtx.destination); updateVolume(); } }
   function toggleMute() { isMuted = !isMuted; document.getElementById("mute-toggle").innerText = isMuted ? "🔇" : "🔊"; if(gainNode) gainNode.gain.value = isMuted ? 0 : vol * 0.1; }
@@ -187,86 +198,44 @@
   // ==========================================
   function createRoom() {
     currentRoomId = Math.random().toString(36).substring(2, 6).toUpperCase();
-    localPlayerId = 'player1';
-    opponentId = 'player2';
-    
+    localPlayerId = 'player1'; opponentId = 'player2';
     const roomRef = db.ref('rooms/' + currentRoomId);
     roomRef.onDisconnect().remove();
-
-    roomRef.set({
-      player1: { name: document.getElementById('team-name-input').value, roster: {QB:"",RB:"",WR:"",TE:"",Defense:"",Coach:""} }
-    });
-
-    transitionToDraftBoard("ROOM CODE: " + currentRoomId);
-    listenToRoom();
+    roomRef.set({ player1: { name: document.getElementById('team-name-input').value, roster: {QB:"",RB:"",WR:"",TE:"",Defense:"",Coach:""} } });
+    transitionToDraftBoard("ROOM CODE: " + currentRoomId); listenToRoom();
   }
 
   function joinRoom() {
     const code = document.getElementById('room-code-input').value.toUpperCase();
     if(!code) return alert("ENTER A ROOM CODE");
-    
     const roomRef = db.ref('rooms/' + code);
-
     roomRef.once('value', (snapshot) => {
       if(snapshot.exists() && !snapshot.val().player2) {
-        currentRoomId = code;
-        localPlayerId = 'player2';
-        opponentId = 'player1';
-        
+        currentRoomId = code; localPlayerId = 'player2'; opponentId = 'player1';
         const p2Ref = db.ref('rooms/' + currentRoomId + '/player2');
         p2Ref.onDisconnect().remove();
-        
-        roomRef.update({
-          player2: { name: document.getElementById('team-name-input').value, roster: {QB:"",RB:"",WR:"",TE:"",Defense:"",Coach:""} }
-        });
-        
-        transitionToDraftBoard("CONNECTED TO: " + currentRoomId);
-        listenToRoom();
-      } else {
-        alert("ROOM FULL OR NOT FOUND");
-      }
+        roomRef.update({ player2: { name: document.getElementById('team-name-input').value, roster: {QB:"",RB:"",WR:"",TE:"",Defense:"",Coach:""} } });
+        transitionToDraftBoard("CONNECTED TO: " + currentRoomId); listenToRoom();
+      } else { alert("ROOM FULL OR NOT FOUND"); }
     });
   }
 
-  function transitionToDraftBoard(msg) {
-    document.getElementById('lobby-menu').style.display = 'none';
-    document.getElementById('game-ui').style.display = 'block';
-    document.getElementById('room-code-display').innerText = msg;
-  }
+  function transitionToDraftBoard(msg) { document.getElementById('lobby-menu').style.display = 'none'; document.getElementById('game-ui').style.display = 'block'; document.getElementById('room-code-display').innerText = msg; }
 
   function listenToRoom() {
     db.ref('rooms/' + currentRoomId).on('value', (snapshot) => {
       const data = snapshot.val();
-      
-      if (!data && opponentConnected) {
-        alert("ROOM CLOSED: Host disconnected. Returning to Main Menu.");
-        location.reload();
-        return;
-      }
+      if (!data && opponentConnected) { alert("ROOM CLOSED: Host disconnected. Returning to Main Menu."); location.reload(); return; }
       if (!data) return;
-
-      if (data[opponentId]) {
-        opponentConnected = true;
-      }
-
-      if (opponentConnected && !data[opponentId]) {
-        alert("OPPONENT DISCONNECTED: Match voided. Returning to Main Menu.");
-        location.reload();
-        return;
-      }
+      if (data[opponentId]) opponentConnected = true;
+      if (opponentConnected && !data[opponentId]) { alert("OPPONENT DISCONNECTED: Match voided. Returning to Main Menu."); location.reload(); return; }
 
       globallyDraftedPlayers = [];
-
-      if(data.player1 && data.player1.roster) {
-        Object.values(data.player1.roster).forEach(p => { if(p) globallyDraftedPlayers.push(p); });
-      }
-      if(data.player2 && data.player2.roster) {
-        Object.values(data.player2.roster).forEach(p => { if(p) globallyDraftedPlayers.push(p); });
-      }
+      if(data.player1 && data.player1.roster) Object.values(data.player1.roster).forEach(p => { if(p) globallyDraftedPlayers.push(p); });
+      if(data.player2 && data.player2.roster) Object.values(data.player2.roster).forEach(p => { if(p) globallyDraftedPlayers.push(p); });
 
       if(data[opponentId] && data[opponentId].roster) {
-        const oppRoster = data[opponentId].roster;
-        for (const [pos, player] of Object.entries(oppRoster)) {
+        for (const [pos, player] of Object.entries(data[opponentId].roster)) {
           if(player) {
             document.getElementById(`opp-${pos}`).querySelector(".player-name").innerText = player;
             document.getElementById(`opp-${pos}`).style.background = "#28a745"; 
@@ -278,14 +247,15 @@
   }
 
   // ==========================================
-  // 4. MODIFIED DRAFT LOGIC
+  // 4. MODIFIED DRAFT LOGIC WITH EMOJIS
   // ==========================================
   function spinTeam() {
-    initAudio(); const btn = document.getElementById("start-btn"), img = document.getElementById("team-logo-img");
-    btn.style.display = "none"; img.style.display = "block";
+    initAudio(); const btn = document.getElementById("start-btn"), emojiDiv = document.getElementById("team-logo-emoji");
+    btn.style.display = "none"; emojiDiv.style.display = "block";
     const available = Object.keys(rosterData).filter(t => !draftedTeams.includes(t));
     let count = 0; function perform() {
-      const name = available[Math.floor(Math.random()*available.length)]; img.src = `https://a.espncdn.com/i/teamlogos/nfl/500/${logoMap[name]}.png`;
+      const name = available[Math.floor(Math.random()*available.length)];
+      emojiDiv.innerText = emojiMap[name] || "🏈";
       playNote(150 + count*20, 0.05); if(count++ < 12) setTimeout(perform, 80); else { currentTeam = name; loadRoster(); }
     } perform();
   }
@@ -296,11 +266,8 @@
     const pos = document.getElementById("position-select").value, sel = document.getElementById("player-select");
     sel.innerHTML = "";
     let list = (pos==="Defense") ? [`${currentTeam} D/ST`] : (pos==="Coach") ? [rosterData[currentTeam]["Coach"]] : rosterData[currentTeam][pos];
-    
     list.forEach(p => { 
-      if(!draftedPlayers.includes(p) && !globallyDraftedPlayers.includes(p)) { 
-        let o = document.createElement("option"); o.innerText=p; o.value=p; sel.appendChild(o); 
-      } 
+      if(!draftedPlayers.includes(p) && !globallyDraftedPlayers.includes(p)) { let o = document.createElement("option"); o.innerText=p; o.value=p; sel.appendChild(o); } 
     });
   }
 
@@ -315,20 +282,44 @@
     const slot = document.getElementById(`roster-${pos}`); slot.querySelector(".player-name").innerText = p;
     slot.style.background = teamThemes[currentTeam][0]; slot.style.borderLeft = `8px solid ${teamThemes[currentTeam][1]}`;
     
-    if(isMultiplayer) {
-      db.ref(`rooms/${currentRoomId}/${localPlayerId}/roster`).update({ [pos]: p });
-    }
+    if(isMultiplayer) db.ref(`rooms/${currentRoomId}/${localPlayerId}/roster`).update({ [pos]: p });
 
     posSelect.querySelector(`option[value="${pos}"]`).disabled = true;
     const nextOpt = Array.from(posSelect.options).find(opt => !opt.disabled);
     if(nextOpt) posSelect.value = nextOpt.value;
 
     if(lockedCount >= 6) { document.getElementById("draft-board-container").style.display = "none"; document.getElementById("sim-btn").style.display = "block"; } 
-    else { document.getElementById("start-btn").style.display = "block"; document.getElementById("team-logo-img").style.display = "none"; ["position-select","player-select","draft-btn"].forEach(id => document.getElementById(id).disabled=true); }
+    else { document.getElementById("start-btn").style.display = "block"; document.getElementById("team-logo-emoji").style.display = "none"; ["position-select","player-select","draft-btn"].forEach(id => document.getElementById(id).disabled=true); }
   }
 
   function calculateModifiers() { const getScore = (name) => name ? Array.from(name).reduce((sum, char) => sum + char.charCodeAt(0), 0) % 15 : 5; teamHype = 1.0 + ((getScore(roster.RB) + getScore(roster.WR) + getScore(roster.Coach)) / 100); teamPower = 1.0 + ((getScore(roster.QB) + getScore(roster.TE) + getScore(roster.Defense)) / 100); }
-  function triggerSMG() { document.getElementById("sim-btn").style.display="none"; document.getElementById("animation-container").style.setProperty('display', 'block', 'important'); const sprite = document.getElementById("main-sprite"), screen = document.getElementById("tecmo-screen"); document.documentElement.style.setProperty('--primary', teamThemes[draftedTeams[0]][0]); gameActive = true; calculateModifiers(); const allT = Object.keys(rosterData); for(let i=0; i<17; i++) seasonSchedule.push(allT[Math.floor(Math.random()*allT.length)]); screen.onmousemove = (e) => { if(!gameActive || isStunned) return; const rect = screen.getBoundingClientRect(); playerTop = Math.max(10, Math.min(90, ((e.clientY - rect.top) / rect.height) * 100)); sprite.style.top = playerTop + "%"; }; let frame = 0; const loop = setInterval(() => { const idx = Math.min(16, Math.floor(frame / 24)); document.getElementById("sim-scoreboard").innerText = `WK ${idx+1} vs ${seasonSchedule[idx].split(' ').pop().toUpperCase()} | HYPE: ${teamHype.toFixed(2)}x`; if(frame % Math.floor(35 / teamHype) === 0) spawnDefender(teamThemes[seasonSchedule[idx]][0]); if(frame++ > 400) { clearInterval(loop); gameActive = false; bonusWins = Math.floor(dodges/6); startFGMG(); } }, 40); }
+  
+  function runRoastAndSim() {
+    document.getElementById("sim-btn").style.display = "none";
+    calculateModifiers();
+    const totalScore = teamHype + teamPower;
+    const modal = document.getElementById("roast-modal");
+    const text = document.getElementById("roast-text");
+    
+    modal.style.display = "flex";
+    if (totalScore > 2.1) {
+        text.innerText = "PRAISE: Absolute powerhouse. Your draft is flawless. The league is terrified.";
+        text.style.color = "#0f0";
+    } else if (totalScore < 1.9) {
+        text.innerText = "ROAST: This roster is a disaster. Did you draft blindfolded? Expect a brutal season.";
+        text.style.color = "#f00";
+    } else {
+        text.innerText = "ANALYSIS: Completely aggressively average. You might sneak into the wildcard if you're lucky.";
+        text.style.color = "#ffb300";
+    }
+
+    setTimeout(() => {
+        modal.style.display = "none";
+        triggerSMG();
+    }, 3500);
+  }
+
+  function triggerSMG() { document.getElementById("animation-container").style.setProperty('display', 'block', 'important'); const sprite = document.getElementById("main-sprite"), screen = document.getElementById("tecmo-screen"); document.documentElement.style.setProperty('--primary', teamThemes[draftedTeams[0]][0]); gameActive = true; baseSimWins = 0; baseSimLosses = 0; const allT = Object.keys(rosterData); for(let i=0; i<17; i++) seasonSchedule.push(allT[Math.floor(Math.random()*allT.length)]); screen.onmousemove = (e) => { if(!gameActive || isStunned) return; const rect = screen.getBoundingClientRect(); playerTop = Math.max(10, Math.min(90, ((e.clientY - rect.top) / rect.height) * 100)); sprite.style.top = playerTop + "%"; }; let frame = 0; const loop = setInterval(() => { const idx = Math.min(16, Math.floor(frame / 24)); document.getElementById("sim-scoreboard").innerText = `WK ${idx+1} vs ${seasonSchedule[idx]}`; if (frame > 0 && frame % 24 === 0 && idx <= 16) { if (Math.random() > 0.45) baseSimWins++; else baseSimLosses++; document.getElementById("live-record").innerText = `RECORD: ${baseSimWins}-${baseSimLosses}`; } if(frame % Math.floor(35 / teamHype) === 0) spawnDefender(teamThemes[seasonSchedule[idx]][0]); if(frame++ > 400) { clearInterval(loop); gameActive = false; bonusWins = Math.floor(dodges/6); startFGMG(); } }, 40); }
   function spawnDefender(color) { const d = document.createElement("div"); d.className = "defender-16 player-sprite"; d.innerText = "🛡️"; d.style.top = Math.random()*70 + 15 + "%"; d.style.filter = `drop-shadow(0 0 10px ${color})`; document.getElementById("tecmo-screen").appendChild(d); let left = 110; const p = document.getElementById("main-sprite"); const dInt = setInterval(() => { left -= (3.5 * teamHype); d.style.left = left + "%"; if(left < 80 && !d.hit && p) { const pRect = p.getBoundingClientRect(); const dRect = d.getBoundingClientRect(); if (pRect.width > 0 && dRect.width > 0) { const padX = 15; const padY = 20; const isHit = !(pRect.right - padX < dRect.left + padX || pRect.left + padX > dRect.right - padX || pRect.bottom - padY < dRect.top + padY || pRect.top + padY > dRect.bottom - padY); if(isHit) { d.hit = true; isStunned = true; dodges = Math.max(0, dodges-2); playNote(80, 0.4); p.classList.add("stunned"); setTimeout(() => { isStunned = false; p.classList.remove("stunned"); }, 1200); } else if (left < 5 && !d.hit) { d.hit = true; dodges++; } } } if(left < -20) { clearInterval(dInt); d.remove(); } }, 30); }
   function startFGMG() { document.getElementById("animation-container").style.setProperty('display', 'none', 'important'); document.getElementById("kicker-container").style.setProperty('display', 'block', 'important'); const ball = document.getElementById("ball-top"); const traj = document.getElementById("traj-line"); let isDragging = false, startX, startY; ball.style.left = "50%"; ball.style.bottom = "52px"; ball.style.transform = "translateX(-50%) scale(1)"; document.getElementById("kick-msg").innerText = `CLICK BALL, PULL BACK & RELEASE! PWR MULT: ${teamPower.toFixed(2)}x`; document.getElementById("kick-msg").style.color = "#0f0"; ball.style.pointerEvents = 'auto'; ball.onmousedown = (e) => { isDragging = true; startX = e.clientX; startY = e.clientY; traj.style.display = "block"; }; window.onmousemove = (e) => { if(!isDragging) return; const dx = startX - e.clientX, dy = startY - e.clientY; const angle = Math.atan2(-dy, -dx); const dist = Math.min(120, Math.sqrt(dx*dx + dy*dy)); traj.style.left = "50%"; traj.style.bottom = "64px"; traj.style.width = dist + "px"; traj.style.transform = `rotate(${angle * 180 / Math.PI}deg)`; }; window.onmouseup = (e) => { if(!isDragging) return; isDragging = false; traj.style.display = "none"; ball.style.pointerEvents = 'none'; launchBall((startX - e.clientX)/8, (startY - e.clientY)/8); }; }
   function launchBall(vx, vy) { const ball = document.getElementById("ball-top"); let bx = 0, by = 52, scale = 1; const modifiedVx = vx * teamPower, modifiedVy = vy * teamPower; const bLoop = setInterval(() => { bx += modifiedVx; by -= modifiedVy; scale -= 0.012; ball.style.left = `calc(50% + ${bx}px)`; ball.style.bottom = by + "px"; ball.style.transform = `translateX(-50%) scale(${Math.max(0.3, scale)})`; if(by >= 280 || Math.abs(bx) > 200) { clearInterval(bLoop); const hit = by >= 280 && Math.abs(bx) < 45; document.getElementById("kick-msg").innerText = hit ? "IT'S GOOD!" : "NO GOOD!"; document.getElementById("kick-msg").style.color = hit ? "#0f0" : "#f00"; setTimeout(() => { if(isPlayoffMode) handlePlayoffResult(hit); else { bonusWins += hit ? 3 : -1; showFinal(); } }, 1200); } }, 20); }
@@ -337,8 +328,7 @@
     document.getElementById("kicker-container").style.display = "none";
     document.getElementById("roster-slots").style.display = "none";
     
-    const totalWins = Math.max(0, Math.min(17, (Math.floor(Math.random()*6) + 4) + bonusWins));
-    regularSeasonWins = totalWins;
+    const totalWins = Math.max(0, Math.min(17, baseSimWins + bonusWins));
     const r = document.getElementById("results");
 
     if (isMultiplayer) {
@@ -369,7 +359,7 @@
       const allT = Object.keys(rosterData);
       let table = `<table id="results-table"><thead><tr><th>WK</th><th>OPP</th><th>SCORE</th><th>RES</th></tr></thead><tbody>`;
       for(let i=1; i<=17; i++) {
-        const isW = i <= totalWins, opp = seasonSchedule[i-1].split(' ').pop().toUpperCase();
+        const isW = i <= totalWins, opp = seasonSchedule[i-1];
         const s1 = isW ? Math.floor(Math.random()*17)+21 : Math.floor(Math.random()*21), s2 = isW ? Math.floor(Math.random()*s1) : Math.floor(Math.random()*17)+24;
         table += `<tr><td>${i}</td><td>${opp}</td><td>${s1}-${s2}</td><td>${isW?'W':'L'}</td></tr>`;
       }
