@@ -170,4 +170,57 @@
   "NY Titans": {
     "QB": ["D. Jones", "T. Taylor"],
     "RB": ["S. Barkley", "M. Breida"],
-    "WR": ["D. Slayton
+    "WR": ["D. Slayton", "W. Robinson"],
+    "TE": ["D. Waller"],
+    "Coach": "B. Daboll"
+  },
+  "Philadelphia Hawks": {
+    "QB": ["J. Hurts", "M. Mariota"],
+    "RB": ["D. Swift", "K. Gainwell"],
+    "WR": ["A. Brown", "D. Smith"],
+    "TE": ["D. Goedert"],
+    "Coach": "N. Sirianni"
+  },
+  "Pittsburgh Ironmen": {
+    "QB": ["K. Pickett", "M. Rudolph"],
+    "RB": ["N. Harris", "J. Warren"],
+    "WR": ["G. Pickens", "D. Johnson"],
+    "TE": ["P. Freiermuth"],
+    "Coach": "M. Tomlin"
+  },
+  "SF Gold Rush": {
+    "QB": ["B. Purdy", "S. Darnold"],
+    "RB": ["C. McCaffrey", "E. Mitchell"],
+    "WR": ["D. Samuel", "B. Aiyuk"],
+    "TE": ["G. Kittle"],
+    "Coach": "K. Shanahan"
+  },
+  "Seattle Ospreys": {
+    "QB": ["G. Smith", "D. Lock"],
+    "RB": ["K. Walker", "Z. Charbonnet"],
+    "WR": ["D. Metcalf", "T. Lockett"],
+    "TE": ["N. Fant"],
+    "Coach": "M. Macdonald"
+  },
+  "Tampa Bay Corsairs": {
+    "QB": ["B. Mayfield", "K. Trask"],
+    "RB": ["R. White", "C. Edmonds"],
+    "WR": ["M. Evans", "C. Godwin"],
+    "TE": ["C. Otton"],
+    "Coach": "T. Bowles"
+  },
+  "Tennessee Spartans": {
+    "QB": ["W. Levis", "R. Tannehill"],
+    "RB": ["D. Henry", "T. Spears"],
+    "WR": ["D. Hopkins", "T. Burks"],
+    "TE": ["C. Okonkwo"],
+    "Coach": "B. Callahan"
+  },
+  "Washington Sentinels": {
+    "QB": ["S. Howell", "J. Brissett"],
+    "RB": ["B. Robinson", "A. Gibson"],
+    "WR": ["T. McLaurin", "J. Dotson"],
+    "TE": ["L. Thomas"],
+    "Coach": "D. Quinn"
+  }
+}
