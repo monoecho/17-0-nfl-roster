@@ -43,7 +43,10 @@
 
   #animation-container, #kicker-container, #playoff-banner { display: none !important; }
   #tecmo-screen { height: 180px; width: 100%; position: relative; overflow: hidden; background: #2e7d32; border: 3px solid #fff; border-radius: 12px; }
-  #sim-scoreboard { font-family: 'Press Start 2P'; font-size: 14px; color: #0f0; margin-bottom: 5px; }
+  
+  /* Hard-locked heights to prevent Jittering */
+  #sim-scoreboard { font-family: 'Press Start 2P'; font-size: 14px; color: #0f0; margin-bottom: 5px; height: 16px; line-height: 16px; display: block; overflow: hidden; white-space: nowrap; }
+  #live-record { font-family: 'Press Start 2P'; font-size: 10px; color: #fff; margin-bottom: 12px; height: 12px; line-height: 12px; display: block; overflow: hidden; white-space: nowrap; }
 
   .goal-field-top { width: 100%; height: 320px; background: #1b5e20; background-image: repeating-linear-gradient(0deg, #1b5e20, #1b5e20 40px, #246b28 40px, #246b28 80px); position: relative; border: 4px solid #fff; border-radius: 15px; overflow: hidden; }
   .endzone { position: absolute; top: 0; left: 0; width: 100%; height: 60px; background: #003366; border-bottom: 4px solid #fff; z-index: 5; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue'; font-size: 30px; color: rgba(255,255,255,0.3); letter-spacing: 5px; }
@@ -57,14 +60,7 @@
   #results-table td { padding: 8px; border-bottom: 1px solid #333; }
   #playoff-banner { background: #ffb300; color: #000; font-family: 'Press Start 2P'; font-size: 14px; padding: 15px; border-radius: 10px; margin-bottom: 10px; text-align: center; border: 4px solid #fff; }
   #room-code-display { font-family: 'Press Start 2P'; font-size: 12px; color: #ffb300; margin-bottom: 10px; text-align: center; }
-
-  #roast-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; flex-direction:column; justify-content:center; align-items:center; padding:20px; box-sizing:border-box; text-align:center; }
 </style></head><body>
-
-<div id="roast-modal">
-  <h2 style="font-family:'Bebas Neue'; font-size:45px; color:var(--primary); margin-bottom: 10px;">DRAFT ANALYSIS</h2>
-  <p id="roast-text" style="font-family:'Press Start 2P'; font-size:12px; line-height:1.6; color:#fff; max-width: 300px;"></p>
-</div>
 
 <div id="main-menu">
   <h1 style="font-family:'Bebas Neue'; font-size: 45px; color: var(--primary);">FOOTBALL ARCADE</h1>
@@ -125,14 +121,14 @@
         <div id="opp-Coach" class="roster-slot opp-slot"><div class="avatar-box">📋</div><div class="player-name">---</div></div>
       </div>
     </div>
-    <button id="sim-btn" class="std-btn" onclick="runRoastAndSim()" style="margin-top: 15px; background: #28a745; display:none;">START SEASON SIM</button>
+    <button id="sim-btn" class="std-btn" onclick="triggerSMG()" style="margin-top: 15px; background: #28a745; display:none;">START SEASON SIM</button>
   </div>
   
   <button id="playoff-start-btn" class="std-btn" onclick="startPlayoffGame()" style="margin-top: 15px; background: #ffb300; color:#000; display:none;">START PLAYOFF GAME</button>
   <div id="kicker-container"><div id="kick-msg" style="color:#0f0; font-family:'Press Start 2P'; font-size:10px; height:15px; margin-bottom:8px; text-align: center;">...</div><div class="goal-field-top" id="fg-field"><div class="endzone">TOUCHDOWN</div><div class="top-uprights" id="uprights-ui"><div class="post-tip"></div><div class="post-tip"></div></div><div id="traj-line"></div><div id="ball-top"></div></div></div>
   <div id="animation-container">
     <div id="sim-scoreboard">WEEK 1 vs ???</div>
-    <div id="live-record" style="font-family:'Press Start 2P'; font-size:10px; color:#fff; margin-bottom:12px;">RECORD: 0-0</div>
+    <div id="live-record">RECORD: 0-0</div>
     <div id="tecmo-screen"><div id="main-sprite" class="player-sprite">🏈</div></div>
   </div>
   <div id="results"></div>
@@ -144,14 +140,14 @@
   // 1. FIREBASE INITIALIZATION
   // ==========================================
   const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
-  };
+  apiKey: "AIzaSyBzpnpvfs7IJqdUepimLuXVwwuyfG-0fbo",
+  authDomain: "nfl-roster-28abd.firebaseapp.com",
+  projectId: "nfl-roster-28abd",
+  storageBucket: "nfl-roster-28abd.firebasestorage.app",
+  messagingSenderId: "100140500341",
+  appId: "1:100140500341:web:10a4370de8e7d3ffa57f3c",
+  measurementId: "G-DC1SVDE42B"
+};
   
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
@@ -326,35 +322,63 @@
 
   function calculateModifiers() { const getScore = (name) => name ? Array.from(name).reduce((sum, char) => sum + char.charCodeAt(0), 0) % 15 : 5; teamHype = 1.0 + ((getScore(roster.RB) + getScore(roster.WR) + getScore(roster.Coach)) / 100); teamPower = 1.0 + ((getScore(roster.QB) + getScore(roster.TE) + getScore(roster.Defense)) / 100); }
   
-  function runRoastAndSim() {
-    document.getElementById("sim-btn").style.display = "none";
+  function triggerSMG() { 
+    document.getElementById("sim-btn").style.display="none"; 
     calculateModifiers();
-    const totalScore = teamHype + teamPower;
-    const modal = document.getElementById("roast-modal");
-    const text = document.getElementById("roast-text");
-    
-    modal.style.display = "flex";
-    if (totalScore > 2.1) {
-        text.innerText = "PRAISE: Absolute powerhouse. Your draft is flawless. The league is terrified.";
-        text.style.color = "#0f0";
-    } else if (totalScore < 1.9) {
-        text.innerText = "ROAST: This roster is a disaster. Did you draft blindfolded? Expect a brutal season.";
-        text.style.color = "#f00";
-    } else {
-        text.innerText = "ANALYSIS: Completely aggressively average. You might sneak into the wildcard if you're lucky.";
-        text.style.color = "#ffb300";
-    }
-
-    setTimeout(() => {
-        modal.style.display = "none";
-        triggerSMG();
-    }, 3500);
+    document.getElementById("animation-container").style.setProperty('display', 'block', 'important'); 
+    const sprite = document.getElementById("main-sprite"), screen = document.getElementById("tecmo-screen"); 
+    document.documentElement.style.setProperty('--primary', teamThemes[draftedTeams[0]][0]); 
+    gameActive = true; baseSimWins = 0; baseSimLosses = 0; 
+    const allT = Object.keys(rosterData); for(let i=0; i<17; i++) seasonSchedule.push(allT[Math.floor(Math.random()*allT.length)]); 
+    screen.onmousemove = (e) => { if(!gameActive || isStunned) return; const rect = screen.getBoundingClientRect(); playerTop = Math.max(10, Math.min(90, ((e.clientY - rect.top) / rect.height) * 100)); sprite.style.top = playerTop + "%"; }; 
+    let frame = 0; const loop = setInterval(() => { 
+      const idx = Math.min(16, Math.floor(frame / 24)); 
+      document.getElementById("sim-scoreboard").innerText = `WK ${idx+1} vs ${seasonSchedule[idx]}`; 
+      if (frame > 0 && frame % 24 === 0 && idx <= 16) { 
+        if (Math.random() > 0.45) baseSimWins++; else baseSimLosses++; 
+        document.getElementById("live-record").innerText = `RECORD: ${baseSimWins}-${baseSimLosses}`; 
+      } 
+      if(frame % Math.floor(35 / teamHype) === 0) spawnDefender(teamThemes[seasonSchedule[idx]][0]); 
+      if(frame++ > 400) { clearInterval(loop); gameActive = false; bonusWins = Math.floor(dodges/6); startFGMG(); } 
+    }, 40); 
+  }
+  function spawnDefender(color) { const d = document.createElement("div"); d.className = "defender-16 player-sprite"; d.innerText = "🛡️"; d.style.top = Math.random()*70 + 15 + "%"; d.style.filter = `drop-shadow(0 0 10px ${color})`; document.getElementById("tecmo-screen").appendChild(d); let left = 110; const p = document.getElementById("main-sprite"); const dInt = setInterval(() => { left -= (3.5 * teamHype); d.style.left = left + "%"; if(left < 80 && !d.hit && p) { const pRect = p.getBoundingClientRect(); const dRect = d.getBoundingClientRect(); if (pRect.width > 0 && dRect.width > 0) { const padX = 15; const padY = 20; const isHit = !(pRect.right - padX < dRect.left + padX || pRect.left + padX > dRect.right - padX || pRect.bottom - padY < dRect.top + padY || pRect.top + padY > dRect.bottom - padY); if(isHit) { d.hit = true; isStunned = true; dodges = Math.max(0, dodges-2); playNote(80, 0.4); p.classList.add("stunned"); setTimeout(() => { isStunned = false; p.classList.remove("stunned"); }, 1200); } else if (left < 5 && !d.hit) { d.hit = true; dodges++; } } } if(left < -20) { clearInterval(dInt); d.remove(); } }, 30); }
+  
+  function startFGMG() { 
+    document.getElementById("animation-container").style.setProperty('display', 'none', 'important'); 
+    document.getElementById("kicker-container").style.setProperty('display', 'block', 'important'); 
+    const ball = document.getElementById("ball-top"); const traj = document.getElementById("traj-line"); let isDragging = false, startX, startY; 
+    ball.style.left = "50%"; ball.style.bottom = "52px"; ball.style.transform = "translateX(-50%) scale(1)"; 
+    document.getElementById("kick-msg").innerText = `CLICK BALL, PULL BACK & RELEASE! PWR MULT: ${teamPower.toFixed(2)}x`; document.getElementById("kick-msg").style.color = "#0f0"; 
+    ball.style.pointerEvents = 'auto'; 
+    ball.onmousedown = (e) => { isDragging = true; startX = e.clientX; startY = e.clientY; traj.style.display = "block"; }; 
+    window.onmousemove = (e) => { if(!isDragging) return; const dx = startX - e.clientX, dy = startY - e.clientY; const angle = Math.atan2(-dy, -dx); const dist = Math.min(120, Math.sqrt(dx*dx + dy*dy)); traj.style.left = "50%"; traj.style.bottom = "64px"; traj.style.width = dist + "px"; traj.style.transform = `rotate(${angle * 180 / Math.PI}deg)`; }; 
+    window.onmouseup = (e) => { 
+      if(!isDragging) return; isDragging = false; traj.style.display = "none"; ball.style.pointerEvents = 'none'; 
+      playNote(150, 0.1); // Kick Audio
+      launchBall((startX - e.clientX)/8, (startY - e.clientY)/8); 
+    }; 
   }
 
-  function triggerSMG() { document.getElementById("animation-container").style.setProperty('display', 'block', 'important'); const sprite = document.getElementById("main-sprite"), screen = document.getElementById("tecmo-screen"); document.documentElement.style.setProperty('--primary', teamThemes[draftedTeams[0]][0]); gameActive = true; baseSimWins = 0; baseSimLosses = 0; const allT = Object.keys(rosterData); for(let i=0; i<17; i++) seasonSchedule.push(allT[Math.floor(Math.random()*allT.length)]); screen.onmousemove = (e) => { if(!gameActive || isStunned) return; const rect = screen.getBoundingClientRect(); playerTop = Math.max(10, Math.min(90, ((e.clientY - rect.top) / rect.height) * 100)); sprite.style.top = playerTop + "%"; }; let frame = 0; const loop = setInterval(() => { const idx = Math.min(16, Math.floor(frame / 24)); document.getElementById("sim-scoreboard").innerText = `WK ${idx+1} vs ${seasonSchedule[idx]}`; if (frame > 0 && frame % 24 === 0 && idx <= 16) { if (Math.random() > 0.45) baseSimWins++; else baseSimLosses++; document.getElementById("live-record").innerText = `RECORD: ${baseSimWins}-${baseSimLosses}`; } if(frame % Math.floor(35 / teamHype) === 0) spawnDefender(teamThemes[seasonSchedule[idx]][0]); if(frame++ > 400) { clearInterval(loop); gameActive = false; bonusWins = Math.floor(dodges/6); startFGMG(); } }, 40); }
-  function spawnDefender(color) { const d = document.createElement("div"); d.className = "defender-16 player-sprite"; d.innerText = "🛡️"; d.style.top = Math.random()*70 + 15 + "%"; d.style.filter = `drop-shadow(0 0 10px ${color})`; document.getElementById("tecmo-screen").appendChild(d); let left = 110; const p = document.getElementById("main-sprite"); const dInt = setInterval(() => { left -= (3.5 * teamHype); d.style.left = left + "%"; if(left < 80 && !d.hit && p) { const pRect = p.getBoundingClientRect(); const dRect = d.getBoundingClientRect(); if (pRect.width > 0 && dRect.width > 0) { const padX = 15; const padY = 20; const isHit = !(pRect.right - padX < dRect.left + padX || pRect.left + padX > dRect.right - padX || pRect.bottom - padY < dRect.top + padY || pRect.top + padY > dRect.bottom - padY); if(isHit) { d.hit = true; isStunned = true; dodges = Math.max(0, dodges-2); playNote(80, 0.4); p.classList.add("stunned"); setTimeout(() => { isStunned = false; p.classList.remove("stunned"); }, 1200); } else if (left < 5 && !d.hit) { d.hit = true; dodges++; } } } if(left < -20) { clearInterval(dInt); d.remove(); } }, 30); }
-  function startFGMG() { document.getElementById("animation-container").style.setProperty('display', 'none', 'important'); document.getElementById("kicker-container").style.setProperty('display', 'block', 'important'); const ball = document.getElementById("ball-top"); const traj = document.getElementById("traj-line"); let isDragging = false, startX, startY; ball.style.left = "50%"; ball.style.bottom = "52px"; ball.style.transform = "translateX(-50%) scale(1)"; document.getElementById("kick-msg").innerText = `CLICK BALL, PULL BACK & RELEASE! PWR MULT: ${teamPower.toFixed(2)}x`; document.getElementById("kick-msg").style.color = "#0f0"; ball.style.pointerEvents = 'auto'; ball.onmousedown = (e) => { isDragging = true; startX = e.clientX; startY = e.clientY; traj.style.display = "block"; }; window.onmousemove = (e) => { if(!isDragging) return; const dx = startX - e.clientX, dy = startY - e.clientY; const angle = Math.atan2(-dy, -dx); const dist = Math.min(120, Math.sqrt(dx*dx + dy*dy)); traj.style.left = "50%"; traj.style.bottom = "64px"; traj.style.width = dist + "px"; traj.style.transform = `rotate(${angle * 180 / Math.PI}deg)`; }; window.onmouseup = (e) => { if(!isDragging) return; isDragging = false; traj.style.display = "none"; ball.style.pointerEvents = 'none'; launchBall((startX - e.clientX)/8, (startY - e.clientY)/8); }; }
-  function launchBall(vx, vy) { const ball = document.getElementById("ball-top"); let bx = 0, by = 52, scale = 1; const modifiedVx = vx * teamPower, modifiedVy = vy * teamPower; const bLoop = setInterval(() => { bx += modifiedVx; by -= modifiedVy; scale -= 0.012; ball.style.left = `calc(50% + ${bx}px)`; ball.style.bottom = by + "px"; ball.style.transform = `translateX(-50%) scale(${Math.max(0.3, scale)})`; if(by >= 280 || Math.abs(bx) > 200) { clearInterval(bLoop); const hit = by >= 280 && Math.abs(bx) < 45; document.getElementById("kick-msg").innerText = hit ? "IT'S GOOD!" : "NO GOOD!"; document.getElementById("kick-msg").style.color = hit ? "#0f0" : "#f00"; setTimeout(() => { if(isPlayoffMode) handlePlayoffResult(hit); else { bonusWins += hit ? 3 : -1; showFinal(); } }, 1200); } }, 20); }
+  function launchBall(vx, vy) { 
+    const ball = document.getElementById("ball-top"); let bx = 0, by = 52, scale = 1; const modifiedVx = vx * teamPower, modifiedVy = vy * teamPower; 
+    const bLoop = setInterval(() => { 
+      bx += modifiedVx; by -= modifiedVy; scale -= 0.012; 
+      ball.style.left = `calc(50% + ${bx}px)`; ball.style.bottom = by + "px"; ball.style.transform = `translateX(-50%) scale(${Math.max(0.3, scale)})`; 
+      if(by >= 280 || Math.abs(bx) > 200) { 
+        clearInterval(bLoop); 
+        const hit = by >= 280 && Math.abs(bx) < 45; 
+        document.getElementById("kick-msg").innerText = hit ? "IT'S GOOD!" : "NO GOOD!"; 
+        document.getElementById("kick-msg").style.color = hit ? "#0f0" : "#f00"; 
+        
+        // FGMG Success/Fail Audio Hooks
+        if(hit) { playNote(500, 0.1); setTimeout(() => playNote(650, 0.3), 100); } 
+        else { playNote(150, 0.3); setTimeout(() => playNote(100, 0.5), 250); }
+        
+        setTimeout(() => { if(isPlayoffMode) handlePlayoffResult(hit); else { bonusWins += hit ? 3 : -1; showFinal(); } }, 1200); 
+      } 
+    }, 20); 
+  }
 
   function showFinal() {
     document.getElementById("kicker-container").style.display = "none";
@@ -362,6 +386,12 @@
     
     const totalWins = Math.max(0, Math.min(17, baseSimWins + bonusWins));
     const r = document.getElementById("results");
+
+    // Dynamic Roast/Praise Evaluator
+    let seasonEvaluation = "";
+    if (totalWins >= 13) seasonEvaluation = "<div style='color:#0f0; font-family:\"Press Start 2P\"; font-size:10px; margin-top:15px; line-height:1.4;'>PRAISE: YOU BUILT A DYNASTY.</div>";
+    else if (totalWins >= 9) seasonEvaluation = "<div style='color:#ffb300; font-family:\"Press Start 2P\"; font-size:10px; margin-top:15px; line-height:1.4;'>ANALYSIS: GOOD RUN, BUT ROOM TO IMPROVE.</div>";
+    else seasonEvaluation = "<div style='color:#f00; font-family:\"Press Start 2P\"; font-size:10px; margin-top:15px; line-height:1.4;'>ROAST: ABSOLUTE DUMPSTER FIRE. FIRE THE GM.</div>";
 
     if (isMultiplayer) {
       db.ref(`rooms/${currentRoomId}/${localPlayerId}`).update({ wins: totalWins });
@@ -382,9 +412,13 @@
             <h1 style="color: ${outcomeColor}; text-align: center; font-size: 36px;">${outcome}</h1>
             <h2 style="text-align: center;">YOUR WINS: ${myWins}</h2>
             <h2 style="text-align: center; color: #888;">OPPONENT WINS: ${oppWins}</h2>
+            ${seasonEvaluation}
           `;
           document.getElementById("reset-btn").style.display = "block";
-          if(myWins > oppWins) confetti();
+          
+          // Multiplayer Victory/Defeat Audio Hooks
+          if(myWins > oppWins) { playNote(300, 0.1); setTimeout(()=>playNote(400,0.1),100); setTimeout(()=>playNote(500,0.4),200); confetti(); }
+          else if(myWins < oppWins) { playNote(200, 0.3); setTimeout(()=>playNote(150,0.5),300); }
         }
       });
     } else {
@@ -395,16 +429,26 @@
         const s1 = isW ? Math.floor(Math.random()*17)+21 : Math.floor(Math.random()*21), s2 = isW ? Math.floor(Math.random()*s1) : Math.floor(Math.random()*17)+24;
         table += `<tr><td>${i}</td><td>${opp}</td><td>${s1}-${s2}</td><td>${isW?'W':'L'}</td></tr>`;
       }
-      r.innerHTML = `<h2>RECORD: ${totalWins}-${17-totalWins}</h2>${table}</tbody></table>`;
+      r.innerHTML = `<h2>RECORD: ${totalWins}-${17-totalWins}</h2>${table}</tbody></table>${seasonEvaluation}`;
       r.style.display = "block"; document.getElementById("reset-btn").style.display = "block";
-      if(totalWins >= 10) document.getElementById("playoff-start-btn").style.display = "block";
+      
+      // Solo Mode Audio Hooks
+      if(totalWins >= 10) { document.getElementById("playoff-start-btn").style.display = "block"; playNote(400, 0.1); setTimeout(()=>playNote(500, 0.1), 100); setTimeout(()=>playNote(600, 0.4), 200); }
+      else { playNote(200, 0.3); setTimeout(()=>playNote(150, 0.5), 300); }
       if(totalWins >= 14) confetti();
     }
   }
 
   function startPlayoffGame() { isPlayoffMode = true; document.getElementById("results").style.display = "none"; document.getElementById("playoff-start-btn").style.display = "none"; document.getElementById("playoff-banner").style.setProperty('display', 'block', 'important'); document.getElementById("playoff-banner").innerText = playoffRound === 1 ? "SEMI-FINAL" : "SUPER BOWL"; startFGMG(); }
   function handlePlayoffResult(won) { if(won) { if(playoffRound === 1) { playoffRound = 2; setTimeout(startPlayoffGame, 1500); } else { showTrophy(); } } else { alert("Eliminated!"); location.reload(); } }
-  function showTrophy() { document.getElementById("kicker-container").style.display = "none"; document.getElementById("roster-slots").style.display = "none"; document.getElementById("results").style.display = "block"; document.getElementById("results").innerHTML = "<h1>CHAMPIONS</h1>"; confetti(); }
+  function showTrophy() { 
+    document.getElementById("kicker-container").style.display = "none"; 
+    document.getElementById("roster-slots").style.display = "none"; 
+    document.getElementById("results").style.display = "block"; 
+    document.getElementById("results").innerHTML = "<h1>CHAMPIONS</h1>"; 
+    playNote(400, 0.1); setTimeout(()=>playNote(500, 0.1), 100); setTimeout(()=>playNote(600, 0.4), 200);
+    confetti(); 
+  }
 
   // Restored Fetch Logic
   window.onload = async () => { 
