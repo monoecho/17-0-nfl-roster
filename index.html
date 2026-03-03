@@ -63,15 +63,18 @@
 </style></head><body>
 
 <div id="main-menu">
-  <h1 style="font-family:'Bebas Neue'; font-size: 45px; color: var(--primary);">FOOTBALL ARCADE</h1>
+  <img src="football-logo.png" style="max-width: 320px; height: auto; margin-bottom: 20px; filter: drop-shadow(0 0 15px var(--glow));">
+  
   <input type="text" id="team-name-input" class="menu-input" placeholder="ENTER TEAM NAME" maxlength="12">
   <button class="mode-btn active" id="solo-btn" onclick="setMode('solo')">SOLO CAREER</button>
   <button class="mode-btn" id="vs-btn" onclick="setMode('vs')">VERSUS MODE</button>
   <button class="std-btn" style="width: 260px; margin-top: 20px; font-size: 26px;" onclick="initiateGameFlow()">CONTINUE</button>
 </div>
-
+  
 <div id="lobby-menu">
-  <h1 style="font-family:'Bebas Neue'; font-size: 45px; color: var(--primary);">VERSUS LOBBY</h1>
+  <img src="football-logo.png" style="max-width: 260px; height: auto; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));">
+  
+  <h1 style="font-family:'Bebas Neue'; font-size: 45px; color: var(--primary); margin-top: 0;">VERSUS LOBBY</h1>
   <button class="std-btn" style="width: 260px; margin-bottom: 30px;" onclick="createRoom()">CREATE NEW ROOM</button>
   <div style="font-family: 'Press Start 2P'; font-size: 10px; color: #666; margin-bottom: 15px;">- OR -</div>
   <input type="text" id="room-code-input" class="menu-input" placeholder="ENTER 4-LETTER CODE" maxlength="4">
@@ -462,3 +465,4 @@
     } 
   };
 </script></body></html>
+
